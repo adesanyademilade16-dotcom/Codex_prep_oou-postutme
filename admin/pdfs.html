@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Resources — Codex PREP Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/theme.css">
+<style>
+  .pdf-row{padding:14px 16px;margin-bottom:10px}
+  .pdf-row-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .pdf-row h4{font-size:.88rem;font-weight:700}
+  .pdf-row p{font-size:.74rem;color:var(--muted);margin-top:2px;word-break:break-all}
+  .pdf-row-actions{display:flex;gap:6px;margin-top:10px}
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.86rem}
+  .add-form{display:none;margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span> <span style="opacity:.6;font-size:.7em">· Admin</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="index.html">← Overview</a>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Checking access...</div>
+</div>
+
+<div class="page-wrap" id="adminContent" style="display:none">
+  <div class="page-header">
+    <h1>PDF Resources</h1>
+    <p>Paste a Google Drive/Docs link per subject — download stays locked to paying users on the student side.</p>
+  </div>
+
+  <button class="btn btn-primary btn-block" id="toggleFormBtn" style="margin-bottom:16px">+ Add a PDF resource</button>
+
+  <div class="card add-form" id="addForm">
+    <div class="field">
+      <label for="pdfSubject">Subject</label>
+      <select id="pdfSubject">
+        <option value="Chemistry">Chemistry</option>
+        <option value="Physics">Physics</option>
+        <option value="Biology">Biology</option>
+        <option value="English">English</option>
+        <option value="Mathematics">Mathematics</option>
+        <option value="General Knowledge">General Knowledge</option>
+        <option value="Government">Government</option>
+        <option value="Economics">Economics</option>
+        <option value="Literature">Literature</option>
+        <option value="CRS">CRS</option>
+        <option value="IRS">IRS</option>
+        <option value="Geography">Geography</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="pdfTitle">Title</label>
+      <input type="text" id="pdfTitle" placeholder="e.g. Chemistry Past Questions Compilation">
+    </div>
+    <div class="field">
+      <label for="pdfLink">Google Drive / Docs link</label>
+      <input type="text" id="pdfLink" placeholder="https://drive.google.com/...">
+    </div>
+    <div class="field">
+      <label for="pdfPremium">Access</label>
+      <select id="pdfPremium">
+        <option value="true">Premium only (Regular/VIP)</option>
+        <option value="false">Free for everyone</option>
+      </select>
+    </div>
+    <button class="btn btn-mint btn-block" id="saveBtn">Save resource</button>
+  </div>
+
+  <div id="pdfList"></div>
+</div>
+
+<script type="module">
+import { requireAdmin, db, collection, getDocs, doc, setDoc, serverTimestamp } from "../js/auth.js";
+import { doc as fbDoc, deleteDoc as fbDeleteDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+let pdfs = [];
+
+requireAdmin(async () => {
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('adminContent').style.display = 'block';
+  await loadPdfs();
+});
+
+async function loadPdfs(){
+  try {
+    const snap = await getDocs(collection(db, "putme_pdfs"));
+    pdfs = [];
+    snap.forEach(d => pdfs.push({ id: d.id, ...d.data() }));
+    renderPdfs();
+  } catch (e) {
+    document.getElementById('pdfList').innerHTML = '<div class="empty">Could not load PDF list.</div>';
+  }
+}
+
+function renderPdfs(){
+  const wrap = document.getElementById('pdfList');
+  if (pdfs.length === 0) {
+    wrap.innerHTML = '<div class="empty">No PDF resources added yet.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  pdfs.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'card pdf-row';
+    row.innerHTML = `
+      <div class="pdf-row-top">
+        <div>
+          <h4>${escapeHtml(p.title || 'Untitled')}</h4>
+          <p>${escapeHtml(p.subject || '')} · ${p.isPremium ? 'Premium' : 'Free'}</p>
+          <p>${escapeHtml(p.fileUrl || '')}</p>
+        </div>
+      </div>
+      <div class="pdf-row-actions">
+        <button class="btn btn-sm btn-ghost delete-btn">Delete</button>
+      </div>
+    `;
+    row.querySelector('.delete-btn').addEventListener('click', async () => {
+      if (!confirm(`Delete "${p.title}"? This can't be undone.`)) return;
+      try {
+        await fbDeleteDoc(fbDoc(db, "putme_pdfs", p.id));
+        await loadPdfs();
+      } catch (e) {
+        alert('Could not delete — ' + (e.code || e.message));
+      }
+    });
+    wrap.appendChild(row);
+  });
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+document.getElementById('toggleFormBtn').addEventListener('click', () => {
+  const form = document.getElementById('addForm');
+  form.style.display = form.style.display === 'block' ? 'none' : 'block';
+});
+
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  const subject = document.getElementById('pdfSubject').value;
+  const title = document.getElementById('pdfTitle').value.trim();
+  const fileUrl = document.getElementById('pdfLink').value.trim();
+  const isPremium = document.getElementById('pdfPremium').value === 'true';
+
+  if (!title || !fileUrl) { alert('Please fill in title and link.'); return; }
+  if (!fileUrl.startsWith('http')) { alert('Please enter a valid link starting with http(s)://'); return; }
+
+  try {
+    const newId = subject.replace(/\s+/g,'_').toLowerCase() + '_' + Date.now();
+    await setDoc(doc(db, "putme_pdfs", newId), {
+      subject, title, fileUrl, isPremium,
+      downloadCount: 0,
+      createdAt: serverTimestamp()
+    });
+    document.getElementById('pdfTitle').value = '';
+    document.getElementById('pdfLink').value = '';
+    document.getElementById('addForm').style.display = 'none';
+    await loadPdfs();
+  } catch (e) {
+    alert('Could not save — ' + (e.code || e.message));
+  }
+});
+</script>
+<script src="../js/icons.js"></script>
+</body>
+</html>

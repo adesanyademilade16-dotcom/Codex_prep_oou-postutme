@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/theme.css">
+<style>
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+  .stat-card{padding:16px}
+  .stat-card b{display:block;font-size:1.5rem;font-weight:800;color:var(--violet)}
+  .stat-card span{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;font-weight:700}
+  .tier-breakdown{display:flex;gap:8px;margin-top:6px}
+  .tier-pill{font-size:.68rem;padding:2px 8px;border-radius:999px;font-weight:700}
+  .nav-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .nav-card{padding:18px 16px;text-align:center;cursor:pointer}
+  .nav-card .icon{font-size:1.4rem;color:var(--violet);margin-bottom:8px}
+  .nav-card h3{font-size:.88rem;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span> <span style="opacity:.6;font-size:.7em">· Admin</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="../dashboard.html">← Exit admin</a>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Checking access...</div>
+</div>
+
+<div class="page-wrap" id="adminContent" style="display:none">
+  <div class="page-header">
+    <div class="eyebrow">Overview</div>
+    <h1>Admin Dashboard</h1>
+  </div>
+
+  <div class="stat-grid">
+    <div class="card stat-card">
+      <b id="statTotalUsers">--</b>
+      <span>Total Users</span>
+      <div class="tier-breakdown" id="tierBreakdown"></div>
+    </div>
+    <div class="card stat-card">
+      <b id="statTotalAttempts">--</b>
+      <span>CBT Attempts</span>
+    </div>
+    <div class="card stat-card">
+      <b id="statAvgScore">--</b>
+      <span>Avg Score</span>
+    </div>
+    <div class="card stat-card">
+      <b id="statRecentSignups">--</b>
+      <span>New This Week</span>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:0">Manage</div>
+  <div class="nav-row">
+    <div class="card nav-card" onclick="window.location.href='users.html'">
+      <div class="icon" data-icon="profile"></div>
+      <h3>Users</h3>
+    </div>
+    <div class="card nav-card" onclick="window.location.href='pdfs.html'">
+      <div class="icon" data-icon="document"></div>
+      <h3>PDF Resources</h3>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { requireAdmin, db, collection, getDocs, query, where } from "../js/auth.js";
+
+requireAdmin(async (user) => {
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('adminContent').style.display = 'block';
+
+  try {
+    const usersSnap = await getDocs(collection(db, "users"));
+    const tierCounts = { free: 0, regular: 0, vip: 0 };
+    let recentSignups = 0;
+    const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+
+    usersSnap.forEach(docSnap => {
+      const d = docSnap.data();
+      const tier = d.subscriptionTier || 'free';
+      tierCounts[tier] = (tierCounts[tier] || 0) + 1;
+      if (d.createdAt && d.createdAt.toMillis && d.createdAt.toMillis() > weekAgo) recentSignups++;
+    });
+
+    document.getElementById('statTotalUsers').textContent = usersSnap.size;
+    document.getElementById('statRecentSignups').textContent = recentSignups;
+    document.getElementById('tierBreakdown').innerHTML = `
+      <span class="tier-pill badge-free">${tierCounts.free} free</span>
+      <span class="tier-pill badge-regular">${tierCounts.regular} reg</span>
+      <span class="tier-pill badge-vip">${tierCounts.vip} vip</span>
+    `;
+
+    const attemptsSnap = await getDocs(collection(db, "putme_attempts"));
+    document.getElementById('statTotalAttempts').textContent = attemptsSnap.size;
+    let scoreSum = 0, scoreCount = 0;
+    attemptsSnap.forEach(docSnap => {
+      const d = docSnap.data();
+      if (typeof d.score === 'number') { scoreSum += d.score; scoreCount++; }
+    });
+    document.getElementById('statAvgScore').textContent = scoreCount > 0 ? Math.round(scoreSum / scoreCount) + '%' : '--';
+  } catch (e) {
+    console.error('Admin stats failed to load', e);
+  }
+});
+</script>
+<script src="../js/icons.js"></script>
+</body>
+</html>

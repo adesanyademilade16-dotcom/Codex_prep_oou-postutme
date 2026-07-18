@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Users — Codex PREP Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/theme.css">
+<style>
+  .search-box{margin-bottom:16px}
+  .user-row{
+    padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;
+  }
+  .user-avatar{
+    width:38px;height:38px;border-radius:50%;background:var(--blue-soft);color:var(--violet-deep);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex:0 0 auto;
+  }
+  .user-info{flex:1;min-width:0}
+  .user-info h4{font-size:.86rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .user-info p{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .user-actions{display:flex;gap:6px;flex:0 0 auto}
+  .tier-select{
+    padding:6px 8px;border-radius:8px;border:1.5px solid var(--border);font-size:.76rem;
+    font-family:var(--font);font-weight:700;background:#fff;
+  }
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.86rem}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span> <span style="opacity:.6;font-size:.7em">· Admin</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="index.html">← Overview</a>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Checking access...</div>
+</div>
+
+<div class="page-wrap" id="adminContent" style="display:none">
+  <div class="page-header">
+    <h1>Manage Users</h1>
+    <p id="countLabel">Loading...</p>
+  </div>
+
+  <div class="field search-box">
+    <input type="text" id="searchInput" placeholder="Search by name or email...">
+  </div>
+
+  <div id="userList"></div>
+</div>
+
+<script type="module">
+import { requireAdmin, db, collection, getDocs, doc, updateDoc } from "../js/auth.js";
+
+let allUsers = [];
+
+requireAdmin(async (adminUser) => {
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('adminContent').style.display = 'block';
+
+  try {
+    const snap = await getDocs(collection(db, "users"));
+    allUsers = [];
+    snap.forEach(docSnap => allUsers.push({ id: docSnap.id, ...docSnap.data() }));
+    allUsers.sort((a, b) => (a.fullName || '').localeCompare(b.fullName || ''));
+    document.getElementById('countLabel').textContent = `${allUsers.length} registered users`;
+    renderUsers(allUsers);
+  } catch (e) {
+    document.getElementById('userList').innerHTML = '<div class="empty">Could not load users — check your connection and try again.</div>';
+  }
+});
+
+function renderUsers(users){
+  const wrap = document.getElementById('userList');
+  if (users.length === 0) {
+    wrap.innerHTML = '<div class="empty">No users match your search.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  users.forEach(u => {
+    const row = document.createElement('div');
+    row.className = 'card user-row';
+    const initial = (u.fullName || u.email || '?').charAt(0).toUpperCase();
+    row.innerHTML = `
+      <div class="user-avatar">${initial}</div>
+      <div class="user-info">
+        <h4>${escapeHtml(u.fullName || 'Unnamed')}</h4>
+        <p>${escapeHtml(u.email || '')}</p>
+      </div>
+      <div class="user-actions">
+        <select class="tier-select" data-uid="${u.id}">
+          <option value="free" ${u.subscriptionTier === 'free' ? 'selected' : ''}>Free</option>
+          <option value="regular" ${u.subscriptionTier === 'regular' ? 'selected' : ''}>Regular</option>
+          <option value="vip" ${u.subscriptionTier === 'vip' ? 'selected' : ''}>VIP</option>
+        </select>
+      </div>
+    `;
+    row.querySelector('.tier-select').addEventListener('change', async (e) => {
+      const newTier = e.target.value;
+      const uid = e.target.dataset.uid;
+      const original = e.target.dataset.original || u.subscriptionTier;
+      if (!confirm(`Change ${u.fullName || u.email}'s plan to ${newTier.toUpperCase()}?`)) {
+        e.target.value = u.subscriptionTier;
+        return;
+      }
+      try {
+        await updateDoc(doc(db, "users", uid), { subscriptionTier: newTier });
+        u.subscriptionTier = newTier;
+      } catch (err) {
+        alert('Could not update plan — ' + (err.code || err.message));
+        e.target.value = u.subscriptionTier;
+      }
+    });
+    wrap.appendChild(row);
+  });
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const term = e.target.value.toLowerCase().trim();
+  if (!term) { renderUsers(allUsers); return; }
+  const filtered = allUsers.filter(u =>
+    (u.fullName || '').toLowerCase().includes(term) ||
+    (u.email || '').toLowerCase().includes(term)
+  );
+  renderUsers(filtered);
+});
+</script>
+<script src="../js/icons.js"></script>
+</body>
+</html>
