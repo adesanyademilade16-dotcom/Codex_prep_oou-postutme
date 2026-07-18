@@ -27,6 +27,38 @@ export {
   GoogleAuthProvider, signInWithPopup
 };
 
+// ===========================================================
+// Returns the user's REAL, currently-active tier — checking
+// expiry, not just trusting the (possibly stale) subscriptionTier
+// field on the users doc. Every page that gates a feature by tier
+// should call this instead of reading users/{uid}.subscriptionTier
+// directly, so expired plans are enforced everywhere consistently.
+// ===========================================================
+export async function getEffectiveTier(uid) {
+  const userSnap = await getDoc(doc(db, "users", uid));
+  const storedTier = userSnap.exists() ? (userSnap.data().subscriptionTier || 'free') : 'free';
+
+  if (storedTier === 'free') {
+    return { tier: 'free', expiresAt: null };
+  }
+
+  const subSnap = await getDoc(doc(db, "putme_subscriptions", uid));
+  if (!subSnap.exists()) {
+    // Tier says paid but there's no subscription record — treat as free.
+    return { tier: 'free', expiresAt: null };
+  }
+
+  const sub = subSnap.data();
+  const now = Date.now();
+
+  if (sub.status !== 'active' || !sub.expiresAt || sub.expiresAt < now) {
+    // Plan has lapsed.
+    return { tier: 'free', expiresAt: sub.expiresAt || null, expired: true };
+  }
+
+  return { tier: sub.plan || storedTier, expiresAt: sub.expiresAt };
+}
+
 export const googleProvider = new GoogleAuthProvider();
 
 // Free-tier gets FREE_TRIAL_LIMIT (set in firebase-config.js) CBT attempts,
