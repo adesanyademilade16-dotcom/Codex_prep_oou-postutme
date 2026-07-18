@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex PREP — Ace Your OOU Post-UTME</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .hero{
+    background:linear-gradient(160deg,var(--ink) 0%,var(--violet-deep) 60%,var(--violet) 100%);
+    color:#fff;padding:54px 20px 60px;text-align:center;
+    position:relative;overflow:hidden;
+  }
+  .hero::after{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 80% 0%,rgba(255,255,255,.12),transparent 55%);
+  }
+  .hero-inner{position:relative;max-width:520px;margin:0 auto}
+  .hero .eyebrow{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.28)}
+  .hero h1{font-size:2rem;font-weight:800;letter-spacing:-.6px;line-height:1.18;margin-bottom:14px}
+  .hero h1 em{font-style:normal;color:#ffd166}
+  .hero p{font-size:.98rem;opacity:.88;line-height:1.55;margin-bottom:26px}
+  .hero-ctas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .hero .btn-ghost{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.3)}
+  .hero-stats{display:flex;gap:22px;justify-content:center;margin-top:36px;flex-wrap:wrap}
+  .hero-stat b{display:block;font-size:1.3rem;font-weight:800}
+  .hero-stat span{font-size:.72rem;opacity:.75;text-transform:uppercase;letter-spacing:.5px}
+
+  section{padding:44px 16px}
+  .section-inner{max-width:720px;margin:0 auto}
+  .section-title{text-align:center;margin-bottom:28px}
+  .section-title h2{font-size:1.4rem;font-weight:800;letter-spacing:-.3px}
+  .section-title p{color:var(--muted);font-size:.88rem;margin-top:6px}
+
+  .feature-grid{display:grid;gap:14px;grid-template-columns:1fr}
+  @media(min-width:600px){.feature-grid{grid-template-columns:1fr 1fr}}
+  .feature-card{padding:20px}
+  .feature-icon{font-size:1.5rem;margin-bottom:10px}
+  .feature-card h3{font-size:.98rem;font-weight:700;margin-bottom:6px}
+  .feature-card p{font-size:.84rem;color:var(--muted);line-height:1.5}
+
+  .pricing-grid{display:grid;gap:14px;grid-template-columns:1fr}
+  @media(min-width:640px){.pricing-grid{grid-template-columns:repeat(3,1fr)}}
+  .price-card{padding:22px 20px;text-align:center;position:relative}
+  .price-card.featured{border-color:var(--violet);box-shadow:var(--shadow-md)}
+  .price-card .tier-name{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+  .price-card .tier-price{font-size:1.7rem;font-weight:800;margin:8px 0 4px}
+  .price-card .tier-price span{font-size:.8rem;font-weight:600;color:var(--muted)}
+  .price-card ul{list-style:none;text-align:left;margin:16px 0;font-size:.83rem;color:var(--ink2)}
+  .price-card li{padding:5px 0;padding-left:20px;position:relative}
+  .price-card li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700}
+  .featured-tag{
+    position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    background:var(--violet);color:#fff;font-size:.68rem;font-weight:700;
+    padding:3px 12px;border-radius:999px;
+  }
+
+  .testi-grid{display:grid;gap:14px;grid-template-columns:1fr}
+  @media(min-width:600px){.testi-grid{grid-template-columns:1fr 1fr}}
+  .testi-card{padding:18px}
+  .testi-card p{font-size:.86rem;color:var(--ink2);line-height:1.55;margin-bottom:12px}
+  .testi-who{display:flex;align-items:center;gap:10px}
+  .testi-avatar{
+    width:36px;height:36px;border-radius:50%;background:var(--blue-soft);
+    display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--violet-deep);font-size:.85rem;
+  }
+  .testi-who b{font-size:.82rem;display:block}
+  .testi-who span{font-size:.72rem;color:var(--muted)}
+
+  .faq-item{border-bottom:1px solid var(--border);padding:14px 0}
+  .faq-item summary{font-weight:700;font-size:.9rem;cursor:pointer;list-style:none}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary::after{content:'+';float:right;color:var(--violet)}
+  .faq-item[open] summary::after{content:'−'}
+  .faq-item p{font-size:.84rem;color:var(--muted);margin-top:8px;line-height:1.5}
+
+  .final-cta{
+    background:linear-gradient(135deg,var(--violet),var(--violet-deep));
+    color:#fff;text-align:center;border-radius:20px;padding:36px 24px;margin:20px 16px 40px;
+  }
+  .final-cta h2{font-size:1.3rem;font-weight:800;margin-bottom:8px}
+  .final-cta p{font-size:.88rem;opacity:.85;margin-bottom:20px}
+  .final-cta .btn-primary{background:#fff;color:var(--violet-deep);box-shadow:none}
+
+  footer{padding:24px 16px 40px;text-align:center;color:var(--muted);font-size:.78rem}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="login.html">Log in</a>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">OOU Post-UTME 2026/2027</div>
+    <h1>Walk into your Post-UTME already knowing <em>exactly</em> what to expect.</h1>
+    <p>Real CBT simulation, subject-by-subject practice, and performance tracking built specifically for OOU aspirants — not a generic JAMB app.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="signup.html">Create free account</a>
+      <a class="btn btn-ghost" href="#pricing">See pricing</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><b>1,300+</b><span>Practice Questions</span></div>
+      <div class="hero-stat"><b>5</b><span>Core Subjects</span></div>
+      <div class="hero-stat"><b>30 min</b><span>Real Exam Timing</span></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="section-inner">
+    <div class="section-title">
+      <h2>Everything you need, nothing you don't</h2>
+      <p>Built around how OOU's Post-UTME actually works.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="card feature-card">
+        <div class="feature-icon" data-icon="monitor"></div>
+        <h3>Real CBT Simulation</h3>
+        <p>Timed, distraction-free, question-navigation-enabled — the same flow you'll meet on exam day.</p>
+      </div>
+      <div class="card feature-card">
+        <div class="feature-icon" data-icon="target"></div>
+        <h3>Subject Practice</h3>
+        <p>Drill Chemistry, Physics, Biology, English, CRK, Literature-in-English, or General Knowledge on your own schedule.</p>
+      </div>
+      <div class="card feature-card">
+        <div class="feature-icon" data-icon="chart"></div>
+        <h3>Performance Tracking</h3>
+        <p>See your weak subjects before the real exam does.</p>
+      </div>
+      <div class="card feature-card">
+        <div class="feature-icon" data-icon="calculator"></div>
+        <h3>Aggregate Calculator</h3>
+        <p>Enter your JAMB + Post-UTME score and see where you likely stand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-inner">
+    <div class="section-title">
+      <h2>Simple pricing</h2>
+      <p>Start free. Upgrade when you're serious.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="card price-card">
+        <div class="tier-name">Free</div>
+        <div class="tier-price">₦0</div>
+        <ul>
+          <li>1 CBT trial</li>
+          <li>Aggregate calculator</li>
+          <li>Leaderboard access</li>
+        </ul>
+        <a class="btn btn-ghost btn-block" href="signup.html">Start free</a>
+      </div>
+      <div class="card price-card featured">
+        <div class="featured-tag">Most popular</div>
+        <div class="tier-name">Regular</div>
+        <div class="tier-price">₦2,500<span>/mo</span></div>
+        <ul>
+          <li>Unlimited CBT practice</li>
+          <li>Full performance analytics</li>
+          <li>All subjects unlocked</li>
+        </ul>
+        <a class="btn btn-primary btn-block" href="signup.html">Get started</a>
+      </div>
+      <div class="card price-card">
+        <div class="tier-name">VIP</div>
+        <div class="tier-price">₦5,000<span>/mo</span></div>
+        <ul>
+          <li>Everything in Regular</li>
+          <li>Unlimited PDF downloads</li>
+          <li>Priority new features</li>
+        </ul>
+        <a class="btn btn-ghost btn-block" href="signup.html">Get started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-inner">
+    <div class="section-title">
+      <h2>What candidates are saying</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="card testi-card">
+        <p>"I practiced Chemistry every night for two weeks before my Post-UTME. The real exam genuinely felt easier than the app."</p>
+        <div class="testi-who">
+          <div class="testi-avatar">T</div>
+          <div><b>Tolu A.</b><span>OOU Aspirant, 2025/2026</span></div>
+        </div>
+      </div>
+      <div class="card testi-card">
+        <p>"The timer pressure in exam mode is what got me ready. I stopped panicking about time on the actual day."</p>
+        <div class="testi-who">
+          <div class="testi-avatar">F</div>
+          <div><b>Funmilayo O.</b><span>OOU Aspirant, 2025/2026</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-inner">
+    <div class="section-title"><h2>Frequently asked questions</h2></div>
+    <details class="faq-item">
+      <summary>Is this the official OOU Post-UTME portal?</summary>
+      <p>No — Codex PREP is an independent practice platform to help you prepare. Your actual Post-UTME registration happens through OOU's official portal.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How many questions are in the question bank?</summary>
+      <p>Over 2,200 questions across Chemistry, Physics, Biology, English, CRK, Literature-in-English, and General Knowledge, with more added regularly.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I use this on my phone?</summary>
+      <p>Yes — Codex PREP is built mobile-first and works on any modern phone browser.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What happens after I gain admission?</summary>
+      <p>You'll be able to move straight into Codex Study Hub, our platform for OOU undergraduates — course materials, CBTs, and past questions by department.</p>
+    </details>
+  </div>
+</section>
+
+<div class="final-cta">
+  <h2>Your Post-UTME prep starts now</h2>
+  <p>Free to start. No card required.</p>
+  <a class="btn btn-primary" href="signup.html">Create your account</a>
+</div>
+
+<footer>© 2026 Codex PREP · Part of the Codex Study Hub family</footer>
+
+<script src="js/icons.js"></script>
+</body>
+</html>

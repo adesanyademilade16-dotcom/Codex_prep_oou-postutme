@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aggregate Calculator — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .result-card{display:none;text-align:center;padding:26px 20px;margin-top:16px}
+  .result-card .score{font-size:2.4rem;font-weight:800;color:var(--violet);margin:6px 0}
+  .result-card .score span{font-size:1rem;color:var(--muted);font-weight:600}
+  .breakdown{display:flex;justify-content:space-around;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+  .breakdown div b{display:block;font-size:1.05rem}
+  .breakdown div span{font-size:.72rem;color:var(--muted)}
+  .note-box{
+    background:var(--gold3);border:1px solid var(--gold2);border-radius:10px;
+    padding:12px 14px;font-size:.78rem;color:#8a5b00;margin-top:16px;line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="dashboard.html">← Dashboard</a>
+</div>
+
+<div class="page-wrap-narrow">
+  <div class="page-header">
+    <h1>Aggregate Calculator</h1>
+    <p>Estimate your OOU aggregate score.</p>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label for="jambScore">JAMB score (out of 400)</label>
+      <input type="number" id="jambScore" min="0" max="400" placeholder="e.g. 220">
+    </div>
+    <div class="field">
+      <label for="putmeScore">Post-UTME score (out of 100)</label>
+      <input type="number" id="putmeScore" min="0" max="100" placeholder="e.g. 68">
+    </div>
+    <button class="btn btn-primary btn-block" id="calcBtn">Calculate aggregate</button>
+  </div>
+
+  <div class="card result-card" id="resultCard">
+    <div style="font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Your estimated aggregate</div>
+    <div class="score" id="aggregateScore">--<span>/100</span></div>
+    <div class="breakdown">
+      <div><b id="jambPoints">--</b><span>JAMB (50%)</span></div>
+      <div><b id="putmePoints">--</b><span>Post-UTME (50%)</span></div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    Formula used: (JAMB ÷ 8) + (Post-UTME ÷ 2), the standard OOU method. Departmental cut-off marks vary by course and change each session — this is an estimate, not a guarantee of admission. Always confirm against the official OOU admission portal.
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html"><span class="bn-icon" data-icon="home"></span>Home</a>
+  <a href="mode-select.html"><span class="bn-icon" data-icon="exam"></span>CBT</a>
+  <a href="calculator.html" class="active"><span class="bn-icon" data-icon="calculator"></span>Calculator</a>
+  <a href="leaderboard.html"><span class="bn-icon" data-icon="trophy"></span>Rank</a>
+  <a href="profile.html"><span class="bn-icon" data-icon="profile"></span>Profile</a>
+</div>
+
+<script>
+document.getElementById('calcBtn').addEventListener('click', () => {
+  const jamb = parseFloat(document.getElementById('jambScore').value);
+  const putme = parseFloat(document.getElementById('putmeScore').value);
+
+  if (isNaN(jamb) || jamb < 0 || jamb > 400) { alert('Enter a valid JAMB score between 0 and 400.'); return; }
+  if (isNaN(putme) || putme < 0 || putme > 100) { alert('Enter a valid Post-UTME score between 0 and 100.'); return; }
+
+  const jambPoints = jamb / 8;
+  const putmePoints = putme / 2;
+  const aggregate = jambPoints + putmePoints;
+
+  document.getElementById('jambPoints').textContent = jambPoints.toFixed(1);
+  document.getElementById('putmePoints').textContent = putmePoints.toFixed(1);
+  document.getElementById('aggregateScore').innerHTML = aggregate.toFixed(1) + '<span>/100</span>';
+  document.getElementById('resultCard').style.display = 'block';
+  document.getElementById('resultCard').scrollIntoView({behavior:'smooth', block:'nearest'});
+});
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

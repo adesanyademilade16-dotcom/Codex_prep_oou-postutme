@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help & Support — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+  .contact-card{padding:18px 14px;text-align:center;cursor:pointer;transition:.2s}
+  .contact-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+  .contact-card .ci{font-size:1.5rem;color:var(--violet);margin-bottom:8px}
+  .contact-card h3{font-size:.86rem;font-weight:700;margin-bottom:2px}
+  .contact-card p{font-size:.72rem;color:var(--muted)}
+
+  .faq-item{border-bottom:1px solid var(--border);padding:14px 0}
+  .faq-item:last-child{border-bottom:none}
+  .faq-item summary{font-weight:700;font-size:.88rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary::after{content:'+';color:var(--violet);font-size:1.1rem;font-weight:700}
+  .faq-item[open] summary::after{content:'−'}
+  .faq-item p{font-size:.82rem;color:var(--muted);margin-top:8px;line-height:1.55}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="dashboard.html">← Dashboard</a>
+</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>Help & Support</h1>
+    <p>Questions? We're a message away.</p>
+  </div>
+
+  <div class="contact-grid">
+    <a class="card contact-card" href="tel:+2347011245168">
+      <div class="ci" data-icon="monitor"></div>
+      <h3>Call us</h3>
+      <p>0701 124 5168</p>
+    </a>
+    <a class="card contact-card" href="https://wa.me/2347011245168" target="_blank" rel="noopener">
+      <div class="ci" data-icon="exam"></div>
+      <h3>WhatsApp</h3>
+      <p>Chat with support</p>
+    </a>
+  </div>
+
+  <div class="section-label" style="margin-top:0">Frequently asked questions</div>
+  <div class="card" style="padding:4px 18px">
+    <details class="faq-item">
+      <summary>Is Codex PREP the official OOU Post-UTME portal?</summary>
+      <p>No — Codex PREP is an independent practice platform to help you prepare. Your actual Post-UTME registration and screening happen through OOU's official admissions portal.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How many free attempts do I get?</summary>
+      <p>Free accounts get a limited number of CBT attempts across all subjects. Once used, you'll need to upgrade to Regular or VIP for unlimited practice — check the Pricing page for current plans.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Are the questions real past questions?</summary>
+      <p>Most subjects use compiled past questions with answers verified against reliable sources. Where a question bank includes AI-assisted content, we aim to note that clearly so you know what you're studying.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Does meeting the JAMB cut-off guarantee admission?</summary>
+      <p>No. Meeting the minimum JAMB score only qualifies you to be invited for Post-UTME screening. Final admission also depends on your Post-UTME score, department capacity, and that year's competition — none of which are published in advance.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I use this on my phone?</summary>
+      <p>Yes — Codex PREP is built mobile-first and works on any modern phone browser.</p>
+    </details>
+    <details class="faq-item">
+      <summary>I forgot my password — what do I do?</summary>
+      <p>Go to the login page and tap "Forgot password?" — you'll get a reset link by email. If you signed up with Google, just use the Google sign-in button instead.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How do I request a refund or report a payment issue?</summary>
+      <p>Reach out directly via call or WhatsApp above with your registered email and payment reference, and we'll sort it out.</p>
+    </details>
+  </div>
+
+  <div class="section-label">Already gained admission?</div>
+  <div class="card" style="padding:20px;text-align:center">
+    <p style="font-size:.86rem;color:var(--ink2);margin-bottom:14px;line-height:1.5">
+      Move over to Codex Study Hub — course materials, CBTs, and past questions for OOU undergraduates by department.
+    </p>
+    <a class="btn btn-primary" href="https://rebrand.ly/codex-hub-prime" target="_blank" rel="noopener">Join Codex Hub</a>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html"><span class="bn-icon" data-icon="home"></span>Home</a>
+  <a href="mode-select.html"><span class="bn-icon" data-icon="exam"></span>CBT</a>
+  <a href="calculator.html"><span class="bn-icon" data-icon="calculator"></span>Calculator</a>
+  <a href="leaderboard.html"><span class="bn-icon" data-icon="trophy"></span>Rank</a>
+  <a href="profile.html"><span class="bn-icon" data-icon="profile"></span>Profile</a>
+</div>
+
+<script src="js/icons.js"></script>
+</body>
+</html>

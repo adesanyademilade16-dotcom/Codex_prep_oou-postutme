@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Past Questions — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .pq-row{
+    display:flex;align-items:center;gap:12px;padding:16px;margin-bottom:10px;
+  }
+  .pq-icon{
+    width:44px;height:44px;border-radius:10px;background:var(--blue-soft);
+    display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex:0 0 auto;color:var(--violet-deep);
+  }
+  .pq-info{flex:1;min-width:0}
+  .pq-info h3{font-size:.9rem;font-weight:700}
+  .pq-info p{font-size:.74rem;color:var(--muted);margin-top:2px}
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.86rem}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="dashboard.html">← Dashboard</a>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Loading resources...</div>
+</div>
+
+<div class="page-wrap" id="pageContent" style="display:none">
+  <div class="page-header">
+    <h1>Past Questions</h1>
+    <p>Downloadable subject compilations.</p>
+  </div>
+
+  <div id="pdfList"></div>
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html"><span class="bn-icon" data-icon="home"></span>Home</a>
+  <a href="mode-select.html"><span class="bn-icon" data-icon="exam"></span>CBT</a>
+  <a href="calculator.html"><span class="bn-icon" data-icon="calculator"></span>Calculator</a>
+  <a href="leaderboard.html"><span class="bn-icon" data-icon="trophy"></span>Rank</a>
+  <a href="profile.html"><span class="bn-icon" data-icon="profile"></span>Profile</a>
+</div>
+
+<script type="module">
+import { requireAuth, db, doc, getDoc, collection, getDocs, updateDoc } from "./js/auth.js";
+
+const SUBJECT_ICONS = {
+  Chemistry: "flask", Physics: "gear", Biology: "dna", English: "book",
+  Mathematics: "calculator", "General Knowledge": "globe",
+  CRK: "document", "Literature in English": "book"
+};
+
+requireAuth(async (user) => {
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('pageContent').style.display = 'block';
+
+  let userTier = 'free';
+  try {
+    const userSnap = await getDoc(doc(db, "users", user.uid));
+    if (userSnap.exists()) userTier = userSnap.data().subscriptionTier || 'free';
+  } catch (e) { /* default to free */ }
+
+  const wrap = document.getElementById('pdfList');
+  try {
+    const snap = await getDocs(collection(db, "putme_pdfs"));
+    if (snap.empty) {
+      wrap.innerHTML = '<div class="card empty">No PDF resources have been added yet. Check back soon, or practice directly in <a href="mode-select.html" style="color:var(--violet);font-weight:700">Subject Practice</a>.</div>';
+      return;
+    }
+
+    const listWrap = document.createElement('div');
+    listWrap.className = 'card';
+    listWrap.style.cssText = 'padding:0;overflow:hidden';
+
+    snap.forEach(docSnap => {
+      const p = docSnap.data();
+      const locked = p.isPremium && userTier === 'free';
+      const row = document.createElement('div');
+      row.className = 'pq-row';
+      row.innerHTML = `
+        <div class="pq-icon" data-icon="${SUBJECT_ICONS[p.subject] || 'document'}"></div>
+        <div class="pq-info">
+          <h3>${escapeHtml(p.title || p.subject)}</h3>
+          <p>${escapeHtml(p.subject || '')}</p>
+        </div>
+      `;
+      const actionEl = document.createElement(locked ? 'a' : 'a');
+      if (locked) {
+        actionEl.className = 'badge badge-vip';
+        actionEl.textContent = 'Upgrade to unlock';
+        actionEl.href = 'pricing.html';
+      } else {
+        actionEl.className = 'btn btn-sm btn-primary';
+        actionEl.textContent = 'Download';
+        actionEl.href = p.fileUrl;
+        actionEl.target = '_blank';
+        actionEl.rel = 'noopener';
+        actionEl.addEventListener('click', async () => {
+          try { await updateDoc(doc(db, "putme_pdfs", docSnap.id), { downloadCount: (p.downloadCount || 0) + 1 }); }
+          catch (e) { /* non-critical */ }
+        });
+      }
+      row.appendChild(actionEl);
+      listWrap.appendChild(row);
+    });
+    wrap.appendChild(listWrap);
+  } catch (e) {
+    wrap.innerHTML = '<div class="card empty">Could not load resources — check your connection and try again.</div>';
+  }
+  if (window.CodexIcons) window.CodexIcons.render();
+});
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

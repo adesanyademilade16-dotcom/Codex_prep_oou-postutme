@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upgrade — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .price-card{padding:22px 20px;text-align:center;position:relative;margin-bottom:14px}
+  .price-card.featured{border-color:var(--violet);box-shadow:var(--shadow-md)}
+  .price-card .tier-name{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+  .price-card .tier-price{font-size:1.6rem;font-weight:800;margin:8px 0 4px}
+  .price-card .tier-price span{font-size:.78rem;font-weight:600;color:var(--muted)}
+  .price-card ul{list-style:none;text-align:left;margin:16px 0;font-size:.83rem;color:var(--ink2)}
+  .price-card li{padding:5px 0;padding-left:20px;position:relative}
+  .price-card li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:700}
+  .featured-tag{
+    position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    background:var(--violet);color:#fff;font-size:.68rem;font-weight:700;
+    padding:3px 12px;border-radius:999px;
+  }
+  .current-tag{
+    position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    background:var(--green);color:#fff;font-size:.68rem;font-weight:700;
+    padding:3px 12px;border-radius:999px;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="dashboard.html">← Dashboard</a>
+</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>Upgrade your plan</h1>
+    <p>Unlock unlimited practice and full analytics.</p>
+  </div>
+
+  <div class="card price-card" id="tierFree">
+    <div class="tier-name">Free</div>
+    <div class="tier-price">₦0</div>
+    <ul>
+      <li>1 CBT trial</li>
+      <li>Aggregate calculator</li>
+      <li>Leaderboard access</li>
+    </ul>
+  </div>
+
+  <div class="card price-card featured" id="tierRegular">
+    <div class="featured-tag">Most popular</div>
+    <div class="tier-name">Regular</div>
+    <div class="tier-price">₦2,500<span>/month</span></div>
+    <ul>
+      <li>Unlimited CBT practice</li>
+      <li>Full performance analytics</li>
+      <li>All 5 subjects unlocked</li>
+    </ul>
+    <button class="btn btn-primary btn-block" data-plan="regular" onclick="startPayment('regular')">Upgrade — ₦2,500</button>
+  </div>
+
+  <div class="card price-card" id="tierVip">
+    <div class="tier-name">VIP</div>
+    <div class="tier-price">₦4,000<span>/month</span></div>
+    <ul>
+      <li>Everything in Regular</li>
+      <li>Unlimited PDF downloads</li>
+      <li>Priority access to new features</li>
+    </ul>
+    <button class="btn btn-ghost btn-block" data-plan="vip" onclick="startPayment('vip')">Upgrade — ₦4,000</button>
+  </div>
+
+  <div class="card coming-soon-card" id="paymentStatus" style="display:none">
+    <div class="big" data-icon="card"></div>
+    <span id="paymentStatusText"></span>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html"><span class="bn-icon" data-icon="home"></span>Home</a>
+  <a href="mode-select.html"><span class="bn-icon" data-icon="exam"></span>CBT</a>
+  <a href="calculator.html"><span class="bn-icon" data-icon="calculator"></span>Calculator</a>
+  <a href="leaderboard.html"><span class="bn-icon" data-icon="trophy"></span>Rank</a>
+  <a href="profile.html"><span class="bn-icon" data-icon="profile"></span>Profile</a>
+</div>
+
+<script type="module">
+import { requireAuth, doc, getDoc, db, auth } from "./js/auth.js";
+
+// TODO: set this to your deployed Render backend URL once it's live,
+// e.g. "https://putme-backend.onrender.com"
+const BACKEND_URL = "https://putme-backend.onrender.com";
+
+let currentUser = null;
+
+requireAuth(async (user) => {
+  currentUser = user;
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      const tier = snap.data().subscriptionTier || 'free';
+      const map = { free: 'tierFree', regular: 'tierRegular', vip: 'tierVip' };
+      const el = document.getElementById(map[tier]);
+      if (el) {
+        const tag = document.createElement('div');
+        tag.className = 'current-tag';
+        tag.textContent = 'Your plan';
+        el.appendChild(tag);
+      }
+    }
+  } catch (e) { /* silently keep default view */ }
+
+  // If we've just bounced back from Paystack, let the user know
+  // their payment is being confirmed (the actual crediting happens
+  // via the server-side webhook, not this redirect).
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('payment') === 'callback') {
+    showStatus("Confirming your payment… this can take a few seconds. Refresh in a moment if your plan hasn't updated.");
+  }
+});
+
+window.startPayment = async function (plan) {
+  const buttons = document.querySelectorAll('button[data-plan]');
+  buttons.forEach(b => b.disabled = true);
+  showStatus("Starting secure payment…");
+
+  try {
+    if (!currentUser) throw new Error("Not signed in");
+    const idToken = await currentUser.getIdToken();
+
+    const res = await fetch(`${BACKEND_URL}/api/paystack/initialize`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({ plan }),
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.authorization_url) {
+      throw new Error(data.error || "Could not start payment");
+    }
+
+    // Send the user to Paystack's hosted, secure checkout page.
+    window.location.href = data.authorization_url;
+  } catch (err) {
+    console.error("Payment start error:", err);
+    showStatus("Payment error: " + (err.message || "unknown error") + " (check browser console for details)");
+    buttons.forEach(b => b.disabled = false);
+  }
+};
+
+function showStatus(text) {
+  const box = document.getElementById('paymentStatus');
+  const textEl = document.getElementById('paymentStatusText');
+  textEl.textContent = text;
+  box.style.display = 'block';
+}
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

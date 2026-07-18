@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose CBT Mode — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .mode-card{padding:22px 20px;margin-bottom:14px;cursor:pointer;transition:.2s;position:relative}
+  .mode-card:hover:not(.disabled){transform:translateY(-2px);box-shadow:var(--shadow-md)}
+  .mode-card.disabled{opacity:.75;cursor:default}
+  .mode-icon{font-size:1.7rem;margin-bottom:8px}
+  .mode-card h3{font-size:1.02rem;font-weight:700;margin-bottom:5px}
+  .mode-card p{font-size:.84rem;color:var(--muted);line-height:1.5}
+  .mode-card .badge{position:absolute;top:18px;right:18px}
+
+  .countdown-card{
+    background:linear-gradient(135deg,var(--violet),var(--violet-deep));
+    color:#fff;border:none;padding:20px;margin-bottom:16px;text-align:center;
+  }
+  .countdown-card .cd-label{font-size:.72rem;opacity:.8;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:10px}
+  .countdown-grid{display:flex;justify-content:center;gap:10px}
+  .countdown-unit{background:rgba(255,255,255,.14);border-radius:12px;padding:10px 12px;min-width:56px}
+  .countdown-unit b{display:block;font-size:1.3rem;font-weight:800;font-family:var(--mono)}
+  .countdown-unit span{font-size:.62rem;opacity:.8;text-transform:uppercase}
+
+  .combo-preview{padding:16px;margin-top:12px}
+  .combo-preview .cp-title{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-bottom:10px}
+  .combo-chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .combo-chip{background:var(--blue-soft);color:var(--violet-deep);padding:6px 12px;border-radius:999px;font-size:.78rem;font-weight:700}
+  .confidence-note{font-size:.74rem;color:var(--muted);line-height:1.5;margin-bottom:10px}
+  .confidence-note.estimated{color:#8a5b00}
+
+  .suggest-form{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+  .suggest-form textarea{
+    width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:9px;
+    font-family:var(--font);font-size:.82rem;min-height:60px;resize:vertical;margin-bottom:8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="dashboard.html">← Dashboard</a>
+</div>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <h1>Choose your CBT mode</h1>
+    <p>Pick how you want to practice today.</p>
+  </div>
+
+  <div class="card countdown-card" id="countdownCard">
+    <div class="cd-label" id="countdownLabel">Your OOU screening starts in</div>
+    <div class="countdown-grid" id="countdownGrid">
+      <div class="countdown-unit"><b id="cdDays">--</b><span>Days</span></div>
+      <div class="countdown-unit"><b id="cdHours">--</b><span>Hrs</span></div>
+      <div class="countdown-unit"><b id="cdMins">--</b><span>Min</span></div>
+      <div class="countdown-unit"><b id="cdSecs">--</b><span>Sec</span></div>
+    </div>
+  </div>
+
+  <div class="card mode-card" onclick="window.location.href='subject-select.html'">
+    <span class="badge badge-regular">Available</span>
+    <div class="mode-icon" data-icon="target"></div>
+    <h3>Subject Practice</h3>
+    <p>Pick one subject, set your question count and timer. Best for focused drilling.</p>
+  </div>
+
+  <div class="card mode-card" onclick="window.location.href='custom-select.html'">
+    <span class="badge badge-regular">Available</span>
+    <div class="mode-icon" data-icon="gear"></div>
+    <h3>Custom Practice</h3>
+    <p>Mix multiple subjects into one session. Choose your subjects, question count, and timer.</p>
+  </div>
+
+  <div class="card mode-card" id="mockCard">
+    <span class="badge" id="mockBadge">Loading...</span>
+    <div class="mode-icon" data-icon="exam"></div>
+    <h3>Full Mock Exam</h3>
+    <p id="mockDescription">Matches OOU's real format: 50 questions, 30 minutes, exactly the subjects you'll face on screening day.</p>
+  </div>
+
+  <div class="card combo-preview" id="comboPreview" style="display:none">
+    <div class="cp-title">Your screening subject combination</div>
+    <div class="combo-chip-row" id="comboChips"></div>
+    <div class="confidence-note" id="confidenceNote"></div>
+    <button class="btn btn-ghost btn-sm" id="suggestBtn">This doesn't look right</button>
+    <div class="suggest-form" id="suggestForm">
+      <textarea id="suggestNote" placeholder="Tell us what your actual OOU screening combo should be..."></textarea>
+      <button class="btn btn-primary btn-sm" id="submitSuggestBtn">Send to Codex PREP team</button>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html"><span class="bn-icon" data-icon="home"></span>Home</a>
+  <a href="mode-select.html" class="active"><span class="bn-icon" data-icon="exam"></span>CBT</a>
+  <a href="calculator.html"><span class="bn-icon" data-icon="calculator"></span>Calculator</a>
+  <a href="leaderboard.html"><span class="bn-icon" data-icon="trophy"></span>Rank</a>
+  <a href="profile.html"><span class="bn-icon" data-icon="profile"></span>Profile</a>
+</div>
+
+<script type="module">
+import { requireAuth, doc, getDoc, setDoc, serverTimestamp, db } from "./js/auth.js";
+import { OOU_SCREENING_START, getScreeningCombo, getScreeningCounts, getCountdown } from "./js/subject-combo.js";
+
+const SUBJECT_LABELS = {
+  PUTME_CHEMISTRY: "Chemistry", PUTME_PHYSICS: "Physics", PUTME_BIOLOGY: "Biology",
+  PUTME_ENGLISH: "English", PUTME_GENERAL_KNOWLEDGE: "Current Affairs", PUTME_MATHEMATICS: "Mathematics",
+  PUTME_CRK: "CRK", PUTME_LITERATURE: "Literature in English", PUTME_ECONOMICS: "Economics", PUTME_COMMERCE: "Commerce", PUTME_GOVERNMENT: "Government"
+};
+
+let currentUser = null;
+let currentCombo = null;
+
+function renderCountdown(){
+  const cd = getCountdown(OOU_SCREENING_START);
+  if (cd.done) {
+    document.getElementById('countdownLabel').textContent = 'Screening week is here!';
+    document.getElementById('countdownGrid').style.display = 'none';
+  } else {
+    document.getElementById('cdDays').textContent = cd.days;
+    document.getElementById('cdHours').textContent = String(cd.hours).padStart(2,'0');
+    document.getElementById('cdMins').textContent = String(cd.minutes).padStart(2,'0');
+    document.getElementById('cdSecs').textContent = String(cd.seconds).padStart(2,'0');
+  }
+  return cd.done;
+}
+
+requireAuth(async (user) => {
+  currentUser = user;
+  let screeningStarted = renderCountdown();
+  setInterval(() => { screeningStarted = renderCountdown(); updateMockCard(userTier, userFaculty, userCourse); }, 1000);
+
+  const mockCard = document.getElementById('mockCard');
+  let userTier = 'free', userFaculty = '', userCourse = '';
+
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      userTier = data.subscriptionTier || 'free';
+      userFaculty = data.facultyApplyingTo || '';
+      userCourse = data.courseApplyingTo || '';
+    }
+  } catch (e) { /* defaults stand */ }
+
+  if (!userFaculty) {
+    document.getElementById('mockBadge').textContent = 'Setup needed';
+    document.getElementById('mockBadge').className = 'badge badge-soon';
+    document.getElementById('mockDescription').textContent = 'Complete your profile to see your screening subject combination.';
+    mockCard.onclick = () => window.location.href = 'complete-profile.html';
+    return;
+  }
+
+  currentCombo = getScreeningCombo(userFaculty, userCourse);
+  renderComboPreview(currentCombo);
+  updateMockCard(userTier, userFaculty, userCourse);
+
+  function updateMockCard(tier, faculty, course){
+    const badge = document.getElementById('mockBadge');
+    const desc = document.getElementById('mockDescription');
+    const dateReached = getCountdown(OOU_SCREENING_START).done;
+
+    if (!dateReached) {
+      badge.textContent = 'Unlocks Aug 3';
+      badge.className = 'badge badge-soon';
+      desc.textContent = 'Locked until OOU screening week begins — this keeps the mock meaningful as final prep, not early practice.';
+      mockCard.classList.add('disabled');
+      mockCard.onclick = null;
+      return;
+    }
+    if (tier === 'free') {
+      badge.textContent = 'Premium only';
+      badge.className = 'badge badge-vip';
+      desc.textContent = 'Full Mock Exam is available to Regular/VIP subscribers only — upgrade to unlock.';
+      mockCard.classList.add('disabled');
+      mockCard.onclick = () => window.location.href = 'pricing.html';
+      return;
+    }
+    badge.textContent = 'Available now';
+    badge.className = 'badge badge-regular';
+    desc.textContent = '50 questions, 30 minutes — exactly your OOU screening format.';
+    mockCard.classList.remove('disabled');
+    mockCard.onclick = () => {
+      const combo = getScreeningCombo(faculty, course);
+      const params = new URLSearchParams();
+      params.append('mode', 'mock');
+      params.append('subjects', combo.subjects.join(','));
+      params.append('subjectCounts', getScreeningCounts(combo.subjects.length).join(','));
+      params.append('time', 30);
+      window.location.href = 'putme_engine.html?' + params.toString();
+    };
+  }
+});
+
+function renderComboPreview(combo){
+  const wrap = document.getElementById('comboPreview');
+  wrap.style.display = 'block';
+  document.getElementById('comboChips').innerHTML = combo.subjects
+    .map(k => `<span class="combo-chip">${SUBJECT_LABELS[k] || k}</span>`).join('');
+  const note = document.getElementById('confidenceNote');
+  if (combo.confidence === 'confirmed') {
+    note.textContent = 'This combination is confirmed against real OOU screening info.';
+    note.className = 'confidence-note';
+  } else {
+    note.textContent = "This is our best estimate for your course — OOU hasn't published every course's exact combo, so please flag it if it doesn't match your screening pass.";
+    note.className = 'confidence-note estimated';
+  }
+}
+
+document.getElementById('suggestBtn').addEventListener('click', () => {
+  const form = document.getElementById('suggestForm');
+  form.style.display = form.style.display === 'block' ? 'none' : 'block';
+});
+
+document.getElementById('submitSuggestBtn').addEventListener('click', async () => {
+  const note = document.getElementById('suggestNote').value.trim();
+  if (!note) { alert('Please describe what looks wrong.'); return; }
+  try {
+    const id = currentUser.uid + '_' + Date.now();
+    await setDoc(doc(db, "combo_suggestions", id), {
+      uid: currentUser.uid,
+      email: currentUser.email,
+      shownCombo: currentCombo ? currentCombo.subjects : [],
+      note,
+      createdAt: serverTimestamp()
+    });
+    document.getElementById('suggestForm').innerHTML = '<p style="font-size:.82rem;color:var(--green);font-weight:700">Thanks — sent to the Codex PREP team for review.</p>';
+  } catch (e) {
+    alert('Could not send — please try again or reach us via Help & Support.');
+  }
+});
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

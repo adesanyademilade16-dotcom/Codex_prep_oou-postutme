@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBT — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  body{padding-bottom:0}
+  .exam-top{
+    position:sticky;top:0;z-index:40;background:#fff;border-bottom:1.5px solid var(--border);
+    padding:10px 16px;display:flex;align-items:center;gap:12px;
+  }
+  .exam-top .subj-name{font-size:.82rem;font-weight:700;flex:1}
+  .timer{
+    font-family:var(--mono);font-weight:700;font-size:.95rem;padding:5px 12px;
+    border-radius:8px;background:var(--blue-soft);color:var(--violet-deep);
+  }
+  .timer.warn{background:var(--red2);color:var(--red)}
+
+  .q-progress{padding:8px 16px;font-size:.74rem;color:var(--muted);font-weight:600}
+
+  .subject-nav{
+    display:flex;gap:6px;overflow-x:auto;padding:8px 16px;background:#fbfaff;
+    border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch;
+  }
+  .subject-nav::-webkit-scrollbar{display:none}
+  .subj-tab{
+    flex:0 0 auto;padding:6px 12px;border-radius:999px;font-size:.74rem;font-weight:700;
+    background:#fff;border:1.5px solid var(--border);color:var(--muted);cursor:pointer;white-space:nowrap;
+  }
+  .subj-tab.active{background:var(--violet);border-color:var(--violet);color:#fff}
+  .exam-wrap{max-width:720px;margin:0 auto;padding:0 16px 100px}
+
+  .q-card{padding:20px;margin-top:6px}
+  .q-num{font-size:.72rem;color:var(--violet);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+  .q-text{font-size:1rem;font-weight:600;line-height:1.5;margin-bottom:18px}
+  .opt{
+    display:flex;align-items:flex-start;gap:10px;padding:13px 14px;border-radius:12px;
+    margin-bottom:10px;border:1.5px solid var(--border);cursor:pointer;font-size:.9rem;line-height:1.4;
+  }
+  .opt.selected{border-color:var(--violet);background:#f2effe}
+  .opt .letter{
+    width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);
+    display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex:0 0 auto;
+  }
+  .opt.selected .letter{background:var(--violet);border-color:var(--violet);color:#fff}
+
+  .exam-actions{display:flex;gap:8px;margin-top:16px}
+  .mark-btn{flex:0 0 auto}
+  .nav-btn{flex:1}
+
+  .palette{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:16px;
+  }
+  .pnode{
+    aspect-ratio:1;border-radius:9px;border:1.5px solid var(--border);background:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;
+    cursor:pointer;color:var(--ink2);
+  }
+  .pnode.answered{background:var(--green2);border-color:var(--green);color:var(--green)}
+  .pnode.marked{background:var(--gold3);border-color:var(--gold2);color:#8a5b00}
+  .pnode.current{outline:2px solid var(--violet);outline-offset:1px}
+
+  .bottom-bar{
+    position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid var(--border);
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;
+  }
+
+  /* results */
+  .result-hero{
+    background:linear-gradient(135deg,var(--violet),var(--violet-deep));color:#fff;
+    text-align:center;padding:34px 20px;border-radius:0 0 24px 24px;
+  }
+  .result-hero .big-score{font-size:2.6rem;font-weight:800;margin:8px 0}
+  .result-hero .big-score span{font-size:1rem;opacity:.75}
+  .result-stats{display:flex;justify-content:center;gap:26px;margin-top:16px}
+  .result-stats div b{display:block;font-size:1.05rem}
+  .result-stats div span{font-size:.7rem;opacity:.8}
+
+  .review-item{padding:16px;margin-bottom:10px}
+  .review-item .rt{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+  .review-item.correct .rt{color:var(--green)}
+  .review-item.wrong .rt{color:var(--red)}
+  .review-item .rq{font-size:.88rem;font-weight:600;margin-bottom:10px;line-height:1.45}
+  .review-opt{padding:8px 10px;border-radius:8px;font-size:.82rem;margin-bottom:5px;border:1.5px solid var(--border)}
+  .review-opt.right-answer{border-color:var(--green);background:var(--green2)}
+  .review-opt.wrong-selected{border-color:var(--red);background:var(--red2)}
+  .explain-box{font-size:.78rem;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Loading your session...</div>
+</div>
+
+<!-- INTRO -->
+<div class="page-wrap-narrow" id="introScreen" style="display:none">
+  <div class="page-header">
+    <div class="eyebrow" id="introMode">Subject Practice</div>
+    <h1 id="introSubject">Chemistry</h1>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.86rem">
+      <span style="color:var(--muted)">Questions</span><b id="introCount">20</b>
+    </div>
+    <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:.86rem">
+      <span style="color:var(--muted)">Time limit</span><b id="introTime">20 minutes</b>
+    </div>
+    <div class="divider"></div>
+    <p style="font-size:.82rem;color:var(--muted);line-height:1.55">
+      Once you start, the timer runs continuously. You can navigate between questions, mark ones for review, and submit early — or it auto-submits when time runs out.
+    </p>
+    <button class="btn btn-primary btn-block" id="startBtn" style="margin-top:16px">Start now</button>
+    <a href="mode-select.html" class="btn btn-ghost btn-block" style="margin-top:8px">Cancel</a>
+  </div>
+</div>
+
+<!-- EXAM -->
+<div id="examScreen" style="display:none">
+  <div class="exam-top">
+    <span class="subj-name" id="examSubjName">Chemistry</span>
+    <span class="timer" id="timerDisplay">20:00</span>
+  </div>
+  <div class="subject-nav" id="subjectNav" style="display:none"></div>
+  <div class="q-progress" id="qProgress">Question 1 of 20</div>
+
+  <div class="exam-wrap">
+    <div class="card q-card">
+      <div class="q-num" id="qNum">Question 1</div>
+      <div class="q-text" id="qText">Loading question...</div>
+      <div id="optsWrap"></div>
+      <div class="exam-actions">
+        <button class="btn btn-ghost btn-sm mark-btn" id="markBtn">Mark for review</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px;padding:8px">
+      <div style="font-size:.72rem;color:var(--muted);font-weight:700;padding:8px 8px 0;text-transform:uppercase;letter-spacing:.4px">Question map</div>
+      <div class="palette" id="palette"></div>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="btn btn-ghost nav-btn" id="prevBtn">← Prev</button>
+    <button class="btn btn-primary nav-btn" id="nextBtn">Next →</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="resultsScreen" style="display:none">
+  <div class="result-hero">
+    <div style="font-size:.78rem;opacity:.8;text-transform:uppercase;letter-spacing:.5px;font-weight:700">Session complete</div>
+    <div class="big-score"><span id="scorePct">--</span><span style="font-size:1.6rem">%</span></div>
+    <div class="result-stats">
+      <div><b id="scoreCorrect">0</b><span>Correct</span></div>
+      <div><b id="scoreTotal">0</b><span>Total</span></div>
+      <div><b id="scoreTime">0:00</b><span>Time used</span></div>
+    </div>
+  </div>
+
+  <div class="page-wrap" style="padding-top:20px">
+    <div class="action-row" style="display:flex;gap:8px;margin-bottom:18px">
+      <a href="mode-select.html" class="btn btn-primary" style="flex:1;text-align:center">Practice again</a>
+      <a href="dashboard.html" class="btn btn-ghost" style="flex:1;text-align:center">Dashboard</a>
+    </div>
+    <div class="section-label" style="margin-top:0">Review your answers</div>
+    <div id="reviewList"></div>
+  </div>
+</div>
+
+<script src="putme.js"></script>
+<script type="module">
+import { requireAuth, doc, setDoc, getDoc, db, serverTimestamp, checkTrialEligibility } from "./js/auth.js";
+import { OOU_SCREENING_START, getCountdown } from "./js/subject-combo.js";
+
+const SUBJECT_LABELS = {
+  PUTME_CHEMISTRY: "Chemistry", PUTME_PHYSICS: "Physics", PUTME_BIOLOGY: "Biology",
+  PUTME_ENGLISH: "English", PUTME_GENERAL_KNOWLEDGE: "General Knowledge", PUTME_MATHEMATICS: "Mathematics",
+  PUTME_CRK: "CRK", PUTME_LITERATURE: "Literature in English", PUTME_ECONOMICS: "Economics", PUTME_COMMERCE: "Commerce", PUTME_GOVERNMENT: "Government"
+};
+const MODE_LABELS = { subject: 'Subject Practice', custom: 'Custom Practice', mock: 'Full Mock Exam' };
+
+const params = new URLSearchParams(window.location.search);
+const mode = params.get('mode') || 'subject';
+const subjectKey = params.get('subject');
+const subjectsParam = params.get('subjects'); // comma-separated for custom/mock
+const subjectKeys = subjectsParam ? subjectsParam.split(',').filter(Boolean) : (subjectKey ? [subjectKey] : []);
+const subjectCountsParam = params.get('subjectCounts'); // comma-separated, parallel to subjectKeys
+const requestedCount = parseInt(params.get('count')) || 20; // used only for single-subject mode
+const timeMinutes = parseInt(params.get('time')) || 20;
+
+let currentUser = null;
+let questions = [];
+let subjectBlocks = [];  // [{ key, label, start, end }] — question index ranges per subject
+let answers = {};   // index -> { selected, marked }
+let currentIndex = 0;
+let secondsLeft = timeMinutes * 60;
+let timerInterval = null;
+let startedAt = null;
+let submitted = false;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function subjectLabelList(){
+  return subjectKeys.map(k => SUBJECT_LABELS[k] || k).join(', ');
+}
+
+function blockScreen(html){
+  document.getElementById('introScreen').innerHTML = html;
+  document.getElementById('introScreen').style.display = 'block';
+  if (window.CodexIcons) window.CodexIcons.render();
+}
+
+requireAuth(async (user) => {
+  currentUser = user;
+  document.getElementById('authGate').style.display = 'none';
+
+  if (subjectKeys.length === 0) {
+    blockScreen('<div class="card coming-soon-card"><div class="big" data-icon="lock"></div>No subject selected.<br><br><a href="mode-select.html" style="color:var(--violet);font-weight:700">Go back</a></div>');
+    return;
+  }
+
+  // Full Mock Exam has its own dedicated gate — locked until OOU screening
+  // week begins, and Regular/VIP only, no free-trial exception. Checked
+  // here too (not just in mode-select.html's UI) so a direct URL can't
+  // bypass it.
+  if (mode === 'mock') {
+    const dateReached = getCountdown(OOU_SCREENING_START).done;
+    if (!dateReached) {
+      blockScreen(`<div class="card coming-soon-card">
+        <div class="big" data-icon="lock"></div>
+        <div style="font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:6px">Not yet — this unlocks Aug 3</div>
+        Full Mock Exam opens when OOU's screening week begins, so it stays meaningful as final prep.
+        <br><br><a href="mode-select.html" class="btn btn-primary" style="display:inline-block;margin-top:8px">See countdown</a>
+      </div>`);
+      if (window.CodexIcons) window.CodexIcons.render();
+      return;
+    }
+    let mockTier = 'free';
+    try {
+      const userSnap = await getDoc(doc(db, "users", user.uid));
+      if (userSnap.exists()) mockTier = userSnap.data().subscriptionTier || 'free';
+    } catch (e) { /* stays free, fails closed for this premium-only mode */ }
+    if (mockTier === 'free') {
+      blockScreen(`<div class="card coming-soon-card">
+        <div class="big" data-icon="lock"></div>
+        <div style="font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:6px">Premium feature</div>
+        Full Mock Exam is available to Regular/VIP subscribers only.
+        <br><br><a href="pricing.html" class="btn btn-primary" style="display:inline-block;margin-top:8px">See plans</a>
+      </div>`);
+      if (window.CodexIcons) window.CodexIcons.render();
+      return;
+    }
+  }
+
+  // Trial gating — free tier gets exactly 1 attempt across the whole app
+  let eligibility;
+  try {
+    eligibility = await checkTrialEligibility(user.uid);
+  } catch (e) {
+    eligibility = { tier: 'free', canStart: true }; // fail open rather than blocking on a network hiccup
+  }
+  if (!eligibility.canStart) {
+    blockScreen(`<div class="card coming-soon-card">
+      <div class="big" data-icon="lock"></div>
+      <div style="font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:6px">You've used your free trial</div>
+      Upgrade to Regular or VIP for unlimited CBT practice.
+      <br><br><a href="pricing.html" class="btn btn-primary" style="display:inline-block;margin-top:8px">See plans</a>
+    </div>`);
+    if (window.CodexIcons) window.CodexIcons.render();
+    return;
+  }
+
+  // Per-subject requested counts (falls back to the single 'count' param for
+  // plain Subject Practice, where there's only ever one subject anyway)
+  const perSubjectRequested = subjectCountsParam
+    ? subjectCountsParam.split(',').map(n => parseInt(n) || 0)
+    : subjectKeys.map(() => requestedCount);
+
+  // Build the question bank as SUBJECT-BLOCKED sections (not shuffled across
+  // subjects) so it feels like a real JAMB/Post-UTME CBT — each subject's
+  // questions stay together and in the order the student picked them.
+  questions = [];
+  subjectBlocks = [];
+  const missingSubjects = [];
+  subjectKeys.forEach((key, i) => {
+    const subjBank = (typeof PUTME_DATA !== 'undefined') ? PUTME_DATA[key] : null;
+    if (!subjBank || subjBank.length === 0) {
+      missingSubjects.push(key);
+      return;
+    }
+    const wanted = Math.min(perSubjectRequested[i] || 20, subjBank.length);
+    const picked = shuffle(subjBank).slice(0, wanted).map(q => ({ ...q, _subject: key }));
+    const start = questions.length;
+    questions = questions.concat(picked);
+    subjectBlocks.push({ key, label: SUBJECT_LABELS[key] || key, start, end: questions.length - 1 });
+  });
+
+  if (questions.length === 0) {
+    blockScreen('<div class="card coming-soon-card"><div class="big" data-icon="lock"></div>No questions found for the selected subject(s) yet.<br><br><a href="mode-select.html" style="color:var(--violet);font-weight:700">Go back</a></div>');
+    return;
+  }
+
+  const count = questions.length;
+
+  document.getElementById('introMode').textContent = MODE_LABELS[mode] || mode;
+  document.getElementById('introSubject').textContent = subjectKeys.length === 1
+    ? (SUBJECT_LABELS[subjectKeys[0]] || subjectKeys[0])
+    : subjectLabelList();
+  document.getElementById('introCount').textContent = count;
+  document.getElementById('introTime').textContent = timeMinutes + ' minutes';
+  document.getElementById('examSubjName').textContent = subjectKeys.length === 1
+    ? (SUBJECT_LABELS[subjectKeys[0]] || subjectKeys[0])
+    : MODE_LABELS[mode];
+  secondsLeft = timeMinutes * 60;
+
+  if (missingSubjects.length > 0) {
+    const note = document.createElement('p');
+    note.style.cssText = 'font-size:.76rem;color:var(--muted);margin-top:10px';
+    note.textContent = `Note: ${missingSubjects.map(k => SUBJECT_LABELS[k] || k).join(', ')} had no questions available yet and was skipped.`;
+    document.querySelector('#introScreen .card').appendChild(note);
+  }
+
+  renderSubjectNav();
+  document.getElementById('introScreen').style.display = 'block';
+});
+
+function renderSubjectNav(){
+  const nav = document.getElementById('subjectNav');
+  if (subjectBlocks.length <= 1) {
+    nav.style.display = 'none';
+    return;
+  }
+  nav.style.display = 'flex';
+  nav.innerHTML = subjectBlocks.map((b, i) =>
+    `<div class="subj-tab" data-start="${b.start}">${b.label}</div>`
+  ).join('');
+  nav.querySelectorAll('.subj-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      currentIndex = parseInt(tab.dataset.start);
+      renderQuestion();
+    });
+  });
+  updateSubjectNavActive();
+}
+
+function updateSubjectNavActive(){
+  const nav = document.getElementById('subjectNav');
+  if (!nav || subjectBlocks.length <= 1) return;
+  const currentBlock = subjectBlocks.find(b => currentIndex >= b.start && currentIndex <= b.end);
+  nav.querySelectorAll('.subj-tab').forEach((tab, i) => {
+    tab.classList.toggle('active', subjectBlocks[i] === currentBlock);
+  });
+}
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+  startedAt = Date.now();
+  renderPalette();
+  renderQuestion();
+  timerInterval = setInterval(tick, 1000);
+});
+
+function tick(){
+  secondsLeft--;
+  updateTimerDisplay();
+  if (secondsLeft <= 0) {
+    clearInterval(timerInterval);
+    finishExam();
+  }
+}
+
+function updateTimerDisplay(){
+  const m = Math.max(0, Math.floor(secondsLeft / 60));
+  const s = Math.max(0, secondsLeft % 60);
+  const el = document.getElementById('timerDisplay');
+  el.textContent = m + ':' + String(s).padStart(2, '0');
+  el.className = 'timer' + (secondsLeft <= 60 ? ' warn' : '');
+}
+
+function renderQuestion(){
+  const q = questions[currentIndex];
+  const state = answers[currentIndex] || { selected: null, marked: false };
+
+  document.getElementById('qNum').textContent = 'Question ' + (currentIndex + 1) +
+    (subjectKeys.length > 1 ? ' · ' + (SUBJECT_LABELS[q._subject] || q._subject) : '');
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qProgress').textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+  if (subjectKeys.length > 1) {
+    document.getElementById('examSubjName').textContent = SUBJECT_LABELS[q._subject] || q._subject;
+  }
+  updateSubjectNavActive();
+
+  const wrap = document.getElementById('optsWrap');
+  wrap.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const el = document.createElement('div');
+    el.className = 'opt' + (state.selected === opt ? ' selected' : '');
+    el.innerHTML = `<span class="letter">${letters[i]}</span><span>${opt}</span>`;
+    el.addEventListener('click', () => selectOption(opt));
+    wrap.appendChild(el);
+  });
+
+  const markBtn = document.getElementById('markBtn');
+  markBtn.textContent = state.marked ? 'Unmark' : 'Mark for review';
+
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').textContent = currentIndex === questions.length - 1 ? 'Submit' : 'Next →';
+
+  updatePaletteState();
+}
+
+function selectOption(opt){
+  answers[currentIndex] = answers[currentIndex] || { selected: null, marked: false };
+  answers[currentIndex].selected = opt;
+  renderQuestion();
+}
+
+document.getElementById('markBtn').addEventListener('click', () => {
+  answers[currentIndex] = answers[currentIndex] || { selected: null, marked: false };
+  answers[currentIndex].marked = !answers[currentIndex].marked;
+  renderQuestion();
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  if (currentIndex > 0) { currentIndex--; renderQuestion(); }
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (currentIndex < questions.length - 1) {
+    currentIndex++;
+    renderQuestion();
+  } else {
+    confirmSubmit();
+  }
+});
+
+function confirmSubmit(){
+  const answeredCount = Object.values(answers).filter(a => a.selected).length;
+  const unanswered = questions.length - answeredCount;
+  const msg = unanswered > 0
+    ? `You have ${unanswered} unanswered question${unanswered>1?'s':''}. Submit anyway?`
+    : 'Submit your answers now?';
+  if (confirm(msg)) {
+    clearInterval(timerInterval);
+    finishExam();
+  }
+}
+
+function renderPalette(){
+  const wrap = document.getElementById('palette');
+  wrap.innerHTML = '';
+  questions.forEach((q, i) => {
+    const node = document.createElement('div');
+    node.className = 'pnode';
+    node.textContent = i + 1;
+    node.addEventListener('click', () => { currentIndex = i; renderQuestion(); });
+    wrap.appendChild(node);
+  });
+}
+
+function updatePaletteState(){
+  document.querySelectorAll('.pnode').forEach((node, i) => {
+    const state = answers[i];
+    node.className = 'pnode' +
+      (state && state.selected ? ' answered' : '') +
+      (state && state.marked ? ' marked' : '') +
+      (i === currentIndex ? ' current' : '');
+  });
+}
+
+async function finishExam(){
+  if (submitted) return;
+  submitted = true;
+
+  const timeTakenSec = Math.round((Date.now() - startedAt) / 1000);
+  let correctCount = 0;
+  const answerLog = questions.map((q, i) => {
+    const selected = answers[i] ? answers[i].selected : null;
+    const isCorrect = selected === q.ans;
+    if (isCorrect) correctCount++;
+    return { question: q.q, subject: q._subject, selected, correctAnswer: q.ans, explanation: q.explanation || '', isCorrect };
+  });
+
+  const pct = Math.round((correctCount / questions.length) * 100);
+
+  // Save attempt — failure here shouldn't block showing results to the student
+  try {
+    const attemptId = currentUser.uid + '_' + Date.now();
+    await setDoc(doc(db, "putme_attempts", attemptId), {
+      uid: currentUser.uid,
+      mode,
+      subject: subjectKeys.length === 1 ? subjectKeys[0] : null,
+      subjects: subjectKeys,
+      score: pct,
+      correctCount,
+      totalQuestions: questions.length,
+      timeTakenSec,
+      answers: answerLog,
+      createdAt: serverTimestamp()
+    });
+  } catch (e) {
+    console.error('Could not save attempt', e);
+  }
+
+  // Update this student's public leaderboard entry (their own doc only —
+  // see firestore.rules). Best-effort: failure here shouldn't block results.
+  try {
+    const lbRef = doc(db, "leaderboard", currentUser.uid);
+    const existing = await getDoc(lbRef);
+    const prevAttempts = existing.exists() ? (existing.data().totalAttempts || 0) : 0;
+    const prevAvg = existing.exists() ? (existing.data().avgScore || 0) : 0;
+    const prevBest = existing.exists() ? (existing.data().bestScore || 0) : 0;
+    const newTotal = prevAttempts + 1;
+    const newAvg = Math.round(((prevAvg * prevAttempts) + pct) / newTotal);
+    await setDoc(lbRef, {
+      displayName: currentUser.displayName || (currentUser.email || '').split('@')[0],
+      avgScore: newAvg,
+      bestScore: Math.max(prevBest, pct),
+      totalAttempts: newTotal,
+      lastAttemptAt: serverTimestamp()
+    });
+  } catch (e) {
+    console.error('Could not update leaderboard', e);
+  }
+
+  showResults(pct, correctCount, timeTakenSec, answerLog);
+}
+
+function showResults(pct, correctCount, timeTakenSec, answerLog){
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'block';
+
+  document.getElementById('scorePct').textContent = pct;
+  document.getElementById('scoreCorrect').textContent = correctCount;
+  document.getElementById('scoreTotal').textContent = questions.length;
+  const m = Math.floor(timeTakenSec / 60), s = timeTakenSec % 60;
+  document.getElementById('scoreTime').textContent = m + ':' + String(s).padStart(2,'0');
+
+  const reviewWrap = document.getElementById('reviewList');
+  reviewWrap.innerHTML = '';
+  answerLog.forEach((a, i) => {
+    const item = document.createElement('div');
+    item.className = 'card review-item ' + (a.isCorrect ? 'correct' : 'wrong');
+    let optsHtml = '';
+    questions[i].options.forEach(opt => {
+      let cls = 'review-opt';
+      if (opt === a.correctAnswer) cls += ' right-answer';
+      else if (opt === a.selected) cls += ' wrong-selected';
+      optsHtml += `<div class="${cls}">${opt}</div>`;
+    });
+    item.innerHTML = `
+      <div class="rt">${a.isCorrect ? 'Correct' : (a.selected ? 'Incorrect' : 'Skipped')} · Q${i+1}</div>
+      <div class="rq">${a.question}</div>
+      ${optsHtml}
+      ${a.explanation ? `<div class="explain-box">${a.explanation}</div>` : ''}
+    `;
+    reviewWrap.appendChild(item);
+  });
+}
+
+window.addEventListener('beforeunload', (e) => {
+  if (!submitted && document.getElementById('examScreen').style.display === 'block') {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

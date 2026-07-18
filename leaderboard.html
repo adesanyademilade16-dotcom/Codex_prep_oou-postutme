@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .rank-row{
+    display:flex;align-items:center;gap:12px;padding:13px 16px;margin-bottom:8px;
+  }
+  .rank-row.me{border-color:var(--violet);background:var(--blue-soft)}
+  .rank-num{
+    width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:.82rem;flex:0 0 auto;background:var(--bg-soft);color:var(--muted);
+  }
+  .rank-row:nth-child(1) .rank-num{background:#fef3c7;color:#8a5b00}
+  .rank-row:nth-child(2) .rank-num{background:#e5e7eb;color:#374151}
+  .rank-row:nth-child(3) .rank-num{background:#fde4d0;color:#9a3412}
+  .rank-avatar{
+    width:34px;height:34px;border-radius:50%;background:var(--violet);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;flex:0 0 auto;
+  }
+  .rank-info{flex:1;min-width:0}
+  .rank-info h4{font-size:.86rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rank-info span{font-size:.7rem;color:var(--muted)}
+  .rank-score{font-size:1rem;font-weight:800;color:var(--violet);flex:0 0 auto}
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.86rem}
+  .note-box{
+    background:var(--gold3);border:1px solid var(--gold2);border-radius:10px;
+    padding:12px 14px;font-size:.76rem;color:#8a5b00;margin-top:16px;line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="dashboard.html">← Dashboard</a>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Loading leaderboard...</div>
+</div>
+
+<div class="page-wrap" id="pageContent" style="display:none">
+  <div class="page-header">
+    <h1>Leaderboard</h1>
+    <p>Ranked by average CBT score.</p>
+  </div>
+
+  <div id="rankList"></div>
+
+  <div class="note-box">
+    Rankings are based on average score across all completed CBT sessions. Weekly/monthly views need more tracking infrastructure and aren't live yet — this is the all-time overall ranking.
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html"><span class="bn-icon" data-icon="home"></span>Home</a>
+  <a href="mode-select.html"><span class="bn-icon" data-icon="exam"></span>CBT</a>
+  <a href="calculator.html"><span class="bn-icon" data-icon="calculator"></span>Calculator</a>
+  <a href="leaderboard.html" class="active"><span class="bn-icon" data-icon="trophy"></span>Rank</a>
+  <a href="profile.html"><span class="bn-icon" data-icon="profile"></span>Profile</a>
+</div>
+
+<script type="module">
+import { requireAuth, db, collection, query, orderBy, limit, getDocs } from "./js/auth.js";
+
+requireAuth(async (user) => {
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('pageContent').style.display = 'block';
+
+  const wrap = document.getElementById('rankList');
+  try {
+    const q = query(collection(db, "leaderboard"), orderBy("avgScore", "desc"), limit(50));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      wrap.innerHTML = '<div class="card empty">No rankings yet — be the first to complete a CBT session and claim the top spot.</div>';
+      return;
+    }
+
+    let rank = 0;
+    snap.forEach(docSnap => {
+      rank++;
+      const d = docSnap.data();
+      const isMe = docSnap.id === user.uid;
+      const row = document.createElement('div');
+      row.className = 'card rank-row' + (isMe ? ' me' : '');
+      const initial = (d.displayName || '?').charAt(0).toUpperCase();
+      row.innerHTML = `
+        <div class="rank-num">${rank}</div>
+        <div class="rank-avatar">${initial}</div>
+        <div class="rank-info">
+          <h4>${escapeHtml(d.displayName || 'Student')}${isMe ? ' (you)' : ''}</h4>
+          <span>${d.totalAttempts || 0} attempt${(d.totalAttempts || 0) === 1 ? '' : 's'} · best ${d.bestScore || 0}%</span>
+        </div>
+        <div class="rank-score">${d.avgScore || 0}%</div>
+      `;
+      wrap.appendChild(row);
+    });
+  } catch (e) {
+    wrap.innerHTML = '<div class="card empty">Could not load the leaderboard — check your connection and try again.</div>';
+  }
+});
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

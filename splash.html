@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    height:100vh;width:100vw;overflow:hidden;
+    background:linear-gradient(160deg,#0d1b2a 0%,#3d2599 55%,#5b3df0 100%);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:'Sora',sans-serif;color:#fff;position:relative;
+  }
+  .logo-wrap{
+    display:flex;flex-direction:column;align-items:center;gap:18px;
+    animation:fadeUp .7s ease;
+  }
+  .logo-img{
+    width:96px;height:96px;border-radius:24px;overflow:hidden;
+    box-shadow:0 12px 40px rgba(0,0,0,.35);
+    animation:pulse 2.2s ease-in-out infinite;
+  }
+  .logo-img img{width:100%;height:100%;object-fit:cover}
+  .brand-text{font-size:1.3rem;font-weight:800;letter-spacing:-.3px}
+  .brand-text span{color:#c9baff}
+  .tagline{font-size:.78rem;opacity:.7;margin-top:2px;font-weight:600}
+
+  .uni-badge{
+    position:absolute;bottom:64px;left:0;right:0;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    animation:fadeUp .9s ease;
+  }
+  .uni-row{display:flex;align-items:center;gap:8px;opacity:.85}
+  .uni-logo{
+    width:22px;height:22px;border-radius:6px;overflow:hidden;background:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#3d2599;
+  }
+  .uni-logo img{width:100%;height:100%;object-fit:contain}
+  .uni-row span{font-size:.7rem;font-weight:600}
+
+  .status-text{
+    position:absolute;bottom:32px;left:0;right:0;text-align:center;
+    font-size:.72rem;opacity:.55;font-weight:600;letter-spacing:.3px;
+  }
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+</style>
+</head>
+<body>
+
+<div class="logo-wrap">
+  <div class="logo-img"><img src="assets/logo.png" alt="Codex PREP"></div>
+  <div>
+    <div class="brand-text" style="text-align:center">Codex <span>PREP</span></div>
+    <div class="tagline" style="text-align:center">OOU Post-UTME Prep</div>
+  </div>
+</div>
+
+<div class="uni-badge">
+  <div class="uni-row">
+    <div class="uni-logo" id="oouLogoWrap">OOU</div>
+    <span>Prepping you for Olabisi Onabanjo University</span>
+  </div>
+</div>
+
+<div class="status-text" id="statusText">Loading...</div>
+
+<script type="module">
+import { onAuthStateChanged, auth } from "./js/auth.js";
+
+// Give the branded splash a beat to actually render before we decide
+// where to send the student — avoids a jarring instant-flash redirect.
+const MIN_DISPLAY_MS = 700;
+const shownAt = Date.now();
+
+function goTo(url){
+  const elapsed = Date.now() - shownAt;
+  const wait = Math.max(0, MIN_DISPLAY_MS - elapsed);
+  setTimeout(() => window.location.href = url, wait);
+}
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById('statusText').textContent = 'Welcome back...';
+    goTo('dashboard.html');
+  } else {
+    goTo('index.html');
+  }
+});
+</script>
+</body>
+</html>

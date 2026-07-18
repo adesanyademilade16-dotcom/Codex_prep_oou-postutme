@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .profile-head{text-align:center;padding:26px 20px}
+  .avatar{
+    width:76px;height:76px;border-radius:50%;margin:0 auto 12px;
+    background:linear-gradient(135deg,var(--violet),var(--violet-deep));
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:1.6rem;font-weight:800;
+  }
+  .profile-head h2{font-size:1.15rem;font-weight:800}
+  .profile-head p{font-size:.82rem;color:var(--muted);margin-top:2px}
+
+  .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+  .stat-box{padding:14px 8px;text-align:center}
+  .stat-box b{display:block;font-size:1.15rem;font-weight:800;color:var(--violet)}
+  .stat-box span{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+
+  .menu-item{
+    display:flex;align-items:center;gap:12px;padding:14px 16px;
+    border-bottom:1px solid var(--border);cursor:pointer;font-size:.88rem;font-weight:600;
+  }
+  .menu-item:last-child{border-bottom:none}
+  .menu-item .mi{font-size:1.1rem}
+  .menu-item .arrow{margin-left:auto;color:var(--muted)}
+  .menu-item.danger{color:var(--red)}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="dashboard.html">← Dashboard</a>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Loading your profile...</div>
+</div>
+
+<div class="page-wrap" id="profileContent" style="display:none">
+
+  <div class="card profile-head fade-in">
+    <div class="avatar" id="avatarInitial">S</div>
+    <h2 id="profileName">Student</h2>
+    <p id="profileEmail">student@email.com</p>
+    <div style="margin-top:10px"><span class="badge" id="profileTier">Free plan</span></div>
+  </div>
+
+  <div class="stat-row">
+    <div class="card stat-box"><b id="statAttempts">0</b><span>Attempts</span></div>
+    <div class="card stat-box"><b id="statAvg">--</b><span>Avg Score</span></div>
+    <div class="card stat-box"><b id="statRank">--</b><span>Rank</span></div>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden" id="menuCard">
+    <div class="menu-item" onclick="window.location.href='pricing.html'">
+      <span class="mi" data-icon="card"></span> Manage subscription <span class="arrow">›</span>
+    </div>
+    <div class="menu-item" onclick="window.location.href='analytics.html'">
+      <span class="mi" data-icon="chart"></span> Performance history <span class="arrow">›</span>
+    </div>
+    <div class="menu-item" onclick="window.location.href='forgot-password.html'">
+      <span class="mi" data-icon="lock"></span> Change password <span class="arrow">›</span>
+    </div>
+    <div class="menu-item" onclick="window.location.href='help.html'">
+      <span class="mi" data-icon="chart"></span> Help & Support <span class="arrow">›</span>
+    </div>
+    <div class="menu-item danger" id="signOutBtn">
+      <span class="mi" data-icon="logout"></span> Sign out <span class="arrow">›</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html"><span class="bn-icon" data-icon="home"></span>Home</a>
+  <a href="mode-select.html"><span class="bn-icon" data-icon="exam"></span>CBT</a>
+  <a href="calculator.html"><span class="bn-icon" data-icon="calculator"></span>Calculator</a>
+  <a href="leaderboard.html"><span class="bn-icon" data-icon="trophy"></span>Rank</a>
+  <a href="profile.html" class="active"><span class="bn-icon" data-icon="profile"></span>Profile</a>
+</div>
+
+<script type="module">
+import { requireAuth, fbSignOut, auth, doc, getDoc, db, isAdminEmail } from "./js/auth.js";
+
+requireAuth(async (user) => {
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('profileContent').style.display = 'block';
+
+  const name = user.displayName || user.email.split('@')[0];
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileEmail').textContent = user.email;
+  document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+
+  if (isAdminEmail(user.email)) {
+    const menuCard = document.getElementById('menuCard');
+    const adminItem = document.createElement('div');
+    adminItem.className = 'menu-item';
+    adminItem.innerHTML = '<span class="mi" data-icon="chart"></span> Admin dashboard <span class="arrow">›</span>';
+    adminItem.addEventListener('click', () => window.location.href = 'admin/index.html');
+    menuCard.insertBefore(adminItem, menuCard.firstChild);
+    if (window.CodexIcons) window.CodexIcons.render();
+  }
+
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      const tier = snap.data().subscriptionTier || 'free';
+      const badge = document.getElementById('profileTier');
+      badge.textContent = tier === 'free' ? 'Free plan' : tier === 'regular' ? 'Regular plan' : 'VIP plan';
+      badge.className = 'badge badge-' + tier;
+    }
+  } catch (e) { /* stats remain at defaults */ }
+
+  // Attempt stats will populate once putme_attempts collection has data (post-CBT-engine build).
+});
+
+document.getElementById('signOutBtn').addEventListener('click', async () => {
+  if (!confirm('Sign out of Codex PREP?')) return;
+  await fbSignOut(auth);
+  window.location.href = 'login.html';
+});
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

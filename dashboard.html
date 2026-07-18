@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .welcome-card{
+    background:linear-gradient(135deg,var(--violet),var(--violet-deep));
+    color:#fff;border:none;padding:22px 20px;margin-bottom:16px;
+  }
+  .welcome-card .hi{font-size:.8rem;opacity:.85}
+  .welcome-card h2{font-size:1.25rem;font-weight:800;margin:4px 0 10px}
+  .welcome-card .motivation{font-size:.84rem;opacity:.9;line-height:1.5;border-top:1px solid rgba(255,255,255,.2);padding-top:12px;margin-top:4px}
+  .tier-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+
+  .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+  .quick-card{
+    padding:16px 14px;cursor:pointer;transition:.2s;
+  }
+  .quick-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+  .quick-card .qi{font-size:1.4rem;margin-bottom:8px}
+  .quick-card h3{font-size:.86rem;font-weight:700;margin-bottom:3px}
+  .quick-card p{font-size:.72rem;color:var(--muted)}
+
+  .section-label{font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:20px 0 10px}
+  .subject-chip-row{display:flex;gap:8px;flex-wrap:wrap}
+  .subject-chip{
+    background:var(--blue-soft);color:var(--violet-deep);
+    padding:8px 14px;border-radius:999px;font-size:.8rem;font-weight:700;
+  }
+  .tip-card{padding:16px 18px;font-size:.84rem;color:var(--ink2);line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="profile.html"><span data-icon="profile" style="margin-right:5px"></span>Profile</a>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Loading your dashboard...</div>
+</div>
+
+<div class="page-wrap" id="dashboardContent" style="display:none">
+
+  <div class="card welcome-card fade-in">
+    <div class="hi" id="greeting">Welcome back</div>
+    <h2 id="userName">Student</h2>
+    <div class="tier-row">
+      <span class="badge" id="tierBadge">Free plan</span>
+      <span id="trialText" style="font-size:.78rem;opacity:.85"></span>
+    </div>
+    <div class="motivation" id="motivationText">Every question you practice today is one less surprise on exam day.</div>
+  </div>
+
+  <div class="quick-grid">
+    <a class="card quick-card" href="mode-select.html">
+      <div class="qi" data-icon="exam"></div>
+      <h3>Continue CBT</h3>
+      <p>Pick up practice or start a mock exam</p>
+    </a>
+    <a class="card quick-card" href="past-questions.html">
+      <div class="qi" data-icon="document"></div>
+      <h3>Past Questions</h3>
+      <p>Downloadable subject PDFs</p>
+    </a>
+    <a class="card quick-card" href="calculator.html">
+      <div class="qi" data-icon="calculator"></div>
+      <h3>Aggregate Calculator</h3>
+      <p>Check your estimated standing</p>
+    </a>
+    <a class="card quick-card" href="predictor.html">
+      <div class="qi" data-icon="target"></div>
+      <h3>Screening Eligibility</h3>
+      <p>Check your JAMB score against OOU cut-offs</p>
+    </a>
+    <a class="card quick-card" href="analytics.html">
+      <div class="qi" data-icon="chart"></div>
+      <h3>Performance</h3>
+      <p>Track your progress over time</p>
+    </a>
+    <a class="card quick-card" href="leaderboard.html">
+      <div class="qi" data-icon="trophy"></div>
+      <h3>Leaderboard</h3>
+      <p>See how you rank</p>
+    </a>
+    <a class="card quick-card" href="help.html">
+      <div class="qi" data-icon="chart"></div>
+      <h3>Help & Support</h3>
+      <p>FAQs, contact, and Codex Hub</p>
+    </a>
+  </div>
+
+  <div class="section-label">Recommended subjects</div>
+  <div class="subject-chip-row" id="subjectChips"></div>
+
+  <div class="section-label">Study tip of the day</div>
+  <div class="card tip-card" id="studyTip">Review your wrong answers right after every practice session — that's where the real learning happens.</div>
+
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html" class="active"><span class="bn-icon" data-icon="home"></span>Home</a>
+  <a href="mode-select.html"><span class="bn-icon" data-icon="exam"></span>CBT</a>
+  <a href="calculator.html"><span class="bn-icon" data-icon="calculator"></span>Calculator</a>
+  <a href="leaderboard.html"><span class="bn-icon" data-icon="trophy"></span>Rank</a>
+  <a href="profile.html"><span class="bn-icon" data-icon="profile"></span>Profile</a>
+</div>
+
+<script type="module">
+import { requireAuth, doc, getDoc, db, checkTrialEligibility } from "./js/auth.js";
+
+const SUBJECT_LABELS = {
+  PUTME_CHEMISTRY: "Chemistry",
+  PUTME_PHYSICS: "Physics",
+  PUTME_BIOLOGY: "Biology",
+  PUTME_ENGLISH: "English",
+  PUTME_GENERAL_KNOWLEDGE: "General Knowledge", PUTME_MATHEMATICS: "Mathematics",
+  PUTME_CRK: "CRK", PUTME_LITERATURE: "Literature in English", PUTME_ECONOMICS: "Economics", PUTME_COMMERCE: "Commerce", PUTME_GOVERNMENT: "Government"
+};
+
+const TIPS = [
+  "Review your wrong answers right after every practice session — that's where the real learning happens.",
+  "Do a timed subject practice at least 3x a week to build exam-day stamina.",
+  "General Knowledge questions reward broad reading — skim a news summary daily.",
+  "Don't just memorize answers — understand why the correct option is correct."
+];
+
+requireAuth(async (user) => {
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('dashboardContent').style.display = 'block';
+
+  const hour = new Date().getHours();
+  document.getElementById('greeting').textContent =
+    hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
+  document.getElementById('studyTip').textContent = TIPS[new Date().getDate() % TIPS.length];
+
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      const tier = data.subscriptionTier || 'free';
+      const badge = document.getElementById('tierBadge');
+      badge.textContent = tier === 'free' ? 'Free plan' : tier === 'regular' ? 'Regular plan' : 'VIP plan';
+      badge.className = 'badge badge-' + tier;
+
+      if (tier === 'free') {
+        try {
+          const eligibility = await checkTrialEligibility(user.uid);
+          document.getElementById('trialText').textContent = eligibility.canStart
+            ? `· ${eligibility.remaining} free trial${eligibility.remaining === 1 ? '' : 's'} left`
+            : '· 0 trials left — upgrade for unlimited';
+        } catch (e) {
+          document.getElementById('trialText').textContent = '';
+        }
+      }
+
+      const chipsWrap = document.getElementById('subjectChips');
+      const subjects = data.recommendedSubjects || [];
+      chipsWrap.innerHTML = subjects.length
+        ? subjects.map(s => `<span class="subject-chip">${SUBJECT_LABELS[s] || s}</span>`).join('')
+        : '<span style="color:var(--muted);font-size:.82rem">Complete your profile to see recommendations.</span>';
+    }
+  } catch (e) {
+    // Firestore read failed — dashboard still usable with defaults shown above
+  }
+});
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Complete Your Profile — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+</div>
+
+<div class="page-wrap-narrow" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Loading...</div>
+</div>
+
+<div class="page-wrap-narrow" id="formWrap" style="display:none">
+  <div class="page-header">
+    <div class="eyebrow">Almost there</div>
+    <h1>Complete your profile</h1>
+    <p>Just a few more details before you start.</p>
+  </div>
+
+  <div class="card">
+    <div class="form-status" id="formStatus"></div>
+    <form id="profileForm">
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" autocomplete="tel" required>
+      </div>
+      <div class="field">
+        <label for="faculty">Faculty applying to</label>
+        <select id="faculty" required>
+          <option value="" disabled selected>— Select faculty —</option>
+          <option value="science">Science</option>
+          <option value="arts">Arts</option>
+          <option value="social_sciences">Social Sciences</option>
+          <option value="education">Education</option>
+          <option value="agriculture">Agriculture</option>
+          <option value="management_sciences">Management Sciences</option>
+          <option value="law">Law</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="course">Course applying to</label>
+        <input type="text" id="course" placeholder="e.g. Computer Science" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Continue to dashboard</button>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { requireAuth, doc, updateDoc, getDoc, db } from "./js/auth.js";
+import { getScreeningCombo } from "./js/subject-combo.js";
+
+function recommendSubjects(faculty, course){
+  return getScreeningCombo(faculty, course).subjects;
+}
+
+let currentUser = null;
+
+requireAuth(async (user) => {
+  currentUser = user;
+  // If profile is already complete, skip this page entirely.
+  const snap = await getDoc(doc(db, "users", user.uid));
+  if (snap.exists() && snap.data().profileComplete) {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('formWrap').style.display = 'block';
+});
+
+document.getElementById('profileForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const submitBtn = document.getElementById('submitBtn');
+  const statusEl = document.getElementById('formStatus');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Saving...';
+
+  const phone = document.getElementById('phone').value.trim();
+  const faculty = document.getElementById('faculty').value;
+  const course = document.getElementById('course').value.trim();
+
+  try {
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      phone,
+      facultyApplyingTo: faculty,
+      courseApplyingTo: course,
+      recommendedSubjects: recommendSubjects(faculty, course),
+      profileComplete: true
+    });
+    window.location.href = 'dashboard.html';
+  } catch (err) {
+    statusEl.textContent = 'Could not save your profile — please try again. [debug: ' + (err.code || err.message) + ']';
+    statusEl.className = 'form-status show error';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Continue to dashboard';
+  }
+});
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screening Eligibility — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .result-card{display:none;text-align:center;padding:26px 20px;margin-top:16px}
+  .result-icon{font-size:2rem;margin-bottom:8px}
+  .result-icon.pass{color:var(--green)}
+  .result-icon.fail{color:var(--red)}
+  .result-title{font-size:1.05rem;font-weight:800;margin-bottom:6px}
+  .result-detail{font-size:.86rem;color:var(--muted);line-height:1.5}
+  .gap-row{display:flex;justify-content:space-around;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+  .gap-row div b{display:block;font-size:1.1rem}
+  .gap-row div span{font-size:.7rem;color:var(--muted)}
+  .note-box{
+    background:var(--gold3);border:1px solid var(--gold2);border-radius:10px;
+    padding:12px 14px;font-size:.78rem;color:#8a5b00;margin-top:16px;line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="dashboard.html">← Dashboard</a>
+</div>
+
+<div class="page-wrap-narrow">
+  <div class="page-header">
+    <h1>Screening Eligibility</h1>
+    <p>Check if your JAMB score meets OOU's Post-UTME threshold.</p>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label for="courseSelect">Course</label>
+      <select id="courseSelect">
+        <option value="" disabled selected>— Select your course —</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="jambScore">Your JAMB score (out of 400)</label>
+      <input type="number" id="jambScore" min="0" max="400" placeholder="e.g. 230">
+    </div>
+    <button class="btn btn-primary btn-block" id="checkBtn">Check eligibility</button>
+  </div>
+
+  <div class="card result-card" id="resultCard">
+    <div class="result-icon" id="resultIcon" data-icon="target"></div>
+    <div class="result-title" id="resultTitle">—</div>
+    <div class="result-detail" id="resultDetail">—</div>
+    <div class="gap-row">
+      <div><b id="yourScore">--</b><span>Your score</span></div>
+      <div><b id="courseCutoff">--</b><span>Cut-off</span></div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    This checks only the minimum JAMB score OOU requires to invite you for Post-UTME screening — it does not predict final admission. Final admission depends on your Post-UTME score, department capacity, and that year's competition, which vary and aren't published in advance. Meeting this threshold means you can sit the screening, not that you'll be admitted.
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html"><span class="bn-icon" data-icon="home"></span>Home</a>
+  <a href="mode-select.html"><span class="bn-icon" data-icon="exam"></span>CBT</a>
+  <a href="calculator.html"><span class="bn-icon" data-icon="calculator"></span>Calculator</a>
+  <a href="leaderboard.html"><span class="bn-icon" data-icon="trophy"></span>Rank</a>
+  <a href="profile.html"><span class="bn-icon" data-icon="profile"></span>Profile</a>
+</div>
+
+<script>
+// Minimum JAMB UTME score required for OOU Post-UTME screening invitation,
+// by department. Source: figures provided directly by Codex PREP admin.
+// "Education Courses (Others)" is a range — we use the upper bound (180)
+// as the safe threshold since specific programs within it vary.
+const COURSE_CUTOFFS = [
+  { name: "Accounting", cutoff: 220 },
+  { name: "Agricultural Economics and Farm Management", cutoff: 180 },
+  { name: "Agricultural Engineering", cutoff: 200 },
+  { name: "Banking and Finance", cutoff: 200 },
+  { name: "Biochemistry", cutoff: 200 },
+  { name: "Business Administration", cutoff: 200 },
+  { name: "Chemical Sciences", cutoff: 180 },
+  { name: "Civil Engineering", cutoff: 200 },
+  { name: "Computer Science", cutoff: 200 },
+  { name: "Education and English Language", cutoff: 170 },
+  { name: "Education and Mathematics", cutoff: 170 },
+  { name: "Education Courses (Others)", cutoff: 180, note: "Ranges 160–180 depending on the specific program" },
+  { name: "Electrical/Electronics Engineering", cutoff: 200 },
+  { name: "Fine and Applied Arts", cutoff: 180 },
+  { name: "Forestry and Wildlife", cutoff: 160 },
+  { name: "Geography and Regional Planning", cutoff: 180 },
+  { name: "History and Diplomatic Studies", cutoff: 180 },
+  { name: "Industrial Chemistry", cutoff: 180 },
+  { name: "Linguistics", cutoff: 200 },
+  { name: "Medicine and Surgery", cutoff: 270 },
+  { name: "Nursing", cutoff: 240 },
+  { name: "Performing Arts", cutoff: 200 },
+  { name: "Pharmacy", cutoff: 240 },
+  { name: "Philosophy", cutoff: 200 },
+  { name: "Physics", cutoff: 170 },
+  { name: "Psychology", cutoff: 200 },
+  { name: "Public Administration", cutoff: 180 },
+  { name: "Statistics", cutoff: 200 },
+  { name: "Transport Planning and Management", cutoff: 180 },
+  { name: "Urban and Regional Planning", cutoff: 180 },
+];
+
+const select = document.getElementById('courseSelect');
+COURSE_CUTOFFS.sort((a,b) => a.name.localeCompare(b.name)).forEach(c => {
+  const opt = document.createElement('option');
+  opt.value = c.name;
+  opt.textContent = c.name;
+  select.appendChild(opt);
+});
+
+document.getElementById('checkBtn').addEventListener('click', () => {
+  const courseName = select.value;
+  const jamb = parseFloat(document.getElementById('jambScore').value);
+
+  if (!courseName) { alert('Please select a course.'); return; }
+  if (isNaN(jamb) || jamb < 0 || jamb > 400) { alert('Enter a valid JAMB score between 0 and 400.'); return; }
+
+  const course = COURSE_CUTOFFS.find(c => c.name === courseName);
+  const meets = jamb >= course.cutoff;
+
+  const icon = document.getElementById('resultIcon');
+  icon.setAttribute('data-icon', meets ? 'check' : 'lock');
+  icon.className = 'result-icon ' + (meets ? 'pass' : 'fail');
+  if (window.CodexIcons) window.CodexIcons.render();
+
+  document.getElementById('resultTitle').textContent = meets
+    ? 'You meet the screening threshold'
+    : "You're below the screening threshold";
+  document.getElementById('resultDetail').textContent = meets
+    ? `Your JAMB score qualifies you to be invited for Post-UTME screening in ${courseName}.`
+    : `You need at least ${course.cutoff} to be invited for Post-UTME screening in ${courseName}. Consider a related course with a lower threshold, or improve your JAMB score in a resit.`;
+  document.getElementById('yourScore').textContent = jamb;
+  document.getElementById('courseCutoff').textContent = course.cutoff + (course.note ? '*' : '');
+
+  document.getElementById('resultCard').style.display = 'block';
+  document.getElementById('resultCard').scrollIntoView({behavior:'smooth', block:'nearest'});
+});
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>
