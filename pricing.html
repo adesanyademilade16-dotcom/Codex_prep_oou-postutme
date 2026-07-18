@@ -100,7 +100,8 @@ let currentUser = null;
 requireAuth(async (user) => {
   currentUser = user;
   try {
-    const { tier } = await getEffectiveTier(user.uid);
+    const effective = await getEffectiveTier(user.uid);
+    const { tier, expiresAt } = effective;
     const map = { free: 'tierFree', regular: 'tierRegular', vip: 'tierVip' };
     const el = document.getElementById(map[tier]);
     if (el) {
@@ -108,6 +109,19 @@ requireAuth(async (user) => {
       tag.className = 'current-tag';
       tag.textContent = 'Your plan';
       el.appendChild(tag);
+
+      if (tier !== 'free' && expiresAt) {
+        const daysLeft = Math.ceil((expiresAt - Date.now()) / (24 * 60 * 60 * 1000));
+        const countdown = document.createElement('div');
+        countdown.style.cssText = 'font-size:.78rem;margin-top:6px;text-align:center;' +
+          (daysLeft <= 7 ? 'color:#e0563f;font-weight:600' : 'color:var(--muted)');
+        countdown.textContent = daysLeft <= 0
+          ? 'Plan expired — renew below'
+          : daysLeft <= 7
+            ? `Expires in ${daysLeft} day${daysLeft === 1 ? '' : 's'} — renew soon`
+            : `Renews in ${daysLeft} days`;
+        el.appendChild(countdown);
+      }
     }
   } catch (e) { /* silently keep default view */ }
 

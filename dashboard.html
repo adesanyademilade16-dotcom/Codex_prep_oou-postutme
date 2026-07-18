@@ -145,19 +145,33 @@ requireAuth(async (user) => {
     const snap = await getDoc(doc(db, "users", user.uid));
     if (snap.exists()) {
       const data = snap.data();
-      const { tier } = await getEffectiveTier(user.uid);
       const badge = document.getElementById('tierBadge');
+      const effective = await getEffectiveTier(user.uid);
+      const tier = effective.tier;
       badge.textContent = tier === 'free' ? 'Free plan' : tier === 'regular' ? 'Regular plan' : 'VIP plan';
       badge.className = 'badge badge-' + tier;
 
+      const trialTextEl = document.getElementById('trialText');
       if (tier === 'free') {
         try {
           const eligibility = await checkTrialEligibility(user.uid);
-          document.getElementById('trialText').textContent = eligibility.canStart
+          trialTextEl.textContent = eligibility.canStart
             ? `· ${eligibility.remaining} free trial${eligibility.remaining === 1 ? '' : 's'} left`
             : '· 0 trials left — upgrade for unlimited';
+          trialTextEl.style.color = '';
         } catch (e) {
-          document.getElementById('trialText').textContent = '';
+          trialTextEl.textContent = '';
+        }
+      } else if (effective.expiresAt) {
+        const daysLeft = Math.ceil((effective.expiresAt - Date.now()) / (24 * 60 * 60 * 1000));
+        if (daysLeft <= 7) {
+          trialTextEl.textContent = daysLeft <= 0
+            ? '· Plan expired'
+            : `· Expires in ${daysLeft} day${daysLeft === 1 ? '' : 's'} — renew soon`;
+          trialTextEl.style.color = '#e0563f';
+        } else {
+          trialTextEl.textContent = `· Renews in ${daysLeft} days`;
+          trialTextEl.style.color = '';
         }
       }
 
