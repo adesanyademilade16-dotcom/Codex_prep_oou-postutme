@@ -50,7 +50,7 @@
 </div>
 
 <script type="module">
-import { requireAuth, db, doc, getDoc, collection, getDocs, updateDoc } from "./js/auth.js";
+import { requireAuth, db, doc, getDoc, collection, getDocs, updateDoc, getEffectiveTier } from "./js/auth.js";
 
 const SUBJECT_ICONS = {
   Chemistry: "flask", Physics: "gear", Biology: "dna", English: "book",
@@ -64,8 +64,8 @@ requireAuth(async (user) => {
 
   let userTier = 'free';
   try {
-    const userSnap = await getDoc(doc(db, "users", user.uid));
-    if (userSnap.exists()) userTier = userSnap.data().subscriptionTier || 'free';
+    const effective = await getEffectiveTier(user.uid);
+    userTier = effective.tier;
   } catch (e) { /* default to free */ }
 
   const wrap = document.getElementById('pdfList');
@@ -82,7 +82,7 @@ requireAuth(async (user) => {
 
     snap.forEach(docSnap => {
       const p = docSnap.data();
-      const locked = p.isPremium && userTier === 'free';
+      const locked = p.isPremium && userTier !== 'vip';
       const row = document.createElement('div');
       row.className = 'pq-row';
       row.innerHTML = `

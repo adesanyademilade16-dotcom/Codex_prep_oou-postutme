@@ -113,7 +113,7 @@
 </div>
 
 <script type="module">
-import { requireAuth, doc, getDoc, db, checkTrialEligibility } from "./js/auth.js";
+import { requireAuth, doc, getDoc, db, checkTrialEligibility, getEffectiveTier } from "./js/auth.js";
 
 const SUBJECT_LABELS = {
   PUTME_CHEMISTRY: "Chemistry",
@@ -145,7 +145,7 @@ requireAuth(async (user) => {
     const snap = await getDoc(doc(db, "users", user.uid));
     if (snap.exists()) {
       const data = snap.data();
-      const tier = data.subscriptionTier || 'free';
+      const { tier } = await getEffectiveTier(user.uid);
       const badge = document.getElementById('tierBadge');
       badge.textContent = tier === 'free' ? 'Free plan' : tier === 'regular' ? 'Regular plan' : 'VIP plan';
       badge.className = 'badge badge-' + tier;

@@ -177,7 +177,7 @@
 
 <script src="putme.js"></script>
 <script type="module">
-import { requireAuth, doc, setDoc, getDoc, db, serverTimestamp, checkTrialEligibility } from "./js/auth.js";
+import { requireAuth, doc, setDoc, getDoc, db, serverTimestamp, checkTrialEligibility, getEffectiveTier } from "./js/auth.js";
 import { OOU_SCREENING_START, getCountdown } from "./js/subject-combo.js";
 
 const SUBJECT_LABELS = {
@@ -252,8 +252,8 @@ requireAuth(async (user) => {
     }
     let mockTier = 'free';
     try {
-      const userSnap = await getDoc(doc(db, "users", user.uid));
-      if (userSnap.exists()) mockTier = userSnap.data().subscriptionTier || 'free';
+      const effective = await getEffectiveTier(user.uid);
+      mockTier = effective.tier;
     } catch (e) { /* stays free, fails closed for this premium-only mode */ }
     if (mockTier === 'free') {
       blockScreen(`<div class="card coming-soon-card">

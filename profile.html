@@ -88,7 +88,7 @@
 </div>
 
 <script type="module">
-import { requireAuth, fbSignOut, auth, doc, getDoc, db, isAdminEmail } from "./js/auth.js";
+import { requireAuth, fbSignOut, auth, doc, getDoc, db, isAdminEmail, getEffectiveTier } from "./js/auth.js";
 
 requireAuth(async (user) => {
   document.getElementById('authGate').style.display = 'none';
@@ -110,13 +110,10 @@ requireAuth(async (user) => {
   }
 
   try {
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-      const tier = snap.data().subscriptionTier || 'free';
-      const badge = document.getElementById('profileTier');
-      badge.textContent = tier === 'free' ? 'Free plan' : tier === 'regular' ? 'Regular plan' : 'VIP plan';
-      badge.className = 'badge badge-' + tier;
-    }
+    const { tier } = await getEffectiveTier(user.uid);
+    const badge = document.getElementById('profileTier');
+    badge.textContent = tier === 'free' ? 'Free plan' : tier === 'regular' ? 'Regular plan' : 'VIP plan';
+    badge.className = 'badge badge-' + tier;
   } catch (e) { /* stats remain at defaults */ }
 
   // Attempt stats will populate once putme_attempts collection has data (post-CBT-engine build).

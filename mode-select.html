@@ -105,7 +105,7 @@
 </div>
 
 <script type="module">
-import { requireAuth, doc, getDoc, setDoc, serverTimestamp, db } from "./js/auth.js";
+import { requireAuth, doc, getDoc, setDoc, serverTimestamp, db, getEffectiveTier } from "./js/auth.js";
 import { OOU_SCREENING_START, getScreeningCombo, getScreeningCounts, getCountdown } from "./js/subject-combo.js";
 
 const SUBJECT_LABELS = {
@@ -143,10 +143,11 @@ requireAuth(async (user) => {
     const snap = await getDoc(doc(db, "users", user.uid));
     if (snap.exists()) {
       const data = snap.data();
-      userTier = data.subscriptionTier || 'free';
       userFaculty = data.facultyApplyingTo || '';
       userCourse = data.courseApplyingTo || '';
     }
+    const effective = await getEffectiveTier(user.uid);
+    userTier = effective.tier;
   } catch (e) { /* defaults stand */ }
 
   if (!userFaculty) {

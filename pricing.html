@@ -89,7 +89,7 @@
 </div>
 
 <script type="module">
-import { requireAuth, doc, getDoc, db, auth } from "./js/auth.js";
+import { requireAuth, doc, getDoc, db, auth, getEffectiveTier } from "./js/auth.js";
 
 // TODO: set this to your deployed Render backend URL once it's live,
 // e.g. "https://putme-backend.onrender.com"
@@ -100,17 +100,14 @@ let currentUser = null;
 requireAuth(async (user) => {
   currentUser = user;
   try {
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-      const tier = snap.data().subscriptionTier || 'free';
-      const map = { free: 'tierFree', regular: 'tierRegular', vip: 'tierVip' };
-      const el = document.getElementById(map[tier]);
-      if (el) {
-        const tag = document.createElement('div');
-        tag.className = 'current-tag';
-        tag.textContent = 'Your plan';
-        el.appendChild(tag);
-      }
+    const { tier } = await getEffectiveTier(user.uid);
+    const map = { free: 'tierFree', regular: 'tierRegular', vip: 'tierVip' };
+    const el = document.getElementById(map[tier]);
+    if (el) {
+      const tag = document.createElement('div');
+      tag.className = 'current-tag';
+      tag.textContent = 'Your plan';
+      el.appendChild(tag);
     }
   } catch (e) { /* silently keep default view */ }
 
