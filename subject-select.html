@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#3d2599">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" sizes="32x32" href="/assets/icons/favicon-32.png">
 <title>Subject Practice — Codex PREP</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/theme.css">
@@ -140,6 +145,13 @@ document.getElementById('startBtn').addEventListener('click', () => {
   // putme_engine.html is the next build phase — this link is ready for it.
   window.location.href = 'putme_engine.html?' + params.toString();
 });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
 </script>
 <script src="js/icons.js"></script>
 </body>
