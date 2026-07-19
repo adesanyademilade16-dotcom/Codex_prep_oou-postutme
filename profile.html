@@ -88,7 +88,7 @@
 </div>
 
 <script type="module">
-import { requireAuth, fbSignOut, auth, doc, getDoc, db, isAdminEmail, getEffectiveTier, collection, query, where, getCountFromServer } from "./js/auth.js";
+import { requireAuth, fbSignOut, auth, doc, getDoc, db, checkIsAdmin, getEffectiveTier, collection, query, where, getCountFromServer } from "./js/auth.js";
 
 requireAuth(async (user) => {
   document.getElementById('authGate').style.display = 'none';
@@ -99,7 +99,7 @@ requireAuth(async (user) => {
   document.getElementById('profileEmail').textContent = user.email;
   document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
 
-  if (isAdminEmail(user.email)) {
+  if (await checkIsAdmin()) {
     const menuCard = document.getElementById('menuCard');
     const adminItem = document.createElement('div');
     adminItem.className = 'menu-item';
