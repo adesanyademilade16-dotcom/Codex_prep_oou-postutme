@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /pricing.html
+Allow: /signup.html
+Allow: /login.html
+Allow: /help.html
+Allow: /calculator.html
+Allow: /predictor.html
+
+# Logged-in app pages have no value being indexed - they're either
+# blank/redirecting for a crawler (no session) or private user data.
+Disallow: /dashboard.html
+Disallow: /profile.html
+Disallow: /complete-profile.html
+Disallow: /mode-select.html
+Disallow: /putme_engine.html
+Disallow: /past-questions.html
+Disallow: /leaderboard.html
+Disallow: /analytics.html
+Disallow: /custom-select.html
+Disallow: /subject-select.html
+Disallow: /splash.html
+Disallow: /admin/
+
+Sitemap: https://codex-prep-oou-postutme.vercel.app/sitemap.xml

@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign Up — Codex PREP</title>
+<title>Create Your Account — Codex PREP OOU Post-UTME</title>
+<meta name="description" content="Sign up free for Codex PREP and start practicing for your OOU Post-UTME with real CBT-style questions, subject drills, and performance tracking.">
+<link rel="canonical" href="https://codex-prep-oou-postutme.vercel.app/signup.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/theme.css">
 </head>
@@ -107,7 +109,10 @@ googleBtn.addEventListener('click', async () => {
 const form = document.getElementById('signupForm');
 const submitBtn = document.getElementById('submitBtn');
 
-
+function showStatus(msg, type){
+  statusEl.textContent = msg;
+  statusEl.className = 'form-status show ' + type;
+}
 
 // Basic recommended-subjects mapping — delegates to the shared
 // screening-combo module so this can't drift out of sync with

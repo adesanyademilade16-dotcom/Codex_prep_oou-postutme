@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Log In — Codex PREP</title>
+<title>Log In — Codex PREP OOU Post-UTME</title>
+<meta name="description" content="Log in to Codex PREP to continue your OOU Post-UTME CBT practice, track your progress, and access your saved study sessions.">
+<link rel="canonical" href="https://codex-prep-oou-postutme.vercel.app/login.html">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/theme.css">
 </head>
@@ -57,6 +59,10 @@ import { auth, signInWithEmailAndPassword, googleProvider, signInWithPopup, ensu
 const googleBtn = document.getElementById('googleBtn');
 const statusEl = document.getElementById('formStatus');
 
+function showStatus(msg, type){
+  statusEl.textContent = msg;
+  statusEl.className = 'form-status show ' + type;
+}
 
 googleBtn.addEventListener('click', async () => {
   googleBtn.disabled = true;
