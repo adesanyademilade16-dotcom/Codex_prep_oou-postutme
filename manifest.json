@@ -1,0 +1,16 @@
+{
+  "name": "Codex PREP — OOU Post-UTME",
+  "short_name": "Codex PREP",
+  "description": "Real CBT simulation, subject-by-subject practice, and performance tracking built for OOU Post-UTME aspirants.",
+  "start_url": "/splash.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1b2a",
+  "theme_color": "#3d2599",
+  "icons": [
+    { "src": "/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/maskable-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
