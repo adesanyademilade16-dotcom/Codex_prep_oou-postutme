@@ -11,7 +11,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp,
-  collection, query, where, getDocs, limit, orderBy
+  collection, query, where, getDocs, limit, orderBy, getCountFromServer
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 import { firebaseConfig, ADMIN_EMAILS, FREE_TRIAL_LIMIT } from "./firebase-config.js";
 
@@ -23,7 +23,7 @@ export {
   onAuthStateChanged, fbSignOut, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification,
   updateProfile, doc, setDoc, getDoc, updateDoc, serverTimestamp,
-  collection, query, where, getDocs, limit, orderBy,
+  collection, query, where, getDocs, limit, orderBy, getCountFromServer,
   GoogleAuthProvider, signInWithPopup, linkWithCredential, EmailAuthProvider
 };
 
