@@ -45,17 +45,14 @@
         <input type="tel" id="phone" autocomplete="tel" required>
       </div>
       <div class="field">
-        <label for="faculty">Faculty applying to</label>
+        <label for="faculty">Department</label>
         <select id="faculty" required>
-          <option value="" disabled selected>— Select faculty —</option>
+          <option value="" disabled selected>— Select department —</option>
           <option value="science">Science</option>
           <option value="arts">Arts</option>
-          <option value="social_sciences">Social Sciences</option>
-          <option value="education">Education</option>
-          <option value="agriculture">Agriculture</option>
-          <option value="management_sciences">Management Sciences</option>
-          <option value="law">Law</option>
+          <option value="commercial">Commercial</option>
         </select>
+        <div class="field-hint">Pick whichever is closest to your course — even if your exact course isn't in our system yet, this makes sure you still get the right subjects.</div>
       </div>
       <div class="field">
         <label for="course">Course applying to</label>
@@ -110,7 +107,10 @@ googleBtn.addEventListener('click', async () => {
 const form = document.getElementById('signupForm');
 const submitBtn = document.getElementById('submitBtn');
 
-
+function showStatus(msg, type){
+  statusEl.textContent = msg;
+  statusEl.className = 'form-status show ' + type;
+}
 
 // Basic recommended-subjects mapping — delegates to the shared
 // screening-combo module so this can't drift out of sync with
