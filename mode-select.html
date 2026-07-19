@@ -120,7 +120,7 @@ let currentCombo = null;
 function renderCountdown(){
   const cd = getCountdown(OOU_SCREENING_START);
   if (cd.done) {
-    document.getElementById('countdownLabel').textContent = 'Screening week is here!';
+    document.getElementById('countdownLabel').textContent = 'practice mock now!';
     document.getElementById('countdownGrid').style.display = 'none';
   } else {
     document.getElementById('cdDays').textContent = cd.days;
@@ -168,7 +168,7 @@ requireAuth(async (user) => {
     const dateReached = getCountdown(OOU_SCREENING_START).done;
 
     if (!dateReached) {
-      badge.textContent = 'Unlocks Aug 3';
+      badge.textContent = 'Unlocks July 27';
       badge.className = 'badge badge-soon';
       desc.textContent = 'Locked until OOU screening week begins — this keeps the mock meaningful as final prep, not early practice.';
       mockCard.classList.add('disabled');
