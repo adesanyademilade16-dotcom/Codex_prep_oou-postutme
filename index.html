@@ -118,6 +118,10 @@
     <div class="hero-ctas">
       <a class="btn btn-primary" href="signup.html">Create free account</a>
       <a class="btn btn-ghost" href="#pricing">See pricing</a>
+      <button type="button" class="btn btn-ghost" id="installBtn" style="display:none">⬇ Download App</button>
+    </div>
+    <div id="iosInstallHint" style="display:none;margin-top:14px;font-size:.78rem;opacity:.85;max-width:340px;margin-left:auto;margin-right:auto">
+      To install: tap the <strong>Share</strong> button in Safari, then <strong>"Add to Home Screen."</strong>
     </div>
     <div class="hero-stats">
       <div class="hero-stat"><b>1,300+</b><span>Practice Questions</span></div>
@@ -259,6 +263,51 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   });
+}
+
+// ===========================================================
+// Custom install button. The browser's own automatic install
+// banner only shows to "engaged" repeat visitors, so first-time
+// visitors would never see it without this — we capture the
+// install event ourselves and offer it via a normal button
+// instead, which works for anyone as soon as the site meets
+// install criteria (manifest + service worker + icons).
+// ===========================================================
+const installBtn = document.getElementById('installBtn');
+const iosHint = document.getElementById('iosInstallHint');
+let deferredPrompt = null;
+
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+if (!isStandalone) {
+  if (isIOS) {
+    // iOS Safari has no install-prompt API at all — "Add to Home
+    // Screen" only exists as a manual step in the Share menu.
+    installBtn.style.display = 'inline-flex';
+    installBtn.textContent = '⬇ Install App';
+    installBtn.addEventListener('click', () => {
+      iosHint.style.display = iosHint.style.display === 'none' ? 'block' : 'none';
+    });
+  } else {
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBtn.style.display = 'none';
+    });
+  }
 }
 </script>
 <script src="js/icons.js"></script>
