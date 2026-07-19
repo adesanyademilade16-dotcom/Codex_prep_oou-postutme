@@ -19,6 +19,47 @@ export const app  = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db   = getFirestore(app);
 
+// ===========================================================
+// PWA setup — runs automatically on every page that imports this
+// file (which is almost every page in the app), so individual
+// pages don't each need their own manifest link / SW registration.
+// ===========================================================
+if (typeof document !== 'undefined' && !document.querySelector('link[rel="manifest"]')) {
+  const head = document.head;
+
+  const manifestLink = document.createElement('link');
+  manifestLink.rel = 'manifest';
+  manifestLink.href = '/manifest.json';
+  head.appendChild(manifestLink);
+
+  const themeColor = document.createElement('meta');
+  themeColor.name = 'theme-color';
+  themeColor.content = '#3d2599';
+  head.appendChild(themeColor);
+
+  const appleTouchIcon = document.createElement('link');
+  appleTouchIcon.rel = 'apple-touch-icon';
+  appleTouchIcon.href = '/assets/icons/apple-touch-icon.png';
+  head.appendChild(appleTouchIcon);
+
+  const appleCapable = document.createElement('meta');
+  appleCapable.name = 'apple-mobile-web-app-capable';
+  appleCapable.content = 'yes';
+  head.appendChild(appleCapable);
+
+  const favicon32 = document.createElement('link');
+  favicon32.rel = 'icon';
+  favicon32.sizes = '32x32';
+  favicon32.href = '/assets/icons/favicon-32.png';
+  head.appendChild(favicon32);
+}
+
+if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((e) => console.warn('SW registration failed', e));
+  });
+}
+
 export {
   onAuthStateChanged, fbSignOut, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification,
