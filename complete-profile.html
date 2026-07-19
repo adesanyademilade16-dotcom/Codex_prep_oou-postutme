@@ -48,13 +48,20 @@
         <label for="course">Course applying to</label>
         <input type="text" id="course" placeholder="e.g. Computer Science" required>
       </div>
+      <div class="field" id="passwordField" style="display:none">
+        <label for="password">Set a password (optional)</label>
+        <input type="password" id="password" autocomplete="new-password" minlength="6" placeholder="Leave blank to just keep using Google sign-in">
+        <p style="font-size:.74rem;color:var(--muted);margin-top:6px">
+          You signed up with Google. Setting a password here also lets you log in with your email directly, in case Google sign-in isn't available to you later.
+        </p>
+      </div>
       <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Continue to dashboard</button>
     </form>
   </div>
 </div>
 
 <script type="module">
-import { requireAuth, doc, updateDoc, getDoc, db } from "./js/auth.js";
+import { requireAuth, doc, updateDoc, getDoc, db, linkWithCredential, EmailAuthProvider } from "./js/auth.js";
 import { getScreeningCombo } from "./js/subject-combo.js";
 
 function recommendSubjects(faculty, course){
@@ -73,6 +80,13 @@ requireAuth(async (user) => {
   }
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('formWrap').style.display = 'block';
+
+  // Only show the "set a password" option if this account has no
+  // password provider yet (i.e. they got here via Google sign-in).
+  const hasPassword = currentUser.providerData.some(p => p.providerId === 'password');
+  if (!hasPassword) {
+    document.getElementById('passwordField').style.display = 'block';
+  }
 });
 
 document.getElementById('profileForm').addEventListener('submit', async (e) => {
@@ -85,8 +99,18 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
   const phone = document.getElementById('phone').value.trim();
   const faculty = document.getElementById('faculty').value;
   const course = document.getElementById('course').value.trim();
+  const passwordEl = document.getElementById('password');
+  const password = passwordEl ? passwordEl.value : '';
 
   try {
+    if (password) {
+      if (password.length < 6) {
+        throw { code: 'auth/weak-password' };
+      }
+      const credential = EmailAuthProvider.credential(currentUser.email, password);
+      await linkWithCredential(currentUser, credential);
+    }
+
     await updateDoc(doc(db, "users", currentUser.uid), {
       phone,
       facultyApplyingTo: faculty,
@@ -96,7 +120,11 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
     });
     window.location.href = 'dashboard.html';
   } catch (err) {
-    statusEl.textContent = 'Could not save your profile — please try again. [debug: ' + (err.code || err.message) + ']';
+    let msg = 'Could not save your profile — please try again.';
+    if (err.code === 'auth/weak-password') msg = 'Password is too weak — use at least 6 characters, or leave it blank to skip.';
+    else if (err.code === 'auth/email-already-in-use' || err.code === 'auth/credential-already-in-use') msg = 'That email already has a password set elsewhere — try logging in instead, or leave the password field blank.';
+    else if (err.code === 'auth/requires-recent-login') msg = 'For security, please sign out and sign back in with Google, then try setting a password again.';
+    statusEl.textContent = msg + ' [debug: ' + (err.code || err.message) + ']';
     statusEl.className = 'form-status show error';
     submitBtn.disabled = false;
     submitBtn.textContent = 'Continue to dashboard';
