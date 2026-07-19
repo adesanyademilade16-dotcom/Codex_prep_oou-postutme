@@ -107,6 +107,7 @@
 <div class="top-bar">
   <div class="top-bar-logo">Codex <span>PREP</span></div>
   <div class="spacer"></div>
+  <button type="button" class="icon-btn" id="installBtn" style="border:none;cursor:pointer">⬇ Install</button>
   <a class="icon-btn" href="login.html">Log in</a>
 </div>
 
@@ -118,7 +119,6 @@
     <div class="hero-ctas">
       <a class="btn btn-primary" href="signup.html">Create free account</a>
       <a class="btn btn-ghost" href="#pricing">See pricing</a>
-      <button type="button" class="btn btn-ghost" id="installBtn" style="display:none">⬇ Download App</button>
     </div>
     <div id="iosInstallHint" style="display:none;margin-top:14px;font-size:.78rem;opacity:.85;max-width:340px;margin-left:auto;margin-right:auto">
       To install: tap the <strong>Share</strong> button in Safari, then <strong>"Add to Home Screen."</strong>
@@ -280,34 +280,38 @@ let deferredPrompt = null;
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
-if (!isStandalone) {
-  if (isIOS) {
-    // iOS Safari has no install-prompt API at all — "Add to Home
-    // Screen" only exists as a manual step in the Share menu.
-    installBtn.style.display = 'inline-flex';
-    installBtn.textContent = '⬇ Install App';
-    installBtn.addEventListener('click', () => {
-      iosHint.style.display = iosHint.style.display === 'none' ? 'block' : 'none';
-    });
-  } else {
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = 'inline-flex';
-    });
+if (isStandalone) {
+  installBtn.style.display = 'none';
+} else if (isIOS) {
+  installBtn.addEventListener('click', () => {
+    iosHint.style.display = iosHint.style.display === 'none' ? 'block' : 'none';
+    iosHint.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+} else {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
 
-    installBtn.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
       deferredPrompt.prompt();
       await deferredPrompt.userChoice;
       deferredPrompt = null;
-      installBtn.style.display = 'none';
-    });
+    } else {
+      // Browser hasn't handed us the install event yet (can happen on
+      // a first-ever page load before the SW finishes registering, or
+      // on browsers that don't support this API at all) - give a
+      // manual fallback instead of the button doing nothing.
+      iosHint.innerHTML = 'To install: open your browser menu (⋮) and choose <strong>"Add to Home Screen"</strong> or <strong>"Install app."</strong>';
+      iosHint.style.display = 'block';
+      iosHint.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
 
-    window.addEventListener('appinstalled', () => {
-      installBtn.style.display = 'none';
-    });
-  }
+  window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
+  });
 }
 </script>
 <script src="js/icons.js"></script>
