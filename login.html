@@ -83,10 +83,7 @@ googleBtn.addEventListener('click', async () => {
 const form = document.getElementById('loginForm');
 const submitBtn = document.getElementById('submitBtn');
 
-function showStatus(msg, type){
-  statusEl.textContent = msg;
-  statusEl.className = 'form-status show ' + type;
-}
+
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
