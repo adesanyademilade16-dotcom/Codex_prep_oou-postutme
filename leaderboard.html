@@ -31,6 +31,16 @@
     background:var(--gold3);border:1px solid var(--gold2);border-radius:10px;
     padding:12px 14px;font-size:.76rem;color:#8a5b00;margin-top:16px;line-height:1.5;
   }
+  .lb-tabs{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px}
+  .lb-tab{
+    flex:0 0 auto;padding:8px 14px;border-radius:20px;font-size:.78rem;font-weight:700;
+    background:var(--bg-soft);color:var(--muted);border:1px solid transparent;white-space:nowrap;
+  }
+  .lb-tab.active{background:var(--violet);color:#fff}
+  .lb-subject-select{
+    width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+    font-size:.82rem;margin-bottom:14px;background:#fff;color:var(--ink);
+  }
 </style>
 </head>
 <body>
@@ -48,12 +58,20 @@
 <div class="page-wrap" id="pageContent" style="display:none">
   <div class="page-header">
     <h1>Leaderboard</h1>
-    <p>Ranked by average CBT score.</p>
+    <p id="lbSubtitle">Ranked by average CBT score.</p>
   </div>
+
+  <div class="lb-tabs">
+    <button class="lb-tab active" data-tab="overall">Overall</button>
+    <button class="lb-tab" data-tab="subject">By Subject</button>
+    <button class="lb-tab" data-tab="mock">Today's Mock Exam</button>
+  </div>
+
+  <select class="lb-subject-select" id="subjectSelect" style="display:none"></select>
 
   <div id="rankList"></div>
 
-  <div class="note-box">
+  <div class="note-box" id="lbNote">
     Rankings are based on average score across all completed CBT sessions. Weekly/monthly views need more tracking infrastructure and aren't live yet — this is the all-time overall ranking.
   </div>
 </div>
@@ -67,45 +85,136 @@
 </div>
 
 <script type="module">
-import { requireAuth, db, collection, query, orderBy, limit, getDocs } from "./js/auth.js";
+import { requireAuth, db, collection, query, orderBy, where, limit, getDocs } from "./js/auth.js";
+
+const SUBJECT_LABELS = {
+  PUTME_CHEMISTRY: "Chemistry", PUTME_PHYSICS: "Physics", PUTME_BIOLOGY: "Biology",
+  PUTME_ENGLISH: "English", PUTME_GENERAL_KNOWLEDGE: "General Knowledge", PUTME_MATHEMATICS: "Mathematics",
+  PUTME_CRK: "CRK", PUTME_LITERATURE: "Literature in English", PUTME_ECONOMICS: "Economics",
+  PUTME_COMMERCE: "Commerce", PUTME_GOVERNMENT: "Government"
+};
+
+let currentUser = null;
+let activeTab = 'overall';
+let activeSubject = 'PUTME_CHEMISTRY';
 
 requireAuth(async (user) => {
+  currentUser = user;
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('pageContent').style.display = 'block';
 
-  const wrap = document.getElementById('rankList');
-  try {
-    const q = query(collection(db, "leaderboard"), orderBy("avgScore", "desc"), limit(50));
-    const snap = await getDocs(q);
+  const select = document.getElementById('subjectSelect');
+  select.innerHTML = Object.entries(SUBJECT_LABELS)
+    .map(([k, label]) => `<option value="${k}">${label}</option>`).join('');
+  select.value = activeSubject;
+  select.addEventListener('change', () => {
+    activeSubject = select.value;
+    render();
+  });
 
-    if (snap.empty) {
-      wrap.innerHTML = '<div class="card empty">No rankings yet — be the first to complete a CBT session and claim the top spot.</div>';
-      return;
-    }
-
-    let rank = 0;
-    snap.forEach(docSnap => {
-      rank++;
-      const d = docSnap.data();
-      const isMe = docSnap.id === user.uid;
-      const row = document.createElement('div');
-      row.className = 'card rank-row' + (isMe ? ' me' : '');
-      const initial = (d.displayName || '?').charAt(0).toUpperCase();
-      row.innerHTML = `
-        <div class="rank-num">${rank}</div>
-        <div class="rank-avatar">${initial}</div>
-        <div class="rank-info">
-          <h4>${escapeHtml(d.displayName || 'Student')}${isMe ? ' (you)' : ''}</h4>
-          <span>${d.totalAttempts || 0} attempt${(d.totalAttempts || 0) === 1 ? '' : 's'} · best ${d.bestScore || 0}%</span>
-        </div>
-        <div class="rank-score">${d.avgScore || 0}%</div>
-      `;
-      wrap.appendChild(row);
+  document.querySelectorAll('.lb-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.lb-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTab = btn.dataset.tab;
+      select.style.display = activeTab === 'subject' ? 'block' : 'none';
+      render();
     });
+  });
+
+  render();
+});
+
+async function render() {
+  const wrap = document.getElementById('rankList');
+  const note = document.getElementById('lbNote');
+  const subtitle = document.getElementById('lbSubtitle');
+  wrap.innerHTML = '<div class="card empty">Loading…</div>';
+
+  try {
+    if (activeTab === 'overall') {
+      subtitle.textContent = 'Ranked by average CBT score, all-time.';
+      note.textContent = 'Rankings are based on average score across all completed CBT sessions — this is the all-time overall ranking.';
+      const q = query(collection(db, "leaderboard"), orderBy("avgScore", "desc"), limit(50));
+      const snap = await getDocs(q);
+      renderRows(snap, d => ({
+        score: d.avgScore || 0,
+        meta: `${d.totalAttempts || 0} attempt${(d.totalAttempts || 0) === 1 ? '' : 's'} · best ${d.bestScore || 0}%`
+      }), 'No rankings yet — be the first to complete a CBT session and claim the top spot.');
+
+    } else if (activeTab === 'subject') {
+      const label = SUBJECT_LABELS[activeSubject];
+      subtitle.textContent = `Ranked by average score in ${label}.`;
+      note.textContent = `Only counts practice sessions done in ${label} alone (not mixed-subject or mock sessions).`;
+      const field = `subjects.${activeSubject}.avgScore`;
+      const q = query(collection(db, "leaderboard"), orderBy(field, "desc"), limit(50));
+      const snap = await getDocs(q);
+      renderRows(snap, d => {
+        const s = (d.subjects && d.subjects[activeSubject]) || {};
+        return {
+          score: s.avgScore || 0,
+          meta: `${s.totalAttempts || 0} attempt${(s.totalAttempts || 0) === 1 ? '' : 's'} · best ${s.bestScore || 0}%`
+        };
+      }, `No ${label} rankings yet — practice this subject to claim the top spot.`);
+
+    } else if (activeTab === 'mock') {
+      const todayKey = new Date().toISOString().slice(0, 10);
+      subtitle.textContent = "Today's full mock exam leaders.";
+      note.textContent = "Shows the best mock exam score set TODAY only — resets daily. Take the Full Mock Exam from the CBT tab to appear here.";
+      const q = query(
+        collection(db, "leaderboard"),
+        where("mock.todayDateKey", "==", todayKey),
+        orderBy("mock.todayScore", "desc"),
+        limit(50)
+      );
+      const snap = await getDocs(q);
+      renderRows(snap, d => ({
+        score: (d.mock && d.mock.todayScore) || 0,
+        meta: `Mock exam · ${(d.mock && d.mock.totalAttempts) || 0} total mock attempt${((d.mock && d.mock.totalAttempts) || 0) === 1 ? '' : 's'}`
+      }), 'No mock exam attempts today yet — take the Full Mock Exam to lead today\'s board.');
+    }
   } catch (e) {
+    console.error(e);
     wrap.innerHTML = '<div class="card empty">Could not load the leaderboard — check your connection and try again.</div>';
   }
-});
+  if (window.CodexIcons) window.CodexIcons.render();
+}
+
+function renderRows(snap, getScoreAndMeta, emptyMessage) {
+  const wrap = document.getElementById('rankList');
+  wrap.innerHTML = '';
+
+  if (snap.empty) {
+    wrap.innerHTML = `<div class="card empty">${emptyMessage}</div>`;
+    return;
+  }
+
+  let rank = 0;
+  snap.forEach(docSnap => {
+    const d = docSnap.data();
+    const { score, meta } = getScoreAndMeta(d);
+    if (!score) return; // skip zero-score entries (e.g. no data for this subject/day)
+    rank++;
+    const isMe = docSnap.id === currentUser.uid;
+    const row = document.createElement('div');
+    row.className = 'card rank-row' + (isMe ? ' me' : '');
+    const initial = (d.displayName || '?').charAt(0).toUpperCase();
+    row.innerHTML = `
+      <div class="rank-num">${rank}</div>
+      <div class="rank-avatar">${initial}</div>
+      <div class="rank-info">
+        <h4>${escapeHtml(d.displayName || 'Student')}${isMe ? ' (you)' : ''}</h4>
+        <span>${meta}</span>
+      </div>
+      <div class="rank-score">${score}%</div>
+    `;
+    wrap.appendChild(row);
+  });
+
+  if (rank === 0) {
+    wrap.innerHTML = `<div class="card empty">${emptyMessage}</div>`;
+  }
+}
 
 function escapeHtml(str){
   const div = document.createElement('div');

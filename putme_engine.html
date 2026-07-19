@@ -520,21 +520,68 @@ async function finishExam(){
 
   // Update this student's public leaderboard entry (their own doc only —
   // see firestore.rules). Best-effort: failure here shouldn't block results.
+  // Tracks three things now: overall average (unchanged), per-subject
+  // stats (only for single-subject practice, so a score cleanly belongs
+  // to one subject), and mock-exam stats including "today's best mock
+  // score" so the leaderboard can show who's leading on exam day.
   try {
     const lbRef = doc(db, "leaderboard", currentUser.uid);
     const existing = await getDoc(lbRef);
-    const prevAttempts = existing.exists() ? (existing.data().totalAttempts || 0) : 0;
-    const prevAvg = existing.exists() ? (existing.data().avgScore || 0) : 0;
-    const prevBest = existing.exists() ? (existing.data().bestScore || 0) : 0;
+    const prev = existing.exists() ? existing.data() : {};
+
+    const prevAttempts = prev.totalAttempts || 0;
+    const prevAvg = prev.avgScore || 0;
+    const prevBest = prev.bestScore || 0;
     const newTotal = prevAttempts + 1;
     const newAvg = Math.round(((prevAvg * prevAttempts) + pct) / newTotal);
-    await setDoc(lbRef, {
+
+    const update = {
       displayName: currentUser.displayName || (currentUser.email || '').split('@')[0],
       avgScore: newAvg,
       bestScore: Math.max(prevBest, pct),
       totalAttempts: newTotal,
       lastAttemptAt: serverTimestamp()
-    });
+    };
+
+    if (subjectKeys.length === 1) {
+      const subj = subjectKeys[0];
+      const prevSubj = (prev.subjects && prev.subjects[subj]) || {};
+      const prevSubjAttempts = prevSubj.totalAttempts || 0;
+      const prevSubjAvg = prevSubj.avgScore || 0;
+      const prevSubjBest = prevSubj.bestScore || 0;
+      const newSubjTotal = prevSubjAttempts + 1;
+      const newSubjAvg = Math.round(((prevSubjAvg * prevSubjAttempts) + pct) / newSubjTotal);
+      update[`subjects.${subj}`] = {
+        avgScore: newSubjAvg,
+        bestScore: Math.max(prevSubjBest, pct),
+        totalAttempts: newSubjTotal
+      };
+    }
+
+    if (mode === 'mock') {
+      const prevMock = prev.mock || {};
+      const prevMockAttempts = prevMock.totalAttempts || 0;
+      const prevMockAvg = prevMock.avgScore || 0;
+      const prevMockBest = prevMock.bestScore || 0;
+      const newMockTotal = prevMockAttempts + 1;
+      const newMockAvg = Math.round(((prevMockAvg * prevMockAttempts) + pct) / newMockTotal);
+
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const todayBest = (prevMock.todayDateKey === todayKey)
+        ? Math.max(prevMock.todayScore || 0, pct)
+        : pct;
+
+      update.mock = {
+        avgScore: newMockAvg,
+        bestScore: Math.max(prevMockBest, pct),
+        totalAttempts: newMockTotal,
+        lastAttemptAt: serverTimestamp(),
+        todayScore: todayBest,
+        todayDateKey: todayKey
+      };
+    }
+
+    await setDoc(lbRef, update, { merge: true });
   } catch (e) {
     console.error('Could not update leaderboard', e);
   }
