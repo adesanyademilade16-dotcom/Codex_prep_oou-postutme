@@ -13,7 +13,7 @@ import {
   getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp,
   collection, query, where, getDocs, limit, orderBy, getCountFromServer
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-import { firebaseConfig, ADMIN_EMAILS, FREE_TRIAL_LIMIT } from "./firebase-config.js";
+import { firebaseConfig, FREE_TRIAL_LIMIT } from "./firebase-config.js";
 
 export const app  = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
@@ -143,20 +143,35 @@ export async function ensureUserDoc(user) {
   return !!data.profileComplete;
 }
 
-export function isAdminEmail(email) {
-  return !!email && ADMIN_EMAILS.includes(email.toLowerCase());
+// ===========================================================
+// Checks whether the signed-in user is an admin WITHOUT ever
+// knowing or storing an admin email list client-side. Instead,
+// it attempts to read admin_config/settings, which firestore.rules
+// only allows admins to read. Success = admin, permission-denied
+// error = not admin. This means admin identities never appear
+// anywhere in browser-visible code — the rules are the only
+// source of truth, exactly as they should be.
+// ===========================================================
+export async function checkIsAdmin() {
+  try {
+    await getDoc(doc(db, "admin_config", "settings"));
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
-// Same as requireAuth, but also verifies the signed-in email is one of
-// ADMIN_EMAILS. Non-admins get sent back to the dashboard rather than
-// seeing any admin content flash on screen.
+// Same as requireAuth, but also verifies the signed-in user is an
+// admin via checkIsAdmin(). Non-admins get sent back to the
+// dashboard rather than seeing any admin content flash on screen.
 export function requireAdmin(onReady) {
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (!user) {
       window.location.href = "../login.html";
       return;
     }
-    if (!isAdminEmail(user.email)) {
+    const isAdmin = await checkIsAdmin();
+    if (!isAdmin) {
       window.location.href = "../dashboard.html";
       return;
     }

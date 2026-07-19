@@ -13,13 +13,9 @@ export const firebaseConfig = {
   appId: "1:59288182910:web:5a3c7c809cfea81dd8382f"
 };
 
-// Admin emails — mirrors admin_config/settings doc in Firestore,
-// kept here too as a fast client-side check. Server rules are
-// the real gate; this is just for hiding the admin nav link.
-export const ADMIN_EMAILS = [
-  "codexhub16@gmail.com",
-  "mikejoel895@gmail.com"
-];
+// Admin status is checked via Firestore rules (see firestore.rules
+// and checkIsAdmin() in auth.js) — never listed here, so admin
+// identities don't appear anywhere in client-visible code.
 
 // How many CBT attempts a Free-tier account gets, total, across every
 // subject and mode combined. Change this single number any time you
