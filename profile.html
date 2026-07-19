@@ -88,7 +88,7 @@
 </div>
 
 <script type="module">
-import { requireAuth, fbSignOut, auth, doc, getDoc, db, isAdminEmail, getEffectiveTier } from "./js/auth.js";
+import { requireAuth, fbSignOut, auth, doc, getDoc, db, isAdminEmail, getEffectiveTier, collection, query, where, getCountFromServer } from "./js/auth.js";
 
 requireAuth(async (user) => {
   document.getElementById('authGate').style.display = 'none';
@@ -116,7 +116,24 @@ requireAuth(async (user) => {
     badge.className = 'badge badge-' + tier;
   } catch (e) { /* stats remain at defaults */ }
 
-  // Attempt stats will populate once putme_attempts collection has data (post-CBT-engine build).
+  // Attempt stats + rank, pulled from this student's own leaderboard doc
+  // (the same aggregate data that powers the Leaderboard page).
+  try {
+    const lbSnap = await getDoc(doc(db, "leaderboard", user.uid));
+    if (lbSnap.exists() && (lbSnap.data().totalAttempts || 0) > 0) {
+      const lb = lbSnap.data();
+      document.getElementById('statAttempts').textContent = lb.totalAttempts || 0;
+      document.getElementById('statAvg').textContent = (lb.avgScore || 0) + '%';
+
+      // Rank = how many students have a strictly higher average, +1.
+      // Uses a server-side count instead of downloading every doc.
+      const q = query(collection(db, "leaderboard"), where("avgScore", ">", lb.avgScore || 0));
+      const countSnap = await getCountFromServer(q);
+      const rank = countSnap.data().count + 1;
+      document.getElementById('statRank').textContent = '#' + rank;
+    }
+    // If no attempts yet, the stat boxes just keep their "0 / -- / --" defaults.
+  } catch (e) { /* stats remain at defaults */ }
 });
 
 document.getElementById('signOutBtn').addEventListener('click', async () => {

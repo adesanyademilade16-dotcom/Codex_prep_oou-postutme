@@ -122,6 +122,20 @@ requireAuth(async (user) => {
             : `Renews in ${daysLeft} days`;
         el.appendChild(countdown);
       }
+
+      // Swap the button on the card matching the user's ACTIVE plan
+      // so they can't accidentally pay for the same plan twice.
+      // Other cards (e.g. VIP, while on Regular) keep a normal
+      // upgrade button — that path is intentionally still available.
+      if (tier !== 'free') {
+        const btn = el.querySelector('button[data-plan]');
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = '✓ Active plan';
+          btn.classList.remove('btn-primary', 'btn-ghost');
+          btn.style.cssText = 'background:var(--green);color:#fff;opacity:.85;cursor:default';
+        }
+      }
     }
   } catch (e) { /* silently keep default view */ }
 
