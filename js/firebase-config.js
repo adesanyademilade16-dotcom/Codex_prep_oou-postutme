@@ -21,4 +21,4 @@ export const firebaseConfig = {
 // subject and mode combined. Change this single number any time you
 // want to give free users more (or fewer) trials — nothing else in
 // the app needs to change.
-export const FREE_TRIAL_LIMIT = 1;
+export const FREE_TRIAL_LIMIT = 3;

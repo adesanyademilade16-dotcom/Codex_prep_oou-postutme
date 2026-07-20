@@ -7,7 +7,8 @@ import {
   getAuth, onAuthStateChanged, signOut as fbSignOut,
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
   sendPasswordResetEmail, sendEmailVerification, updateProfile,
-  GoogleAuthProvider, signInWithPopup, linkWithCredential, EmailAuthProvider
+  GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+  linkWithCredential, EmailAuthProvider
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp,
@@ -65,7 +66,8 @@ export {
   signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification,
   updateProfile, doc, setDoc, getDoc, updateDoc, serverTimestamp,
   collection, query, where, getDocs, limit, orderBy, getCountFromServer,
-  GoogleAuthProvider, signInWithPopup, linkWithCredential, EmailAuthProvider
+  GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+  linkWithCredential, EmailAuthProvider
 };
 
 // ===========================================================
