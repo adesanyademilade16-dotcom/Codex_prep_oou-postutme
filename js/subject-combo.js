@@ -10,7 +10,7 @@
 // content yet; the CBT engine skips missing subjects gracefully.
 // ===========================================================
 
-export const OOU_SCREENING_START = new Date('2026-08-03T00:00:00+01:00'); // WAT — change this line to adjust the countdown target
+export const OOU_SCREENING_START = new Date('2026-07-27T00:00:00+01:00'); // WAT — change this line to adjust the countdown target
 export const OOU_SCREENING_END = new Date('2026-08-08T23:59:59+01:00');
 export const OOU_REGISTRATION_CLOSE = new Date('2026-07-22T23:59:59+01:00');
 
