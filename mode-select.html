@@ -120,7 +120,7 @@ let currentCombo = null;
 function renderCountdown(){
   const cd = getCountdown(OOU_SCREENING_START);
   if (cd.done) {
-    document.getElementById('countdownLabel').textContent = 'practice mock now!';
+    document.getElementById('countdownLabel').textContent = 'Screening week is here!';
     document.getElementById('countdownGrid').style.display = 'none';
   } else {
     document.getElementById('cdDays').textContent = cd.days;
@@ -168,9 +168,9 @@ requireAuth(async (user) => {
     const dateReached = getCountdown(OOU_SCREENING_START).done;
 
     if (!dateReached) {
-      badge.textContent = 'Unlocks July 27';
+      badge.textContent = 'Unlocks Aug 3';
       badge.className = 'badge badge-soon';
-      desc.textContent = 'Locked uuntil July 27.';
+      desc.textContent = 'Locked until OOU screening week begins — this keeps the mock meaningful as final prep, not early practice.';
       mockCard.classList.add('disabled');
       mockCard.onclick = null;
       return;
@@ -189,10 +189,23 @@ requireAuth(async (user) => {
     mockCard.classList.remove('disabled');
     mockCard.onclick = () => {
       const combo = getScreeningCombo(faculty, course);
+      // Bonus General Studies questions — a small fixed slice (not an
+      // even split), carved out of the 50-question total so the exam
+      // still adds up to exactly 50, and the student's real subjects
+      // keep close to their original share.
+      const GS_COUNT = 5;
+      const mainTotal = 50 - GS_COUNT;
+      const base = Math.floor(mainTotal / combo.subjects.length);
+      const remainder = mainTotal % combo.subjects.length;
+      const mainCounts = combo.subjects.map((_, i) => base + (i < remainder ? 1 : 0));
+
+      const engineSubjects = [...combo.subjects, 'PUTME_GENERAL_KNOWLEDGE'];
+      const engineCounts = [...mainCounts, GS_COUNT];
+
       const params = new URLSearchParams();
       params.append('mode', 'mock');
-      params.append('subjects', combo.subjects.join(','));
-      params.append('subjectCounts', getScreeningCounts(combo.subjects.length).join(','));
+      params.append('subjects', engineSubjects.join(','));
+      params.append('subjectCounts', engineCounts.join(','));
       params.append('time', 30);
       window.location.href = 'putme_engine.html?' + params.toString();
     };
