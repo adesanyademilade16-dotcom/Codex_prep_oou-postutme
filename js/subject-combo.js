@@ -1,7 +1,11 @@
 // ===========================================================
 // CODEX PREP — OOU SCREENING CONFIG
-// Registration closes 22 July 2026; screening runs 3-8 Aug 2026,
-// with each candidate assigned a specific day/time on their pass.
+// Mock Exam unlocks 27 July 2026 (OOU_SCREENING_START below —
+// this is the ONLY date that actually controls anything in the
+// app). OOU_SCREENING_END and OOU_REGISTRATION_CLOSE below are
+// just reference notes about the real OOU screening exercise —
+// neither is read anywhere else in the code, so editing them
+// doesn't change app behavior. Only OOU_SCREENING_START does.
 //
 // Full Mock Exam uses each faculty's real subject combination
 // (per ASA tutorial combos + Codex's firsthand confirmation),
