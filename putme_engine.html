@@ -126,7 +126,9 @@
 <div id="examScreen" style="display:none">
   <div class="exam-top">
     <span class="subj-name" id="examSubjName">Chemistry</span>
-    <button type="button" id="calcToggleBtn" style="display:none;background:var(--bg-soft);border:1px solid var(--border);border-radius:8px;width:34px;height:34px;font-size:1rem;cursor:pointer;margin-left:8px" title="Calculator">🖩</button>
+    <button type="button" id="calcToggleBtn" style="display:none;background:var(--bg-soft);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:.76rem;font-weight:700;color:var(--violet-deep);cursor:pointer;margin-left:8px;align-items:center;gap:5px" title="Calculator">
+      <span class="mi" data-icon="calculator" style="width:16px;height:16px"></span> Calc
+    </button>
     <span class="timer" id="timerDisplay">20:00</span>
   </div>
   <div class="subject-nav" id="subjectNav" style="display:none"></div>
@@ -135,10 +137,10 @@
   <!-- Calculator modal — practice modes only, hidden during Mock Exam
        to keep that mode realistic (the real Post-UTME Maths paper
        doesn't allow calculators). -->
-  <div id="calcModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:20px">
-    <div style="background:#fff;border-radius:16px;width:100%;max-width:300px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.3)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <b style="font-size:.9rem;color:var(--ink)">Calculator</b>
+  <div id="calcModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.35)">
+    <div id="calcPanel" style="position:fixed;background:#fff;border-radius:16px;width:260px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.3)">
+      <div id="calcDragHandle" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;cursor:grab;touch-action:none;padding:4px 0">
+        <b style="font-size:.9rem;color:var(--ink)">⠿ Calculator</b>
         <button type="button" id="calcCloseBtn" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted);line-height:1">✕</button>
       </div>
       <div id="calcDisplay" style="background:var(--bg-soft);border-radius:10px;padding:14px;text-align:right;font-size:1.6rem;font-weight:700;color:var(--ink);margin-bottom:10px;overflow-x:auto;white-space:nowrap">0</div>
@@ -313,9 +315,58 @@ function setupCalculator(currentMode) {
     grid.appendChild(btn);
   });
 
-  toggleBtn.addEventListener('click', () => { modal.style.display = 'flex'; });
+  toggleBtn.addEventListener('click', () => {
+    modal.style.display = 'block';
+    positionPanelIfNeeded();
+  });
   closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
   modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+  // Positions the calculator near the top-right on first open only —
+  // after that, wherever the student last dragged it to is remembered
+  // for the rest of the session.
+  const panel = document.getElementById('calcPanel');
+  let hasPositioned = false;
+  function positionPanelIfNeeded() {
+    if (hasPositioned) return;
+    hasPositioned = true;
+    const panelWidth = panel.offsetWidth || 260;
+    panel.style.left = Math.max(12, window.innerWidth - panelWidth - 16) + 'px';
+    panel.style.top = '80px';
+  }
+
+  // Drag-to-move, via the header bar only (not the whole panel, so
+  // number buttons stay tappable without accidentally moving it).
+  const dragHandle = document.getElementById('calcDragHandle');
+  let dragging = false, dragOffsetX = 0, dragOffsetY = 0;
+
+  dragHandle.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    dragHandle.setPointerCapture(e.pointerId);
+    const rect = panel.getBoundingClientRect();
+    dragOffsetX = e.clientX - rect.left;
+    dragOffsetY = e.clientY - rect.top;
+    dragHandle.style.cursor = 'grabbing';
+  });
+
+  dragHandle.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const panelWidth = panel.offsetWidth;
+    const panelHeight = panel.offsetHeight;
+    let newLeft = e.clientX - dragOffsetX;
+    let newTop = e.clientY - dragOffsetY;
+    // Keep it fully on-screen so it can't get dragged somewhere unreachable.
+    newLeft = Math.min(Math.max(0, newLeft), window.innerWidth - panelWidth);
+    newTop = Math.min(Math.max(0, newTop), window.innerHeight - panelHeight);
+    panel.style.left = newLeft + 'px';
+    panel.style.top = newTop + 'px';
+  });
+
+  dragHandle.addEventListener('pointerup', (e) => {
+    dragging = false;
+    dragHandle.releasePointerCapture(e.pointerId);
+    dragHandle.style.cursor = 'grab';
+  });
 }
 
 const params = new URLSearchParams(window.location.search);
