@@ -55,6 +55,82 @@ if (typeof document !== 'undefined' && !document.querySelector('link[rel="manife
   head.appendChild(favicon32);
 }
 
+let deferredInstallPrompt = null;
+const isStandaloneApp = typeof window !== 'undefined' &&
+  (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true);
+const isIOSDevice = typeof navigator !== 'undefined' && /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+if (typeof window !== 'undefined' && !isStandaloneApp) {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+  });
+}
+
+// ===========================================================
+// Install reminder banner — shown once per dismissal, below the
+// page header, on every page that imports this file. Not shown
+// if already installed, and stays hidden after the student
+// dismisses it once (localStorage), so it's a one-time nudge,
+// not a nag.
+// ===========================================================
+function showInstallBanner() {
+  if (isStandaloneApp) return;
+  if (localStorage.getItem('installBannerDismissed') === '1') return;
+  const topBar = document.querySelector('.top-bar');
+  if (!topBar || document.getElementById('pwaInstallBanner')) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'pwaInstallBanner';
+  banner.style.cssText = 'background:#3d2599;color:#fff;padding:10px 16px;font-size:.78rem;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap';
+  banner.innerHTML = '<span>📲 Install Codex PREP for faster, offline-ready access.</span>';
+
+  const btnWrap = document.createElement('div');
+  btnWrap.style.cssText = 'display:flex;gap:8px;flex:0 0 auto;margin-left:auto';
+
+  const installBtn = document.createElement('button');
+  installBtn.textContent = 'Install';
+  installBtn.style.cssText = 'background:#fff;color:#3d2599;border:none;border-radius:14px;padding:5px 12px;font-weight:700;font-size:.76rem;cursor:pointer';
+
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = '✕';
+  closeBtn.setAttribute('aria-label', 'Dismiss');
+  closeBtn.style.cssText = 'background:transparent;color:#fff;border:none;font-size:.95rem;cursor:pointer;opacity:.8;padding:0 4px';
+
+  btnWrap.appendChild(installBtn);
+  btnWrap.appendChild(closeBtn);
+  banner.appendChild(btnWrap);
+  topBar.insertAdjacentElement('afterend', banner);
+
+  function dismiss() {
+    banner.remove();
+    localStorage.setItem('installBannerDismissed', '1');
+  }
+
+  closeBtn.addEventListener('click', dismiss);
+
+  installBtn.addEventListener('click', async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+    } else if (isIOSDevice) {
+      alert('To install: tap the Share button in Safari, then "Add to Home Screen."');
+    } else {
+      alert('Open your browser menu (⋮) and choose "Add to Home Screen" or "Install app."');
+    }
+    dismiss();
+  });
+}
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', showInstallBanner);
+  } else {
+    showInstallBanner();
+  }
+}
+
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch((e) => console.warn('SW registration failed', e));
