@@ -126,10 +126,25 @@
 <div id="examScreen" style="display:none">
   <div class="exam-top">
     <span class="subj-name" id="examSubjName">Chemistry</span>
+    <button type="button" id="calcToggleBtn" style="display:none;background:var(--bg-soft);border:1px solid var(--border);border-radius:8px;width:34px;height:34px;font-size:1rem;cursor:pointer;margin-left:8px" title="Calculator">🖩</button>
     <span class="timer" id="timerDisplay">20:00</span>
   </div>
   <div class="subject-nav" id="subjectNav" style="display:none"></div>
   <div class="q-progress" id="qProgress">Question 1 of 20</div>
+
+  <!-- Calculator modal — practice modes only, hidden during Mock Exam
+       to keep that mode realistic (the real Post-UTME Maths paper
+       doesn't allow calculators). -->
+  <div id="calcModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:20px">
+    <div style="background:#fff;border-radius:16px;width:100%;max-width:300px;padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.3)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <b style="font-size:.9rem;color:var(--ink)">Calculator</b>
+        <button type="button" id="calcCloseBtn" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted);line-height:1">✕</button>
+      </div>
+      <div id="calcDisplay" style="background:var(--bg-soft);border-radius:10px;padding:14px;text-align:right;font-size:1.6rem;font-weight:700;color:var(--ink);margin-bottom:10px;overflow-x:auto;white-space:nowrap">0</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="calcGrid"></div>
+    </div>
+  </div>
 
   <div class="exam-wrap">
     <div class="card q-card">
@@ -187,8 +202,125 @@ const SUBJECT_LABELS = {
 };
 const MODE_LABELS = { subject: 'Subject Practice', custom: 'Custom Practice', mock: 'Full Mock Exam' };
 
+// ===========================================================
+// Calculator — matches the real OOU Post-UTME CBT, which has a
+// simple on-screen calculator available during the exam itself
+// (not a physical/external one). Basic four-function calculator
+// plus square root, no eval() involved. Available in every mode,
+// including Mock Exam, since that's how the real exam works.
+// ===========================================================
+function setupCalculator(currentMode) {
+  const toggleBtn = document.getElementById('calcToggleBtn');
+  const modal = document.getElementById('calcModal');
+  const closeBtn = document.getElementById('calcCloseBtn');
+  const display = document.getElementById('calcDisplay');
+  const grid = document.getElementById('calcGrid');
+
+  toggleBtn.style.display = 'inline-flex';
+  toggleBtn.style.alignItems = 'center';
+  toggleBtn.style.justifyContent = 'center';
+
+  let current = '0';
+  let previous = null;
+  let pendingOp = null;
+  let justEvaluated = false;
+
+  function render() { display.textContent = current; }
+
+  function inputDigit(d) {
+    if (justEvaluated) { current = '0'; justEvaluated = false; }
+    current = current === '0' ? d : current + d;
+    render();
+  }
+
+  function inputDecimal() {
+    if (justEvaluated) { current = '0'; justEvaluated = false; }
+    if (!current.includes('.')) current += '.';
+    render();
+  }
+
+  function clearAll() {
+    current = '0'; previous = null; pendingOp = null; justEvaluated = false;
+    render();
+  }
+
+  function backspace() {
+    current = current.length > 1 ? current.slice(0, -1) : '0';
+    render();
+  }
+
+  function compute(a, b, op) {
+    a = parseFloat(a); b = parseFloat(b);
+    if (op === '+') return a + b;
+    if (op === '−') return a - b;
+    if (op === '×') return a * b;
+    if (op === '÷') return b === 0 ? NaN : a / b;
+    return b;
+  }
+
+  function chooseOp(op) {
+    if (pendingOp && !justEvaluated) {
+      previous = compute(previous, current, pendingOp);
+      current = String(previous);
+    } else {
+      previous = current;
+    }
+    pendingOp = op;
+    justEvaluated = false;
+    current = '0';
+    render();
+  }
+
+  function equals() {
+    if (pendingOp == null) return;
+    const result = compute(previous, current, pendingOp);
+    current = Number.isNaN(result) ? 'Error' : String(Math.round(result * 1e10) / 1e10);
+    pendingOp = null;
+    previous = null;
+    justEvaluated = true;
+    render();
+  }
+
+  const buttons = [
+    ['C', 'op'], ['⌫', 'op'], ['√', 'op'], ['÷', 'op'],
+    ['7', 'num'], ['8', 'num'], ['9', 'num'], ['×', 'op'],
+    ['4', 'num'], ['5', 'num'], ['6', 'num'], ['−', 'op'],
+    ['1', 'num'], ['2', 'num'], ['3', 'num'], ['+', 'op'],
+    ['0', 'num', 2], ['.', 'num'], ['=', 'eq']
+  ];
+
+  buttons.forEach(([label, type, span]) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = label;
+    btn.style.cssText = `padding:14px 0;border-radius:10px;border:none;font-size:1.05rem;font-weight:700;cursor:pointer;
+      ${span === 2 ? 'grid-column:span 2;' : ''}
+      ${type === 'eq' ? 'background:var(--violet);color:#fff;' : type === 'op' ? 'background:var(--bg-soft);color:var(--violet);' : 'background:#f3f4f8;color:var(--ink);'}`;
+    btn.addEventListener('click', () => {
+      if (type === 'num' && label !== '.') inputDigit(label);
+      else if (label === '.') inputDecimal();
+      else if (label === 'C') clearAll();
+      else if (label === '⌫') backspace();
+      else if (label === '√') {
+        const val = parseFloat(current);
+        current = val < 0 ? 'Error' : String(Math.round(Math.sqrt(val) * 1e10) / 1e10);
+        justEvaluated = true;
+        render();
+      }
+      else if (label === '=') equals();
+      else chooseOp(label);
+    });
+    grid.appendChild(btn);
+  });
+
+  toggleBtn.addEventListener('click', () => { modal.style.display = 'flex'; });
+  closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+}
+
 const params = new URLSearchParams(window.location.search);
 const mode = params.get('mode') || 'subject';
+setupCalculator(mode);
 const subjectKey = params.get('subject');
 const subjectsParam = params.get('subjects'); // comma-separated for custom/mock
 const subjectKeys = subjectsParam ? subjectsParam.split(',').filter(Boolean) : (subjectKey ? [subjectKey] : []);
