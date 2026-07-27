@@ -176,7 +176,7 @@ requireAuth(async (user) => {
       return;
     }
     if (tier === 'free') {
-      badge.textContent = 'Premium only';
+      badge.textContent = 'Regular/VIP members only';
       badge.className = 'badge badge-vip';
       desc.textContent = 'Full Mock Exam is available to Regular/VIP subscribers only — upgrade to unlock.';
       mockCard.classList.add('disabled');
