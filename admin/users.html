@@ -52,7 +52,7 @@
 </div>
 
 <script type="module">
-import { requireAdmin, db, collection, getDocs, doc, updateDoc } from "../js/auth.js";
+import { requireAdmin, db, collection, getDocs, doc, updateDoc, setDoc } from "../js/auth.js";
 
 let allUsers = [];
 
@@ -107,6 +107,25 @@ function renderUsers(users){
       }
       try {
         await updateDoc(doc(db, "users", uid), { subscriptionTier: newTier });
+
+        // getEffectiveTier() (used everywhere to gate features, incl.
+        // the Mock Exam) checks putme_subscriptions/{uid}, not just
+        // this field — without this, a manually-granted plan looks
+        // "free" everywhere else in the app despite this dropdown
+        // saying otherwise. Keep DURATION_DAYS in sync with whatever
+        // lib/plans.js on the backend currently uses.
+        if (newTier === 'regular' || newTier === 'vip') {
+          const DURATION_DAYS = 120;
+          const now = Date.now();
+          await setDoc(doc(db, "putme_subscriptions", uid), {
+            plan: newTier,
+            status: 'active',
+            startedAt: now,
+            expiresAt: now + DURATION_DAYS * 24 * 60 * 60 * 1000,
+            lastReference: 'admin-manual-grant'
+          }, { merge: true });
+        }
+
         u.subscriptionTier = newTier;
       } catch (err) {
         alert('Could not update plan — ' + (err.code || err.message));
