@@ -185,8 +185,7 @@ export const googleProvider = new GoogleAuthProvider();
 // flag (client can't be trusted to write that — see firestore.rules), so we
 // derive it by counting existing putme_attempts docs for this uid.
 export async function checkTrialEligibility(uid) {
-  const userSnap = await getDoc(doc(db, "users", uid));
-  const tier = userSnap.exists() ? (userSnap.data().subscriptionTier || 'free') : 'free';
+  const { tier } = await getEffectiveTier(uid);
   if (tier !== 'free') return { tier, canStart: true, used: 0, limit: null, remaining: null };
   const q = query(collection(db, "putme_attempts"), where("uid", "==", uid), limit(FREE_TRIAL_LIMIT + 1));
   const snap = await getDocs(q);
