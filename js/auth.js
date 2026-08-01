@@ -129,6 +129,8 @@ function showInstallBanner() {
   });
 }
 
+const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/EFYqVpoCWA39NL6y4ZTt6P?s=cl&p=a&ilr=0';
+
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', showInstallBanner);
@@ -138,8 +140,6 @@ if (typeof document !== 'undefined') {
     showWhatsAppBubble();
   }
 }
-
-const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/EFYqVpoCWA39NL6y4ZTt6P?s=cl&p=a&ilr=0';
 
 function showWhatsAppBubble() {
   if (document.getElementById('waFloatBubble')) return;
