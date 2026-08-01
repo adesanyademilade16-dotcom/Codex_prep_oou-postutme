@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Profile — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="profile.html">← Profile</a>
+</div>
+
+<div class="page-wrap-narrow" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Loading your profile...</div>
+</div>
+
+<div class="page-wrap-narrow" id="formWrap" style="display:none">
+  <div class="page-header">
+    <h1>Edit profile</h1>
+    <p>Update your name, department, or course.</p>
+  </div>
+
+  <div class="card">
+    <div class="form-status" id="formStatus"></div>
+    <form id="editForm">
+      <div class="field">
+        <label for="fullName">Full name</label>
+        <input type="text" id="fullName" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="faculty">Department</label>
+        <select id="faculty" required>
+          <option value="science">Science</option>
+          <option value="arts">Arts</option>
+          <option value="commercial">Commercial</option>
+        </select>
+        <div class="field-hint">Changing this recalculates your recommended subjects.</div>
+      </div>
+      <div class="field">
+        <label for="course">Course applying to</label>
+        <input type="text" id="course" placeholder="e.g. Computer Science" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Save changes</button>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { requireAuth, doc, getDoc, updateDoc, updateProfile, auth, db } from "./js/auth.js";
+import { getScreeningCombo } from "./js/subject-combo.js";
+
+let currentUser = null;
+
+requireAuth(async (user) => {
+  currentUser = user;
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('formWrap').style.display = 'block';
+
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      const d = snap.data();
+      document.getElementById('fullName').value = d.fullName || user.displayName || '';
+      document.getElementById('faculty').value = d.facultyApplyingTo || 'science';
+      document.getElementById('course').value = d.courseApplyingTo || '';
+    }
+  } catch (e) {
+    showStatus('Could not load your current profile — try refreshing.', 'error');
+  }
+});
+
+const form = document.getElementById('editForm');
+const submitBtn = document.getElementById('submitBtn');
+const statusEl = document.getElementById('formStatus');
+
+function showStatus(msg, type){
+  statusEl.textContent = msg;
+  statusEl.className = 'form-status show ' + type;
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Saving...';
+
+  const fullName = document.getElementById('fullName').value.trim();
+  const faculty = document.getElementById('faculty').value;
+  const course = document.getElementById('course').value.trim();
+
+  try {
+    await updateProfile(currentUser, { displayName: fullName });
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      fullName,
+      facultyApplyingTo: faculty,
+      courseApplyingTo: course,
+      recommendedSubjects: getScreeningCombo(faculty, course).subjects
+    });
+    showStatus('Profile updated!', 'success');
+    setTimeout(() => window.location.href = 'profile.html', 1000);
+  } catch (err) {
+    console.error('Edit profile error:', err.code, err.message);
+    showStatus('Could not save changes — please try again.', 'error');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Save changes';
+  }
+});
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>
