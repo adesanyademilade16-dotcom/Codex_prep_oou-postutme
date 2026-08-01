@@ -11,7 +11,7 @@ import {
   linkWithCredential, EmailAuthProvider
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
-  getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp,
+  getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp,
   collection, query, where, getDocs, limit, orderBy, getCountFromServer
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 import { firebaseConfig, FREE_TRIAL_LIMIT } from "./firebase-config.js";
@@ -77,39 +77,45 @@ if (typeof window !== 'undefined' && !isStandaloneApp) {
 function showInstallBanner() {
   if (isStandaloneApp) return;
   if (localStorage.getItem('installBannerDismissed') === '1') return;
-  const topBar = document.querySelector('.top-bar');
-  if (!topBar || document.getElementById('pwaInstallBanner')) return;
+  if (document.getElementById('pwaInstallBanner')) return;
 
   const banner = document.createElement('div');
   banner.id = 'pwaInstallBanner';
-  banner.style.cssText = 'background:#3d2599;color:#fff;padding:10px 16px;font-size:.78rem;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap';
-  banner.innerHTML = '<span>📲 Install Codex PREP for faster, offline-ready access.</span>';
+  banner.style.cssText = `
+    position:fixed;left:14px;right:14px;bottom:78px;z-index:600;
+    background:#fff;border-radius:16px;box-shadow:0 12px 32px rgba(20,10,60,.18);
+    border:1px solid rgba(0,0,0,.06);
+    display:flex;align-items:center;gap:12px;padding:12px 14px;
+    animation:pwaBannerIn .35s ease-out;
+  `;
+  const style = document.createElement('style');
+  style.textContent = '@keyframes pwaBannerIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}';
+  document.head.appendChild(style);
 
-  const btnWrap = document.createElement('div');
-  btnWrap.style.cssText = 'display:flex;gap:8px;flex:0 0 auto;margin-left:auto';
-
-  const installBtn = document.createElement('button');
-  installBtn.textContent = 'Install';
-  installBtn.style.cssText = 'background:#fff;color:#3d2599;border:none;border-radius:14px;padding:5px 12px;font-weight:700;font-size:.76rem;cursor:pointer';
-
-  const closeBtn = document.createElement('button');
-  closeBtn.textContent = '✕';
-  closeBtn.setAttribute('aria-label', 'Dismiss');
-  closeBtn.style.cssText = 'background:transparent;color:#fff;border:none;font-size:.95rem;cursor:pointer;opacity:.8;padding:0 4px';
-
-  btnWrap.appendChild(installBtn);
-  btnWrap.appendChild(closeBtn);
-  banner.appendChild(btnWrap);
-  topBar.insertAdjacentElement('afterend', banner);
+  const logoPath = window.location.pathname.includes('/admin/') ? '../assets/logo.png' : 'assets/logo.png';
+  banner.innerHTML = `
+    <img src="${logoPath}" onerror="this.style.display='none'"
+         style="width:42px;height:42px;border-radius:11px;flex:0 0 auto;object-fit:cover">
+    <div style="flex:1;min-width:0">
+      <div style="font-size:.84rem;font-weight:800;color:#1a1730;line-height:1.25">Install Codex PREP</div>
+      <div style="font-size:.72rem;color:#7a7690;margin-top:1px">Faster access, works offline</div>
+    </div>
+    <button type="button" id="pwaBannerInstallBtn" style="flex:0 0 auto;background:linear-gradient(135deg,#5b3df0,#3d2599);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap">Install</button>
+    <button type="button" id="pwaBannerCloseBtn" aria-label="Dismiss" style="flex:0 0 auto;background:none;border:none;font-size:1.1rem;color:#b8b4cc;cursor:pointer;padding:2px 4px;line-height:1">✕</button>
+  `;
+  document.body.appendChild(banner);
 
   function dismiss() {
-    banner.remove();
+    banner.style.transition = 'opacity .2s, transform .2s';
+    banner.style.opacity = '0';
+    banner.style.transform = 'translateY(14px)';
+    setTimeout(() => banner.remove(), 200);
     localStorage.setItem('installBannerDismissed', '1');
   }
 
-  closeBtn.addEventListener('click', dismiss);
+  document.getElementById('pwaBannerCloseBtn').addEventListener('click', dismiss);
 
-  installBtn.addEventListener('click', async () => {
+  document.getElementById('pwaBannerInstallBtn').addEventListener('click', async () => {
     if (deferredInstallPrompt) {
       deferredInstallPrompt.prompt();
       await deferredInstallPrompt.userChoice;
@@ -126,9 +132,37 @@ function showInstallBanner() {
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', showInstallBanner);
+    document.addEventListener('DOMContentLoaded', showWhatsAppBubble);
   } else {
     showInstallBanner();
+    showWhatsAppBubble();
   }
+}
+
+const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/EFYqVpoCWA39NL6y4ZTt6P?s=cl&p=a&ilr=0';
+
+function showWhatsAppBubble() {
+  if (document.getElementById('waFloatBubble')) return;
+
+  const bubble = document.createElement('a');
+  bubble.id = 'waFloatBubble';
+  bubble.href = WHATSAPP_GROUP_URL;
+  bubble.target = '_blank';
+  bubble.rel = 'noopener';
+  bubble.title = 'Join the Codex PREP WhatsApp community';
+  bubble.style.cssText = `
+    position:fixed;right:16px;bottom:150px;z-index:590;
+    width:52px;height:52px;border-radius:50%;
+    background:#25D366;box-shadow:0 6px 18px rgba(37,211,102,.45);
+    display:flex;align-items:center;justify-content:center;
+    text-decoration:none;
+  `;
+  bubble.innerHTML = `
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff">
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.87 9.87 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.8 14.02c-.24.68-1.4 1.32-1.94 1.36-.5.05-1.02.24-3.42-.74-2.87-1.18-4.68-4.09-4.83-4.28-.14-.19-1.16-1.54-1.16-2.94s.72-2.09.98-2.37c.24-.27.53-.33.7-.33h.5c.16 0 .38-.03.58.44.24.56.79 1.93.86 2.07.07.14.11.3.02.48-.09.19-.14.3-.28.46-.14.16-.29.36-.41.48-.14.14-.28.29-.12.57.16.28.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.6-.07.16-.19.7-.81.88-1.09.19-.28.37-.23.62-.14.26.09 1.63.77 1.9.91.28.14.47.21.53.33.07.12.07.68-.17 1.36Z"/>
+    </svg>
+  `;
+  document.body.appendChild(bubble);
 }
 
 if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
@@ -140,7 +174,7 @@ if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
 export {
   onAuthStateChanged, fbSignOut, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification,
-  updateProfile, doc, setDoc, getDoc, updateDoc, serverTimestamp,
+  updateProfile, doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp,
   collection, query, where, getDocs, limit, orderBy, getCountFromServer,
   GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   linkWithCredential, EmailAuthProvider
