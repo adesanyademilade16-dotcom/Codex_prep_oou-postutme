@@ -72,6 +72,12 @@ export function getScreeningCombo(faculty, course) {
         confidence: 'estimated'
       };
     }
+    if (c.includes('mass comm')) {
+      return {
+        subjects: ["PUTME_GOVERNMENT", "PUTME_LITERATURE", "PUTME_ECONOMICS", "PUTME_ENGLISH"],
+        confidence: 'confirmed'
+      };
+    }
     // Default for ANY other arts-department course (Literature, CRK,
     // Theatre Arts, Education courses filed under Arts, unlisted, etc.)
     // TEMP: using CRS in place of Mathematics until Codex confirms which
