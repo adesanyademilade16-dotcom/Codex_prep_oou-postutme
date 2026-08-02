@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Combo Reports — Codex PREP Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/theme.css">
+<style>
+  .report-card{padding:16px;margin-bottom:10px}
+  .report-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:10px}
+  .report-email{font-size:.82rem;font-weight:700;color:var(--ink)}
+  .report-date{font-size:.7rem;color:var(--muted);white-space:nowrap}
+  .report-combo{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .combo-chip-sm{font-size:.68rem;padding:3px 8px;border-radius:999px;background:var(--bg-soft);color:var(--violet-deep);font-weight:700}
+  .report-note{font-size:.84rem;color:var(--ink);background:var(--bg-soft);border-radius:8px;padding:10px;line-height:1.5}
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.86rem}
+  .resolve-btn{margin-top:10px;font-size:.76rem;padding:6px 14px}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span> <span style="opacity:.6;font-size:.7em">· Admin</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="index.html">← Admin</a>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Checking access...</div>
+</div>
+
+<div class="page-wrap" id="adminContent" style="display:none">
+  <div class="page-header">
+    <div class="eyebrow">Student Reports</div>
+    <h1>Combo Reports</h1>
+    <p>Subject combinations students have flagged as looking wrong — this is your early-warning system before exam day, not after.</p>
+  </div>
+
+  <div id="reportList"></div>
+</div>
+
+<script type="module">
+import { requireAdmin, db, collection, getDocs, query, orderBy, doc, getDoc, deleteDoc } from "../js/auth.js";
+
+const SUBJECT_LABELS = {
+  PUTME_CHEMISTRY: "Chemistry", PUTME_PHYSICS: "Physics", PUTME_BIOLOGY: "Biology",
+  PUTME_ENGLISH: "English", PUTME_GENERAL_KNOWLEDGE: "General Knowledge", PUTME_MATHEMATICS: "Mathematics",
+  PUTME_CRK: "CRK", PUTME_LITERATURE: "Literature in English", PUTME_ECONOMICS: "Economics",
+  PUTME_COMMERCE: "Commerce", PUTME_GOVERNMENT: "Government"
+};
+
+requireAdmin(async () => {
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('adminContent').style.display = 'block';
+
+  const wrap = document.getElementById('reportList');
+  try {
+    const q = query(collection(db, "combo_suggestions"), orderBy("createdAt", "desc"));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      wrap.innerHTML = '<div class="card empty">No reports yet — nothing flagged as wrong so far.</div>';
+      return;
+    }
+
+    for (const docSnap of snap.docs) {
+      const d = docSnap.data();
+      const card = document.createElement('div');
+      card.className = 'card report-card';
+      const date = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleDateString() : '';
+      const chips = (d.shownCombo || []).map(k => `<span class="combo-chip-sm">${SUBJECT_LABELS[k] || k}</span>`).join('');
+
+      let deptCourse = '';
+      if (d.uid) {
+        try {
+          const userSnap = await getDoc(doc(db, "users", d.uid));
+          if (userSnap.exists()) {
+            const ud = userSnap.data();
+            const label = { science: 'Science', arts: 'Arts', commercial: 'Commercial' }[ud.facultyApplyingTo] || ud.facultyApplyingTo || '';
+            deptCourse = [label, ud.courseApplyingTo].filter(Boolean).join(' · ');
+          }
+        } catch (e) { /* leave blank if lookup fails */ }
+      }
+
+      card.innerHTML = `
+        <div class="report-head">
+          <span class="report-email">${escapeHtml(d.email || 'Unknown student')}</span>
+          <span class="report-date">${date}</span>
+        </div>
+        ${deptCourse ? `<div style="font-size:.74rem;color:var(--violet-deep);font-weight:700;margin-bottom:8px">${escapeHtml(deptCourse)}</div>` : ''}
+        <div class="report-combo">${chips}</div>
+        <div class="report-note">${escapeHtml(d.note || '')}</div>
+        <button class="btn btn-sm btn-ghost resolve-btn">Mark reviewed &amp; remove</button>
+      `;
+      card.querySelector('.resolve-btn').addEventListener('click', async () => {
+        if (!confirm('Remove this report? Make sure you\'ve already fixed the combo if needed.')) return;
+        await deleteDoc(doc(db, "combo_suggestions", docSnap.id));
+        card.remove();
+        if (!wrap.querySelector('.report-card')) {
+          wrap.innerHTML = '<div class="card empty">No reports yet — nothing flagged as wrong so far.</div>';
+        }
+      });
+      wrap.appendChild(card);
+    }
+  } catch (e) {
+    console.error(e);
+    wrap.innerHTML = '<div class="card empty">Could not load reports — check your connection and try again.</div>';
+  }
+  if (window.CodexIcons) window.CodexIcons.render();
+});
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+</script>
+<script src="../js/icons.js"></script>
+</body>
+</html>
