@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Review Session — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  .review-item{padding:14px 16px;margin-bottom:10px;border-left:4px solid var(--border)}
+  .review-item.correct{border-left-color:var(--green)}
+  .review-item.wrong{border-left-color:var(--red)}
+  .rt{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
+  .review-item.correct .rt{color:var(--green)}
+  .review-item.wrong .rt{color:var(--red)}
+  .rq{font-size:.9rem;font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.4}
+  .ans-row{font-size:.82rem;margin-bottom:4px;padding:8px 10px;border-radius:8px}
+  .ans-row.your-wrong{background:var(--red2);color:var(--red)}
+  .ans-row.your-right{background:var(--green2);color:var(--green)}
+  .ans-row.correct-ans{background:var(--green2);color:var(--green)}
+  .ans-row b{font-weight:700}
+  .explain-box{font-size:.8rem;color:var(--muted);background:var(--bg-soft);border-radius:8px;padding:10px;margin-top:8px;line-height:1.5}
+  .summary-strip{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;margin-bottom:16px}
+  .summary-strip b{font-size:1.3rem;color:var(--violet)}
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.86rem}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="analytics.html">← Performance</a>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Loading session...</div>
+</div>
+
+<div class="page-wrap" id="pageContent" style="display:none">
+  <div class="page-header">
+    <h1>Session Review</h1>
+    <p id="sessionSubtitle">Your answers and corrections from this session.</p>
+  </div>
+
+  <div id="reviewArea"></div>
+</div>
+
+<div class="bottom-nav">
+  <a href="dashboard.html"><span class="bn-icon" data-icon="home"></span>Home</a>
+  <a href="mode-select.html"><span class="bn-icon" data-icon="exam"></span>CBT</a>
+  <a href="calculator.html"><span class="bn-icon" data-icon="calculator"></span>Calculator</a>
+  <a href="leaderboard.html"><span class="bn-icon" data-icon="trophy"></span>Rank</a>
+  <a href="profile.html"><span class="bn-icon" data-icon="profile"></span>Profile</a>
+</div>
+
+<script type="module">
+import { requireAuth, db, doc, getDoc } from "./js/auth.js";
+
+const SUBJECT_LABELS = {
+  PUTME_CHEMISTRY: "Chemistry", PUTME_PHYSICS: "Physics", PUTME_BIOLOGY: "Biology",
+  PUTME_ENGLISH: "English", PUTME_GENERAL_KNOWLEDGE: "General Knowledge", PUTME_MATHEMATICS: "Mathematics",
+  PUTME_CRK: "CRK", PUTME_LITERATURE: "Literature in English", PUTME_ECONOMICS: "Economics",
+  PUTME_COMMERCE: "Commerce", PUTME_GOVERNMENT: "Government"
+};
+
+const params = new URLSearchParams(window.location.search);
+const attemptId = params.get('id');
+
+requireAuth(async (user) => {
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('pageContent').style.display = 'block';
+
+  const area = document.getElementById('reviewArea');
+
+  if (!attemptId) {
+    area.innerHTML = '<div class="card empty">No session specified.</div>';
+    return;
+  }
+
+  try {
+    const snap = await getDoc(doc(db, "putme_attempts", attemptId));
+
+    if (!snap.exists() || snap.data().uid !== user.uid) {
+      area.innerHTML = '<div class="card empty">This session couldn\'t be found, or doesn\'t belong to your account.</div>';
+      return;
+    }
+
+    const a = snap.data();
+    const dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleDateString() : '';
+    const subjLabel = a.subject ? (SUBJECT_LABELS[a.subject] || a.subject) : (a.subjects || []).map(k => SUBJECT_LABELS[k] || k).join(', ');
+    document.getElementById('sessionSubtitle').textContent = `${subjLabel || 'Mixed'} · ${dateStr}`;
+
+    let html = `
+      <div class="card summary-strip">
+        <div>
+          <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;font-weight:700">Score</div>
+          <b>${a.score || 0}%</b>
+        </div>
+        <div style="text-align:right;font-size:.8rem;color:var(--muted)">
+          ${a.correctCount || 0} / ${a.totalQuestions || 0} correct
+        </div>
+      </div>
+    `;
+
+    (a.answers || []).forEach((ans, i) => {
+      const status = ans.isCorrect ? 'Correct' : (ans.selected ? 'Incorrect' : 'Skipped');
+      html += `
+        <div class="card review-item ${ans.isCorrect ? 'correct' : 'wrong'}">
+          <div class="rt">${status} · Q${i + 1}</div>
+          <div class="rq">${escapeHtml(ans.question || '')}</div>
+          ${ans.selected ? `<div class="ans-row ${ans.isCorrect ? 'your-right' : 'your-wrong'}"><b>You answered:</b> ${escapeHtml(ans.selected)}</div>` : ''}
+          ${!ans.isCorrect ? `<div class="ans-row correct-ans"><b>Correct answer:</b> ${escapeHtml(ans.correctAnswer || '')}</div>` : ''}
+          ${ans.explanation ? `<div class="explain-box">${escapeHtml(ans.explanation)}</div>` : ''}
+        </div>
+      `;
+    });
+
+    area.innerHTML = html;
+  } catch (e) {
+    console.error(e);
+    area.innerHTML = '<div class="card empty">Could not load this session — check your connection and try again.</div>';
+  }
+  if (window.CodexIcons) window.CodexIcons.render();
+});
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

@@ -87,7 +87,7 @@ requireAuth(async (user) => {
     }
 
     const attempts = [];
-    snap.forEach(d => attempts.push(d.data()));
+    snap.forEach(d => attempts.push({ id: d.id, ...d.data() }));
     attempts.sort((a, b) => {
       const ta = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
       const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
@@ -161,13 +161,13 @@ requireAuth(async (user) => {
       const dateStr = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate().toLocaleDateString() : '';
       const subjLabel = a.subject ? (SUBJECT_LABELS[a.subject] || a.subject) : (a.subjects || []).map(k => SUBJECT_LABELS[k] || k).join(', ');
       html += `
-        <div class="card history-item">
+        <a href="review-attempt.html?id=${encodeURIComponent(a.id)}" class="card history-item" style="display:flex;text-decoration:none;color:inherit;cursor:pointer">
           <div>
             <div class="hi-left">${subjLabel || 'Mixed'}</div>
             <div class="hi-sub">${dateStr} · ${a.totalQuestions || 0} questions</div>
           </div>
           <div class="hi-score">${a.score || 0}%</div>
-        </div>
+        </a>
       `;
     });
 
