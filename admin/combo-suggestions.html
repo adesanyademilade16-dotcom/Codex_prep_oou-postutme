@@ -41,7 +41,7 @@
 </div>
 
 <script type="module">
-import { requireAdmin, db, collection, getDocs, query, orderBy, doc, deleteDoc } from "../js/auth.js";
+import { requireAdmin, db, collection, getDocs, query, orderBy, doc, getDoc, deleteDoc } from "../js/auth.js";
 
 const SUBJECT_LABELS = {
   PUTME_CHEMISTRY: "Chemistry", PUTME_PHYSICS: "Physics", PUTME_BIOLOGY: "Biology",
@@ -64,17 +64,31 @@ requireAdmin(async () => {
       return;
     }
 
-    snap.forEach(docSnap => {
+    for (const docSnap of snap.docs) {
       const d = docSnap.data();
       const card = document.createElement('div');
       card.className = 'card report-card';
       const date = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleDateString() : '';
       const chips = (d.shownCombo || []).map(k => `<span class="combo-chip-sm">${SUBJECT_LABELS[k] || k}</span>`).join('');
+
+      let deptCourse = '';
+      if (d.uid) {
+        try {
+          const userSnap = await getDoc(doc(db, "users", d.uid));
+          if (userSnap.exists()) {
+            const ud = userSnap.data();
+            const label = { science: 'Science', arts: 'Arts', commercial: 'Commercial' }[ud.facultyApplyingTo] || ud.facultyApplyingTo || '';
+            deptCourse = [label, ud.courseApplyingTo].filter(Boolean).join(' · ');
+          }
+        } catch (e) { /* leave blank if lookup fails */ }
+      }
+
       card.innerHTML = `
         <div class="report-head">
           <span class="report-email">${escapeHtml(d.email || 'Unknown student')}</span>
           <span class="report-date">${date}</span>
         </div>
+        ${deptCourse ? `<div style="font-size:.74rem;color:var(--violet-deep);font-weight:700;margin-bottom:8px">${escapeHtml(deptCourse)}</div>` : ''}
         <div class="report-combo">${chips}</div>
         <div class="report-note">${escapeHtml(d.note || '')}</div>
         <button class="btn btn-sm btn-ghost resolve-btn">Mark reviewed &amp; remove</button>
@@ -88,7 +102,7 @@ requireAdmin(async () => {
         }
       });
       wrap.appendChild(card);
-    });
+    }
   } catch (e) {
     console.error(e);
     wrap.innerHTML = '<div class="card empty">Could not load reports — check your connection and try again.</div>';

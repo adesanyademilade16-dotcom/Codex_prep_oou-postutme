@@ -47,16 +47,27 @@
   <div class="field search-box">
     <input type="text" id="searchInput" placeholder="Search by name or email...">
   </div>
+  <div class="field search-box">
+    <select id="tierFilter" style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);font-family:var(--font);font-weight:700">
+      <option value="all">All plans</option>
+      <option value="free">Free only</option>
+      <option value="regular">Regular only</option>
+      <option value="vip">VIP only</option>
+      <option value="paid">Regular + VIP (paid users)</option>
+    </select>
+  </div>
 
   <div id="userList"></div>
 </div>
 
 <script type="module">
-import { requireAdmin, db, collection, getDocs, doc, updateDoc, setDoc } from "../js/auth.js";
+import { requireAdmin, db, collection, getDocs, doc, getDoc, updateDoc, setDoc } from "../js/auth.js";
 
 let allUsers = [];
+let currentAdminEmail = '';
 
 requireAdmin(async (adminUser) => {
+  currentAdminEmail = adminUser.email || 'unknown-admin';
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('adminContent').style.display = 'block';
 
@@ -66,7 +77,19 @@ requireAdmin(async (adminUser) => {
     snap.forEach(docSnap => allUsers.push({ id: docSnap.id, ...docSnap.data() }));
     allUsers.sort((a, b) => (a.fullName || '').localeCompare(b.fullName || ''));
     document.getElementById('countLabel').textContent = `${allUsers.length} registered users`;
-    renderUsers(allUsers);
+
+    // Only fetch subscription records for paid users - free accounts
+    // have none, and fetching all of them for everyone would be slow
+    // and unnecessary.
+    const paidUsers = allUsers.filter(u => u.subscriptionTier === 'regular' || u.subscriptionTier === 'vip');
+    await Promise.all(paidUsers.map(async (u) => {
+      try {
+        const subSnap = await getDoc(doc(db, "putme_subscriptions", u.id));
+        u.subInfo = subSnap.exists() ? subSnap.data() : null;
+      } catch (e) { u.subInfo = null; }
+    }));
+
+    applyFilters();
   } catch (e) {
     document.getElementById('userList').innerHTML = '<div class="empty">Could not load users — check your connection and try again.</div>';
   }
@@ -83,11 +106,25 @@ function renderUsers(users){
     const row = document.createElement('div');
     row.className = 'card user-row';
     const initial = (u.fullName || u.email || '?').charAt(0).toUpperCase();
+    let originLine = '';
+    if (u.subInfo) {
+      const ref = u.subInfo.lastReference || '';
+      if (ref === 'admin-manual-grant') {
+        const grantedBy = u.subInfo.grantedByAdmin || 'unknown admin (granted before tracking was added)';
+        originLine = `<p style="color:#b8860b;font-weight:700">⚠ Manually granted by ${escapeHtml(grantedBy)}</p>`;
+      } else if (ref) {
+        originLine = `<p style="color:var(--green);font-weight:700">✓ Paid via Paystack (ref: ${escapeHtml(ref)})</p>`;
+      } else {
+        originLine = `<p style="color:var(--red);font-weight:700">⚠ Paid tier set, but no subscription record found</p>`;
+      }
+    }
     row.innerHTML = `
       <div class="user-avatar">${initial}</div>
       <div class="user-info">
         <h4>${escapeHtml(u.fullName || 'Unnamed')}</h4>
         <p>${escapeHtml(u.email || '')}</p>
+        <p style="color:var(--violet-deep);font-weight:600">${escapeHtml(deptLabel(u.facultyApplyingTo))}${u.courseApplyingTo ? ' · ' + escapeHtml(u.courseApplyingTo) : ''}</p>
+        ${originLine}
       </div>
       <div class="user-actions">
         <select class="tier-select" data-uid="${u.id}">
@@ -122,7 +159,8 @@ function renderUsers(users){
             status: 'active',
             startedAt: now,
             expiresAt: now + DURATION_DAYS * 24 * 60 * 60 * 1000,
-            lastReference: 'admin-manual-grant'
+            lastReference: 'admin-manual-grant',
+            grantedByAdmin: currentAdminEmail
           }, { merge: true });
         }
 
@@ -136,21 +174,38 @@ function renderUsers(users){
   });
 }
 
+function deptLabel(faculty){
+  const map = { science: 'Science', arts: 'Arts', commercial: 'Commercial' };
+  return map[faculty] || faculty || 'No department set';
+}
+
 function escapeHtml(str){
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
 }
 
-document.getElementById('searchInput').addEventListener('input', (e) => {
-  const term = e.target.value.toLowerCase().trim();
-  if (!term) { renderUsers(allUsers); return; }
-  const filtered = allUsers.filter(u =>
-    (u.fullName || '').toLowerCase().includes(term) ||
-    (u.email || '').toLowerCase().includes(term)
-  );
+function applyFilters(){
+  const term = document.getElementById('searchInput').value.toLowerCase().trim();
+  const tier = document.getElementById('tierFilter').value;
+
+  let filtered = allUsers;
+  if (term) {
+    filtered = filtered.filter(u =>
+      (u.fullName || '').toLowerCase().includes(term) ||
+      (u.email || '').toLowerCase().includes(term)
+    );
+  }
+  if (tier === 'paid') {
+    filtered = filtered.filter(u => u.subscriptionTier === 'regular' || u.subscriptionTier === 'vip');
+  } else if (tier !== 'all') {
+    filtered = filtered.filter(u => u.subscriptionTier === tier);
+  }
   renderUsers(filtered);
-});
+}
+
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+document.getElementById('tierFilter').addEventListener('change', applyFilters);
 </script>
 <script src="../js/icons.js"></script>
 </body>
