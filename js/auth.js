@@ -11,7 +11,7 @@ import {
   linkWithCredential, EmailAuthProvider
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
-  getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp,
+  getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, addDoc, serverTimestamp,
   collection, query, where, getDocs, limit, orderBy, getCountFromServer
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 import { firebaseConfig, FREE_TRIAL_LIMIT } from "./firebase-config.js";
@@ -174,7 +174,7 @@ if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
 export {
   onAuthStateChanged, fbSignOut, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification,
-  updateProfile, doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp,
+  updateProfile, doc, setDoc, getDoc, updateDoc, deleteDoc, addDoc, serverTimestamp,
   collection, query, where, getDocs, limit, orderBy, getCountFromServer,
   GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   linkWithCredential, EmailAuthProvider
