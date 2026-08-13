@@ -56,14 +56,24 @@
       <option value="paid">Regular + VIP (paid users)</option>
     </select>
   </div>
+  <div class="field search-box">
+    <select id="trialsFilter" style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);font-family:var(--font);font-weight:700">
+      <option value="all">Any number of CBT attempts</option>
+      <option value="0">0 attempts</option>
+      <option value="1-3">1-3 attempts (normal free-tier range)</option>
+      <option value="flag">⚠ Free tier with MORE than 3 attempts</option>
+    </select>
+  </div>
+  <button type="button" id="exportBtn" class="btn btn-ghost btn-block" style="margin-bottom:16px">⬇ Export current list to CSV</button>
 
   <div id="userList"></div>
 </div>
 
 <script type="module">
-import { requireAdmin, db, collection, getDocs, doc, getDoc, updateDoc, setDoc } from "../js/auth.js";
+import { requireAdmin, db, collection, getDocs, doc, getDoc, updateDoc, setDoc, addDoc, serverTimestamp } from "../js/auth.js";
 
 let allUsers = [];
+let currentFiltered = [];
 let currentAdminEmail = '';
 
 requireAdmin(async (adminUser) => {
@@ -88,6 +98,19 @@ requireAdmin(async (adminUser) => {
         u.subInfo = subSnap.exists() ? subSnap.data() : null;
       } catch (e) { u.subInfo = null; }
     }));
+
+    // Attempt counts come from the leaderboard collection, which
+    // already tracks totalAttempts per student (updated after every
+    // CBT session) - reusing it here is far cheaper than querying
+    // putme_attempts individually for 200+ users.
+    try {
+      const lbSnap = await getDocs(collection(db, "leaderboard"));
+      const lbMap = {};
+      lbSnap.forEach(d => { lbMap[d.id] = d.data().totalAttempts || 0; });
+      allUsers.forEach(u => { u.attempts = lbMap[u.id] || 0; });
+    } catch (e) {
+      allUsers.forEach(u => { u.attempts = null; });
+    }
 
     applyFilters();
   } catch (e) {
@@ -118,12 +141,18 @@ function renderUsers(users){
         originLine = `<p style="color:var(--red);font-weight:700">⚠ Paid tier set, but no subscription record found</p>`;
       }
     }
+    let attemptsLine = '';
+    if (u.attempts !== null && u.attempts !== undefined) {
+      const isSuspicious = u.subscriptionTier === 'free' && u.attempts > 3;
+      attemptsLine = `<p style="${isSuspicious ? 'color:var(--red);font-weight:700' : 'color:var(--muted)'}">${isSuspicious ? '⚠ ' : ''}${u.attempts} CBT attempt${u.attempts === 1 ? '' : 's'}${isSuspicious ? ' — exceeds free limit' : ''}</p>`;
+    }
     row.innerHTML = `
       <div class="user-avatar">${initial}</div>
       <div class="user-info">
         <h4>${escapeHtml(u.fullName || 'Unnamed')}</h4>
         <p>${escapeHtml(u.email || '')}</p>
         <p style="color:var(--violet-deep);font-weight:600">${escapeHtml(deptLabel(u.facultyApplyingTo))}${u.courseApplyingTo ? ' · ' + escapeHtml(u.courseApplyingTo) : ''}</p>
+        ${attemptsLine}
         ${originLine}
       </div>
       <div class="user-actions">
@@ -165,6 +194,23 @@ function renderUsers(users){
         }
 
         u.subscriptionTier = newTier;
+
+        // Permanent audit trail — every tier change, by whom, and
+        // when. Read-only for admins, nobody can edit or delete
+        // entries once written (see firestore.rules).
+        try {
+          await addDoc(collection(db, "admin_audit_log"), {
+            action: 'tier_change',
+            adminEmail: currentAdminEmail,
+            targetUid: uid,
+            targetEmail: u.email || '',
+            oldTier: original,
+            newTier: newTier,
+            timestamp: serverTimestamp()
+          });
+        } catch (logErr) {
+          console.error('Audit log write failed (tier change still succeeded):', logErr);
+        }
       } catch (err) {
         alert('Could not update plan — ' + (err.code || err.message));
         e.target.value = u.subscriptionTier;
@@ -188,6 +234,7 @@ function escapeHtml(str){
 function applyFilters(){
   const term = document.getElementById('searchInput').value.toLowerCase().trim();
   const tier = document.getElementById('tierFilter').value;
+  const trials = document.getElementById('trialsFilter').value;
 
   let filtered = allUsers;
   if (term) {
@@ -201,11 +248,55 @@ function applyFilters(){
   } else if (tier !== 'all') {
     filtered = filtered.filter(u => u.subscriptionTier === tier);
   }
+  if (trials === '0') {
+    filtered = filtered.filter(u => (u.attempts || 0) === 0);
+  } else if (trials === '1-3') {
+    filtered = filtered.filter(u => (u.attempts || 0) >= 1 && (u.attempts || 0) <= 3);
+  } else if (trials === 'flag') {
+    filtered = filtered.filter(u => u.subscriptionTier === 'free' && (u.attempts || 0) > 3);
+  }
+  currentFiltered = filtered;
   renderUsers(filtered);
 }
 
 document.getElementById('searchInput').addEventListener('input', applyFilters);
 document.getElementById('tierFilter').addEventListener('change', applyFilters);
+document.getElementById('trialsFilter').addEventListener('change', applyFilters);
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const rows = [['Full Name', 'Email', 'Department', 'Course', 'Plan', 'CBT Attempts', 'Payment Origin', 'Reference / Granted By']];
+  currentFiltered.forEach(u => {
+    let origin = '';
+    let refOrGrantor = '';
+    if (u.subscriptionTier === 'free') {
+      origin = 'N/A';
+    } else if (u.subInfo && u.subInfo.lastReference === 'admin-manual-grant') {
+      origin = 'Manually granted';
+      refOrGrantor = u.subInfo.grantedByAdmin || 'unknown (pre-tracking)';
+    } else if (u.subInfo && u.subInfo.lastReference) {
+      origin = 'Paid via Paystack';
+      refOrGrantor = u.subInfo.lastReference;
+    } else {
+      origin = 'NO SUBSCRIPTION RECORD FOUND';
+      refOrGrantor = '';
+    }
+    rows.push([
+      u.fullName || '', u.email || '', deptLabel(u.facultyApplyingTo), u.courseApplyingTo || '',
+      u.subscriptionTier || '', u.attempts != null ? u.attempts : '', origin, refOrGrantor
+    ]);
+  });
+
+  const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `codex-prep-users-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
 </script>
 <script src="../js/icons.js"></script>
 </body>
