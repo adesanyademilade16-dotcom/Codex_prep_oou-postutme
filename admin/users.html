@@ -61,7 +61,7 @@
       <option value="all">Any number of CBT attempts</option>
       <option value="0">0 attempts</option>
       <option value="1-3">1-3 attempts (normal free-tier range)</option>
-      <option value="flag">⚠ Free tier with MORE than 3 attempts</option>
+      <option value="flag">⚠ More than 3 CBT attempts</option>
     </select>
   </div>
   <button type="button" id="exportBtn" class="btn btn-ghost btn-block" style="margin-bottom:16px">⬇ Export current list to CSV</button>
@@ -143,8 +143,8 @@ function renderUsers(users){
     }
     let attemptsLine = '';
     if (u.attempts !== null && u.attempts !== undefined) {
-      const isSuspicious = u.subscriptionTier === 'free' && u.attempts > 3;
-      attemptsLine = `<p style="${isSuspicious ? 'color:var(--red);font-weight:700' : 'color:var(--muted)'}">${isSuspicious ? '⚠ ' : ''}${u.attempts} CBT attempt${u.attempts === 1 ? '' : 's'}${isSuspicious ? ' — exceeds free limit' : ''}</p>`;
+      const isSuspicious = u.attempts > 3;
+      attemptsLine = `<p style="${isSuspicious ? 'color:var(--red);font-weight:700' : 'color:var(--muted)'}">${isSuspicious ? '⚠ ' : ''}${u.attempts} CBT attempt${u.attempts === 1 ? '' : 's'}</p>`;
     }
     row.innerHTML = `
       <div class="user-avatar">${initial}</div>
@@ -253,7 +253,7 @@ function applyFilters(){
   } else if (trials === '1-3') {
     filtered = filtered.filter(u => (u.attempts || 0) >= 1 && (u.attempts || 0) <= 3);
   } else if (trials === 'flag') {
-    filtered = filtered.filter(u => u.subscriptionTier === 'free' && (u.attempts || 0) > 3);
+    filtered = filtered.filter(u => (u.attempts || 0) > 3);
   }
   currentFiltered = filtered;
   renderUsers(filtered);
