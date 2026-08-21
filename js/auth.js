@@ -223,7 +223,7 @@ export function requireAuth(onReady, options = {}) {
 
   if (typeof options.onState === 'function') options.onState('loading');
 
-  return onAuthStateChanged(auth, (user) => {
+  return onAuthStateChanged(auth, async (user) => {
     settled = true;
     clearTimeout(timeoutId);
     if (!user) {
@@ -231,6 +231,23 @@ export function requireAuth(onReady, options = {}) {
       window.location.href = "login.html";
       return;
     }
+
+    // Google accounts are already verified by Google, so this never
+    // blocks them — it only gates email/password signups who haven't
+    // clicked their verification link yet. The cached emailVerified
+    // flag can be STALE if they verified in a different tab/device;
+    // only pay for a fresh reload() in the boundary case where the
+    // cheap cached flag currently says "not verified", so the common
+    // case (already verified) stays a single cheap check on every
+    // page load rather than a network round-trip every time.
+    if (!options.allowUnverified && !user.emailVerified) {
+      try { await user.reload(); } catch (e) { /* fall through with cached state */ }
+      if (!user.emailVerified) {
+        window.location.href = "verify-email.html";
+        return;
+      }
+    }
+
     if (typeof options.onState === 'function') options.onState('authenticated', user);
     onReady(user);
   }, (error) => {
