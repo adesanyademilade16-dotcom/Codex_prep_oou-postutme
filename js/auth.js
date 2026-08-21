@@ -212,6 +212,20 @@ export function requireAdmin(onReady, options = {}) {
   });
 }
 
+// Accounts created before this moment are grandfathered past the email-
+// verification gate below — they were able to log in freely before this
+// feature existed, and re-locking them out on a rule that didn't apply
+// when they signed up would just look like a broken app to them. Only
+// accounts created from this point forward are required to verify.
+// Set this to the exact date/time you merge this to main, then leave it —
+// it's a one-time cutoff, not something to keep bumping.
+const EMAIL_VERIFICATION_CUTOFF = new Date("2026-08-21T00:00:00Z").getTime();
+
+function isLegacyAccount(user) {
+  const createdAt = user?.metadata?.creationTime ? new Date(user.metadata.creationTime).getTime() : 0;
+  return createdAt > 0 && createdAt < EMAIL_VERIFICATION_CUTOFF;
+}
+
 // Redirects to login if nobody's signed in. Call at the top of any page
 // that requires auth. Optional state callbacks make Auth initialization
 // observable without changing the behavior of existing callers.
@@ -234,13 +248,16 @@ export function requireAuth(onReady, options = {}) {
 
     // Google accounts are already verified by Google, so this never
     // blocks them — it only gates email/password signups who haven't
-    // clicked their verification link yet. The cached emailVerified
-    // flag can be STALE if they verified in a different tab/device;
-    // only pay for a fresh reload() in the boundary case where the
-    // cheap cached flag currently says "not verified", so the common
-    // case (already verified) stays a single cheap check on every
-    // page load rather than a network round-trip every time.
-    if (!options.allowUnverified && !user.emailVerified) {
+    // clicked their verification link yet. Accounts created before
+    // EMAIL_VERIFICATION_CUTOFF are grandfathered in (see isLegacyAccount)
+    // so existing users aren't suddenly locked out by a rule that didn't
+    // exist when they signed up. The cached emailVerified flag can be
+    // STALE if they verified in a different tab/device; only pay for a
+    // fresh reload() in the boundary case where the cheap cached flag
+    // currently says "not verified", so the common case (already
+    // verified) stays a single cheap check on every page load rather
+    // than a network round-trip every time.
+    if (!options.allowUnverified && !isLegacyAccount(user) && !user.emailVerified) {
       try { await user.reload(); } catch (e) { /* fall through with cached state */ }
       if (!user.emailVerified) {
         window.location.href = "verify-email.html";
