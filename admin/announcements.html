@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3d2599">
+<title>Announcements — Codex PREP Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/theme.css">
+<style>
+  .admin-layout{max-width:1180px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+  .full{grid-column:1/-1}
+  .add-form{display:none;margin-bottom:18px}
+  .preset-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .preset-btn{padding:7px 12px;font-size:.74rem;border-radius:8px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:var(--font);font-weight:700;color:var(--ink2);min-height:36px}
+  .preset-btn:hover{border-color:var(--violet2);color:var(--violet-deep);background:var(--blue-soft)}
+  .checkbox-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .checkbox-row input{width:18px;height:18px;accent-color:var(--violet)}
+  .checkbox-row label{font-size:.8rem;font-weight:600;color:var(--ink2);text-transform:none;margin:0}
+  .ann-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+  .ann-row{padding:16px;min-width:0}
+  .ann-row-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:5px}
+  .ann-row h4{font-size:.9rem;font-weight:800;line-height:1.35}
+  .ann-row .ann-desc{font-size:.76rem;color:var(--muted);margin-top:3px;line-height:1.5;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+  .ann-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;font-size:.66rem}
+  .ann-tag{padding:4px 8px;border-radius:999px;font-weight:700;background:var(--bg-soft);color:var(--muted)}
+  .ann-tag.active{background:var(--green2);color:var(--green)}
+  .ann-tag.inactive{background:#eee;color:var(--muted)}
+  .ann-thumb{width:100%;max-height:180px;object-fit:contain;border-radius:11px;margin-bottom:11px;background:var(--bg-soft)}
+  .ann-row-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+  .empty{text-align:center;padding:42px 20px;color:var(--muted);font-size:.84rem;grid-column:1/-1}
+  .preview-frame{border:1px dashed var(--border);border-radius:12px;padding:12px;margin:12px 0;background:var(--bg)}
+  @media(max-width:760px){.form-grid{display:block}.ann-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span> <span style="opacity:.6;font-size:.7em">· Admin</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="index.html">← Overview</a>
+</div>
+
+<div class="page-wrap admin-layout" id="authGate" style="padding-top:60px"><div class="loading-msg">Checking access...</div></div>
+
+<div class="page-wrap admin-layout" id="adminContent" style="display:none">
+  <div class="page-header">
+    <div class="eyebrow">Communication</div>
+    <h1>Announcements</h1>
+    <p>Create updates that appear in the student dashboard and notification centre.</p>
+  </div>
+
+  <button class="btn btn-primary btn-block" id="toggleFormBtn" style="margin-bottom:16px">+ New announcement</button>
+
+  <div class="card add-form" id="addForm">
+    <h3 id="formTitle" style="font-size:.95rem;font-weight:800;margin-bottom:16px">New announcement</h3>
+    <div class="form-grid">
+      <div class="field"><label for="annTitle">Title</label><input id="annTitle" maxlength="120" placeholder="e.g. This week's top aspirants!"></div>
+      <div class="field"><label for="annPriority">Priority</label><input type="number" id="annPriority" value="0" step="1" min="-100" max="100"><p class="field-hint">Higher numbers appear first.</p></div>
+      <div class="field full"><label for="annDescription">Description</label><textarea id="annDescription" rows="4" maxlength="1000" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:var(--font);font-size:.9rem;resize:vertical" placeholder="Tell students what they need to know..."></textarea></div>
+      <div class="field full"><label for="annImage">Announcement image</label><div style="display:flex;gap:8px;flex-wrap:wrap"><input type="url" id="annImage" placeholder="https://..." style="flex:1;min-width:220px"><label class="btn btn-ghost" for="annImageFile" style="display:inline-flex;align-items:center;justify-content:center;cursor:pointer">Upload image</label><input type="file" id="annImageFile" accept="image/jpeg,image/png,image/webp,image/gif" hidden></div><p class="field-hint">Upload from your phone (recommended). Max 5 MB. You can also paste a direct HTTPS image URL.</p><div id="imageUploadStatus" style="font-size:.72rem;color:var(--muted);margin-top:6px"></div><img id="annImagePreview" style="display:none;width:100%;max-height:180px;object-fit:cover;border-radius:11px;margin-top:8px" alt="Announcement preview"></div>
+      <div class="field"><label for="annCtaText">CTA text</label><input id="annCtaText" maxlength="40" placeholder="View leaderboard"></div>
+      <div class="field"><label for="annCtaUrl">CTA destination</label><input id="annCtaUrl" placeholder="leaderboard.html or https://..."><p class="field-hint">Only .html internal routes or HTTPS links are accepted.</p></div>
+      <div class="field"><label for="annStart">Starts</label><input type="datetime-local" id="annStart"><p class="field-hint">Blank = active immediately.</p></div>
+      <div class="field"><label for="annExpires">Expires</label><input type="datetime-local" id="annExpires"><div class="preset-row"><button type="button" class="preset-btn" data-hours="24">24 hours</button><button type="button" class="preset-btn" data-hours="72">3 days</button><button type="button" class="preset-btn" data-hours="168">7 days</button><button type="button" class="preset-btn" id="clearExpiresBtn">Indefinite</button></div></div>
+    </div>
+    <div class="checkbox-row"><input type="checkbox" id="annImportant"><label for="annImportant">Mark as important</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="annDraft"><label for="annDraft">Save as inactive draft</label></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn btn-ghost" id="previewBtn" type="button" style="flex:1;min-width:130px">Preview</button>
+      <button class="btn btn-primary" id="saveBtn" type="button" style="flex:1;min-width:180px">Save announcement</button>
+    </div>
+    <button class="btn btn-ghost btn-block" id="cancelEditBtn" type="button" style="display:none;margin-top:8px">Cancel edit</button>
+  </div>
+
+  <div id="annList" class="ann-list"></div>
+</div>
+
+<script type="module">
+import { requireAdmin, db, auth, collection, getDocs, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from "../js/auth.js";
+import { uploadAnnouncementImage } from "../js/imagekit.js";
+import { showAnnouncementModal } from "../js/announcements.js";
+
+let announcements=[]; let editingId=null; let adminEmail='admin'; let adminUid='';
+const $ = id => document.getElementById(id);
+
+requireAdmin(async user => {
+  adminEmail=user.email||'admin'; adminUid=user.uid; window.__CODEX_FIREBASE_AUTH__ = auth; $('authGate').style.display='none'; $('adminContent').style.display='block'; await loadAnnouncements();
+});
+
+function toMillis(v){ return v && typeof v.toMillis==='function' ? v.toMillis() : null; }
+function fmtDate(v){ const ms=toMillis(v); return ms ? new Date(ms).toLocaleString(undefined,{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : null; }
+function esc(v){ const d=document.createElement('div'); d.textContent=v==null?'':String(v); return d.innerHTML; }
+function validUrl(v){ if(!v) return true; return /^(https:\/\/|[a-zA-Z0-9_./-]+\.html(?:[?#].*)?$)/i.test(v) && !v.includes('\\') && !v.includes('..'); }
+function validImage(v){ return !v || /^https:\/\//i.test(v); }
+function readForm(){
+  const start=$('annStart').value, expires=$('annExpires').value;
+  return {
+    title:$('annTitle').value.trim()||null,
+    description:$('annDescription').value.trim()||null,
+    imageUrl:$('annImage').value.trim()||null,
+    imageFileId:$('annImageFile').dataset.imagekitFileId||null,
+    ctaText:$('annCtaText').value.trim()||null,
+    ctaUrl:$('annCtaUrl').value.trim()||null,
+    priority:Math.max(-100,Math.min(100,parseInt($('annPriority').value,10)||0)),
+    important:$('annImportant').checked,
+    audience:'all',
+    status:$('annDraft').checked?'inactive':'active',
+    startAt:start?new Date(start):null,
+    expiresAt:expires?new Date(expires):null
+  };
+}
+async function loadAnnouncements(){
+  try{ const snap=await getDocs(collection(db,'announcements')); announcements=snap.docs.map(d=>({id:d.id,...d.data()})); announcements.sort((a,b)=>(Number(b.priority)||0)-(Number(a.priority)||0)||(toMillis(b.createdAt)||0)-(toMillis(a.createdAt)||0)); render(); }
+  catch(e){ $('annList').innerHTML='<div class="empty">Could not load announcements. Check your connection and admin access.</div>'; }
+}
+function render(){
+  if(!announcements.length){$('annList').innerHTML='<div class="empty">No announcements yet — create your first one above.</div>';return;}
+  $('annList').innerHTML='';
+  announcements.forEach(a=>{
+    const row=document.createElement('article'); row.className='card ann-row';
+    const active=a.status==='active';
+    row.innerHTML=`${a.imageUrl?`<img class="ann-thumb" src="${esc(a.imageUrl)}" alt="">`:''}<div class="ann-row-top"><h4>${esc(a.title||'(untitled announcement)')}</h4></div>${a.description?`<p class="ann-desc">${esc(a.description)}</p>`:''}<div class="ann-meta"><span class="ann-tag ${active?'active':'inactive'}">${active?'Active':'Inactive'}</span><span class="ann-tag">Priority ${Number(a.priority)||0}</span>${a.important?'<span class="ann-tag">Important</span>':''}${fmtDate(a.startAt)?`<span class="ann-tag">From ${fmtDate(a.startAt)}</span>`:''}${fmtDate(a.expiresAt)?`<span class="ann-tag">Until ${fmtDate(a.expiresAt)}</span>`:'<span class="ann-tag">No expiry</span>'}</div><div class="ann-row-actions"><button class="btn btn-sm btn-ghost p">Preview</button><button class="btn btn-sm btn-ghost e">Edit</button><button class="btn btn-sm btn-ghost t">${active?'Deactivate':'Activate'}</button><button class="btn btn-sm btn-ghost d" style="color:var(--red)">Delete</button></div>`;
+    row.querySelector('.p').onclick=()=>showAnnouncementModal(a); row.querySelector('.e').onclick=()=>startEdit(a); row.querySelector('.t').onclick=()=>toggle(a); row.querySelector('.d').onclick=()=>remove(a); $('annList').appendChild(row);
+  });
+}
+function startEdit(a){ editingId=a.id; $('formTitle').textContent='Edit announcement'; $('annTitle').value=a.title||''; $('annDescription').value=a.description||''; $('annImage').value=a.imageUrl||''; $('annImageFile').dataset.imagekitFileId=a.imageFileId||''; $('annImageFile').dataset.imagekitUrl=a.imageFileId ? (a.imageUrl||'') : ''; $('annCtaText').value=a.ctaText||''; $('annCtaUrl').value=a.ctaUrl||''; $('annPriority').value=a.priority||0; $('annStart').value=toLocal(a.startAt); $('annExpires').value=toLocal(a.expiresAt); $('annImportant').checked=!!a.important; $('annDraft').checked=a.status!=='active'; $('saveBtn').textContent='Update announcement'; $('cancelEditBtn').style.display='block'; $('addForm').style.display='block'; updatePreview(); scrollTo({top:0,behavior:'smooth'}); }
+function toLocal(v){ const ms=toMillis(v); if(!ms)return''; const d=new Date(ms),p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; }
+function reset(){ editingId=null; $('annImageFile').value=''; $('annImageFile').dataset.imagekitFileId=''; $('annImageFile').dataset.imagekitUrl=''; $('imageUploadStatus').textContent=''; $('formTitle').textContent='New announcement'; ['annTitle','annDescription','annImage','annCtaText','annCtaUrl','annStart','annExpires'].forEach(id=>$(id).value=''); $('annPriority').value=0; $('annImportant').checked=false; $('annDraft').checked=false; $('saveBtn').textContent='Save announcement'; $('cancelEditBtn').style.display='none'; updatePreview(); }
+function updatePreview(){ const u=$('annImage').value.trim(), img=$('annImagePreview'); if(u&&validImage(u)){img.src=u;img.style.display='block';img.onerror=()=>img.style.display='none';}else{img.removeAttribute('src');img.style.display='none';} }
+
+async function deleteImageKitFile(fileId){
+  if(!fileId) return false;
+  try {
+    const token = await auth.currentUser?.getIdToken?.();
+    if(!token) return false;
+    const response = await fetch('/api/imagekit-delete', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+      body:JSON.stringify({fileId})
+    });
+    return response.ok;
+  } catch (e) {
+    console.warn('ImageKit cleanup failed:', e);
+    return false;
+  }
+}
+async function toggle(a){try{await updateDoc(doc(db,'announcements',a.id),{status:a.status==='active'?'inactive':'active',updatedAt:serverTimestamp()});await loadAnnouncements();}catch(e){alert('Could not update — '+(e.code||e.message));}}
+async function remove(a){
+  if(!confirm(`Delete "${a.title||'(untitled)'}"? This cannot be undone.`))return;
+  try{
+    await deleteDoc(doc(db,'announcements',a.id));
+    if(a.imageFileId) await deleteImageKitFile(a.imageFileId);
+    await loadAnnouncements();
+  }catch(e){alert('Could not delete — '+(e.code||e.message));}
+}
+$('toggleFormBtn').onclick=()=>{const open=$('addForm').style.display==='block';$('addForm').style.display=open?'none':'block';if(open)reset();};
+$('cancelEditBtn').onclick=()=>{reset();$('addForm').style.display='none';};
+$('annImage').addEventListener('input',()=>{ const uploaded=$('annImageFile').dataset.imagekitUrl||''; if(uploaded && $('annImage').value.trim()!==uploaded){ $('annImageFile').dataset.imagekitFileId=''; $('annImageFile').dataset.imagekitUrl=''; } updatePreview(); });
+$('annImage').addEventListener('blur',updatePreview);
+$('annImageFile').addEventListener('change', async (event) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  const status = $('imageUploadStatus');
+  if (!/^image\/(jpeg|png|webp|gif)$/.test(file.type)) { status.textContent='Please choose a JPG, PNG, WEBP or GIF image.'; event.target.value=''; return; }
+  if (file.size > 5 * 1024 * 1024) { status.textContent='Image is too large. Maximum size is 5 MB.'; event.target.value=''; return; }
+  status.textContent='Preparing image…';
+  try {
+    const result = await uploadAnnouncementImage(file, {
+      onProgress: (percent) => { status.textContent = `Uploading image… ${percent}%`; }
+    });
+    $('annImage').value = result.url;
+    $('annImageFile').dataset.imagekitFileId = result.fileId || '';
+    $('annImageFile').dataset.imagekitUrl = result.url;
+    updatePreview();
+    status.textContent = result.compressed
+      ? '✓ Uploaded and optimized for mobile.'
+      : '✓ Image uploaded successfully.';
+  } catch (e) {
+    status.textContent='Upload failed — '+(e.message || 'try again');
+  }
+  event.target.value='';
+});
+$('previewBtn').onclick=()=>{const v=readForm();if(!v.title&&!v.description&&!v.imageUrl){alert('Add a title, description, or image first.');return;}if(v.ctaUrl&&!validUrl(v.ctaUrl)){alert('CTA destination must be an .html route or HTTPS URL.');return;}showAnnouncementModal(v);};
+$('clearExpiresBtn').onclick=()=>$('annExpires').value='';
+document.querySelectorAll('[data-hours]').forEach(b=>b.onclick=()=>{$('annExpires').value=toLocal(new Date(Date.now()+Number(b.dataset.hours)*3600000));});
+$('saveBtn').onclick=async()=>{
+  const v=readForm();
+  if(!v.title&&!v.description&&!v.imageUrl){alert('Add a title, description, or image.');return;}
+  if(v.imageUrl&&!validImage(v.imageUrl)){alert('Image URL must use HTTPS.');return;}
+  if(v.ctaText&&!v.ctaUrl){alert('Add a CTA destination or remove the CTA text.');return;}
+  if(v.ctaUrl&&!validUrl(v.ctaUrl)){alert('CTA destination must be an .html route or HTTPS URL.');return;}
+  if(v.startAt&&v.expiresAt&&v.startAt>=v.expiresAt){alert('Expiry must be after the start time.');return;}
+  const btn=$('saveBtn');btn.disabled=true;
+  try{
+    let previousFileId=null;
+    if(editingId){
+      const previous=announcements.find(a=>a.id===editingId);
+      previousFileId=previous?.imageFileId||null;
+      await updateDoc(doc(db,'announcements',editingId),{...v,updatedAt:serverTimestamp()});
+      if(previousFileId && previousFileId !== v.imageFileId) await deleteImageKitFile(previousFileId);
+    }else{
+      await addDoc(collection(db,'announcements'),{...v,createdBy:adminEmail,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+    }
+    reset();$('addForm').style.display='none';await loadAnnouncements();
+  }catch(e){alert('Could not save — '+(e.code||e.message));}
+  finally{btn.disabled=false;}
+};
+</script>
+<script src="../js/icons.js"></script>
+</body>
+</html>

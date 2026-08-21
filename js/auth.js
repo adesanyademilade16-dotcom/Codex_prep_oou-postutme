@@ -20,123 +20,28 @@ export const app  = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db   = getFirestore(app);
 
-// ===========================================================
-// PWA setup — runs automatically on every page that imports this
-// file (which is almost every page in the app), so individual
-// pages don't each need their own manifest link / SW registration.
-// ===========================================================
-if (typeof document !== 'undefined' && !document.querySelector('link[rel="manifest"]')) {
-  const head = document.head;
+// Authentication must never leave a protected page in an unexplained
+// infinite loading state. This timeout does NOT sign users out or redirect
+// them; it only exposes a recovery state while the Auth observer remains
+// active. A slow connection can therefore still recover normally.
+export const AUTH_INIT_TIMEOUT_MS = 12000;
 
-  const manifestLink = document.createElement('link');
-  manifestLink.rel = 'manifest';
-  manifestLink.href = '/manifest.json';
-  head.appendChild(manifestLink);
-
-  const themeColor = document.createElement('meta');
-  themeColor.name = 'theme-color';
-  themeColor.content = '#3d2599';
-  head.appendChild(themeColor);
-
-  const appleTouchIcon = document.createElement('link');
-  appleTouchIcon.rel = 'apple-touch-icon';
-  appleTouchIcon.href = '/assets/icons/apple-touch-icon.png';
-  head.appendChild(appleTouchIcon);
-
-  const appleCapable = document.createElement('meta');
-  appleCapable.name = 'apple-mobile-web-app-capable';
-  appleCapable.content = 'yes';
-  head.appendChild(appleCapable);
-
-  const favicon32 = document.createElement('link');
-  favicon32.rel = 'icon';
-  favicon32.sizes = '32x32';
-  favicon32.href = '/assets/icons/favicon-32.png';
-  head.appendChild(favicon32);
-}
-
-let deferredInstallPrompt = null;
-const isStandaloneApp = typeof window !== 'undefined' &&
-  (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true);
-const isIOSDevice = typeof navigator !== 'undefined' && /iphone|ipad|ipod/i.test(navigator.userAgent);
-
-if (typeof window !== 'undefined' && !isStandaloneApp) {
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-  });
-}
-
-// ===========================================================
-// Install reminder banner — shown once per dismissal, below the
-// page header, on every page that imports this file. Not shown
-// if already installed, and stays hidden after the student
-// dismisses it once (localStorage), so it's a one-time nudge,
-// not a nag.
-// ===========================================================
-function showInstallBanner() {
-  if (isStandaloneApp) return;
-  if (localStorage.getItem('installBannerDismissed') === '1') return;
-  if (document.getElementById('pwaInstallBanner')) return;
-
-  const banner = document.createElement('div');
-  banner.id = 'pwaInstallBanner';
-  banner.style.cssText = `
-    position:fixed;left:14px;right:14px;bottom:78px;z-index:600;
-    background:#fff;border-radius:16px;box-shadow:0 12px 32px rgba(20,10,60,.18);
-    border:1px solid rgba(0,0,0,.06);
-    display:flex;align-items:center;gap:12px;padding:12px 14px;
-    animation:pwaBannerIn .35s ease-out;
-  `;
-  const style = document.createElement('style');
-  style.textContent = '@keyframes pwaBannerIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}';
-  document.head.appendChild(style);
-
-  const logoPath = window.location.pathname.includes('/admin/') ? '../assets/logo.png' : 'assets/logo.png';
-  banner.innerHTML = `
-    <img src="${logoPath}" onerror="this.style.display='none'"
-         style="width:42px;height:42px;border-radius:11px;flex:0 0 auto;object-fit:cover">
-    <div style="flex:1;min-width:0">
-      <div style="font-size:.84rem;font-weight:800;color:#1a1730;line-height:1.25">Install Codex PREP</div>
-      <div style="font-size:.72rem;color:#7a7690;margin-top:1px">Faster access, works offline</div>
-    </div>
-    <button type="button" id="pwaBannerInstallBtn" style="flex:0 0 auto;background:linear-gradient(135deg,#5b3df0,#3d2599);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap">Install</button>
-    <button type="button" id="pwaBannerCloseBtn" aria-label="Dismiss" style="flex:0 0 auto;background:none;border:none;font-size:1.1rem;color:#b8b4cc;cursor:pointer;padding:2px 4px;line-height:1">✕</button>
-  `;
-  document.body.appendChild(banner);
-
-  function dismiss() {
-    banner.style.transition = 'opacity .2s, transform .2s';
-    banner.style.opacity = '0';
-    banner.style.transform = 'translateY(14px)';
-    setTimeout(() => banner.remove(), 200);
-    localStorage.setItem('installBannerDismissed', '1');
-  }
-
-  document.getElementById('pwaBannerCloseBtn').addEventListener('click', dismiss);
-
-  document.getElementById('pwaBannerInstallBtn').addEventListener('click', async () => {
-    if (deferredInstallPrompt) {
-      deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice;
-      deferredInstallPrompt = null;
-    } else if (isIOSDevice) {
-      alert('To install: tap the Share button in Safari, then "Add to Home Screen."');
-    } else {
-      alert('Open your browser menu (⋮) and choose "Add to Home Screen" or "Install app."');
-    }
-    dismiss();
-  });
-}
+// PWA lifecycle and installation UX are centralized in js/pwa.js.
+import "./pwa.js";
 
 const WHATSAPP_GROUP_URL = 'https://chat.whatsapp.com/EFYqVpoCWA39NL6y4ZTt6P?s=cl&p=a&ilr=0';
 
 if (typeof document !== 'undefined') {
+  // Install-prompt UX is handled entirely inside js/pwa.js (imported
+  // above for its side effects) — it registers its own listeners and
+  // shows its own banner independently. Calling a same-named function
+  // here would throw (it's not defined in this module's scope; ES
+  // modules don't share scope just because one imports another), and
+  // since this used to run at top-level module-evaluation time, that
+  // throw could break every page importing from auth.js at all.
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', showInstallBanner);
     document.addEventListener('DOMContentLoaded', showWhatsAppBubble);
   } else {
-    showInstallBanner();
     showWhatsAppBubble();
   }
 }
@@ -177,7 +82,7 @@ export {
   updateProfile, doc, setDoc, getDoc, updateDoc, deleteDoc, addDoc, serverTimestamp,
   collection, query, where, getDocs, limit, orderBy, getCountFromServer,
   GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
-  linkWithCredential, EmailAuthProvider
+  linkWithCredential, EmailAuthProvider,
 };
 
 // ===========================================================
@@ -275,30 +180,98 @@ export async function checkIsAdmin() {
 // Same as requireAuth, but also verifies the signed-in user is an
 // admin via checkIsAdmin(). Non-admins get sent back to the
 // dashboard rather than seeing any admin content flash on screen.
-export function requireAdmin(onReady) {
-  onAuthStateChanged(auth, async (user) => {
+export function requireAdmin(onReady, options = {}) {
+  let settled = false;
+  let timeoutId = setTimeout(() => {
+    if (!settled && typeof options.onTimeout === 'function') options.onTimeout();
+  }, options.timeoutMs || AUTH_INIT_TIMEOUT_MS);
+
+  return onAuthStateChanged(auth, async (user) => {
+    settled = true;
+    clearTimeout(timeoutId);
+    if (typeof options.onState === 'function') options.onState(user ? 'authenticated' : 'unauthenticated', user);
     if (!user) {
       window.location.href = "../login.html";
       return;
     }
-    const isAdmin = await checkIsAdmin();
-    if (!isAdmin) {
-      window.location.href = "../dashboard.html";
-      return;
+    try {
+      const isAdmin = await checkIsAdmin();
+      if (!isAdmin) {
+        window.location.href = "../dashboard.html";
+        return;
+      }
+      onReady(user);
+    } catch (e) {
+      if (typeof options.onError === 'function') options.onError(e);
     }
-    onReady(user);
+  }, (error) => {
+    settled = true;
+    clearTimeout(timeoutId);
+    if (typeof options.onState === 'function') options.onState('error', error);
+    if (typeof options.onError === 'function') options.onError(error);
   });
 }
 
-// Redirects to login if nobody's signed in. Call at the top of
-// any page that requires auth. Returns the user via callback.
-export function requireAuth(onReady) {
-  onAuthStateChanged(auth, (user) => {
+// Accounts created before this moment are grandfathered past the email-
+// verification gate below — they were able to log in freely before this
+// feature existed, and re-locking them out on a rule that didn't apply
+// when they signed up would just look like a broken app to them. Only
+// accounts created from this point forward are required to verify.
+// Set this to the exact date/time you merge this to main, then leave it —
+// it's a one-time cutoff, not something to keep bumping.
+const EMAIL_VERIFICATION_CUTOFF = new Date("2026-08-21T00:00:00Z").getTime();
+
+function isLegacyAccount(user) {
+  const createdAt = user?.metadata?.creationTime ? new Date(user.metadata.creationTime).getTime() : 0;
+  return createdAt > 0 && createdAt < EMAIL_VERIFICATION_CUTOFF;
+}
+
+// Redirects to login if nobody's signed in. Call at the top of any page
+// that requires auth. Optional state callbacks make Auth initialization
+// observable without changing the behavior of existing callers.
+export function requireAuth(onReady, options = {}) {
+  let settled = false;
+  let timeoutId = setTimeout(() => {
+    if (!settled && typeof options.onTimeout === 'function') options.onTimeout();
+  }, options.timeoutMs || AUTH_INIT_TIMEOUT_MS);
+
+  if (typeof options.onState === 'function') options.onState('loading');
+
+  return onAuthStateChanged(auth, async (user) => {
+    settled = true;
+    clearTimeout(timeoutId);
     if (!user) {
+      if (typeof options.onState === 'function') options.onState('unauthenticated');
       window.location.href = "login.html";
       return;
     }
+
+    // Google accounts are already verified by Google, so this never
+    // blocks them — it only gates email/password signups who haven't
+    // clicked their verification link yet. Accounts created before
+    // EMAIL_VERIFICATION_CUTOFF are grandfathered in (see isLegacyAccount)
+    // so existing users aren't suddenly locked out by a rule that didn't
+    // exist when they signed up. The cached emailVerified flag can be
+    // STALE if they verified in a different tab/device; only pay for a
+    // fresh reload() in the boundary case where the cheap cached flag
+    // currently says "not verified", so the common case (already
+    // verified) stays a single cheap check on every page load rather
+    // than a network round-trip every time.
+    if (!options.allowUnverified && !isLegacyAccount(user) && !user.emailVerified) {
+      try { await user.reload(); } catch (e) { /* fall through with cached state */ }
+      if (!user.emailVerified) {
+        window.location.href = "verify-email.html";
+        return;
+      }
+    }
+
+    if (typeof options.onState === 'function') options.onState('authenticated', user);
     onReady(user);
+  }, (error) => {
+    settled = true;
+    clearTimeout(timeoutId);
+    if (typeof options.onState === 'function') options.onState('error', error);
+    if (typeof options.onError === 'function') options.onError(error);
   });
 }
 

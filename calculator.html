@@ -93,13 +93,7 @@ document.getElementById('calcBtn').addEventListener('click', () => {
   document.getElementById('resultCard').scrollIntoView({behavior:'smooth', block:'nearest'});
 });
 </script>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
-  });
-}
-</script>
+<script type="module" src="js/pwa.js"></script>
 <script src="js/icons.js"></script>
 </body>
 </html>

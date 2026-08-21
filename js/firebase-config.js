@@ -8,7 +8,6 @@ export const firebaseConfig = {
   apiKey: "AIzaSyDSHThszd3JwWfAkWI25Hj30KJ3h6aG0WE",
   authDomain: "codex-prep.firebaseapp.com",
   projectId: "codex-prep",
-  storageBucket: "codex-prep.firebasestorage.app",
   messagingSenderId: "59288182910",
   appId: "1:59288182910:web:5a3c7c809cfea81dd8382f"
 };

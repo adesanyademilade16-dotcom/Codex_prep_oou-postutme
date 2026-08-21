@@ -1,0 +1,8 @@
+{
+  "name": "codex-prep-imagekit-api",
+  "private": true,
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "firebase-admin": "^13.5.0"
+  }
+}

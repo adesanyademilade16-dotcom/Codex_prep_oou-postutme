@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify your email — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+</div>
+
+<div class="page-wrap-narrow" style="padding-top:56px;text-align:center">
+  <div style="font-size:2.6rem;margin-bottom:14px">📩</div>
+  <h1 style="font-size:1.28rem;font-weight:800;margin-bottom:10px">Verify your email</h1>
+  <p style="color:var(--muted);font-size:.88rem;line-height:1.6;margin-bottom:4px">
+    We sent a verification link to
+  </p>
+  <p style="color:var(--ink);font-weight:700;font-size:.92rem;margin-bottom:16px" id="userEmail"></p>
+  <p style="color:var(--muted);font-size:.85rem;line-height:1.65;margin-bottom:26px">
+    Tap the link in that email to activate your account — this page will move on automatically once you do.
+    <br><br>
+    <b style="color:var(--ink)">Can't find it? Check your Spam or Junk folder</b> — verification emails from apps like this one often land there instead of your main inbox, so it's worth a look before assuming it didn't arrive.
+  </p>
+
+  <div class="card" style="text-align:left;margin-bottom:16px">
+    <div id="statusMsg" style="font-size:.83rem;color:var(--muted);text-align:center;margin-bottom:14px">Waiting for you to verify...</div>
+    <button class="btn btn-primary btn-block" id="checkBtn" type="button">I've verified — continue</button>
+    <button class="btn btn-ghost btn-block" id="resendBtn" type="button" style="margin-top:10px">Resend verification email</button>
+  </div>
+
+  <button id="signOutBtn" type="button" style="background:none;border:none;color:var(--muted);font-size:.8rem;text-decoration:underline;cursor:pointer;padding:10px">Wrong email? Sign out and try again</button>
+</div>
+
+<script type="module">
+import { auth, requireAuth, fbSignOut, sendEmailVerification } from "./js/auth.js";
+
+let currentUser = null;
+let resendCooldownUntil = 0;
+let pollTimer = null;
+
+// allowUnverified: true is essential here — this IS the verification
+// page, so it must not redirect to itself.
+requireAuth((user) => {
+  currentUser = user;
+  document.getElementById('userEmail').textContent = user.email || '';
+
+  // Already verified (clicked the link in another tab, or landed here
+  // by mistake/back-button) — don't make them wait, just move on.
+  if (user.emailVerified) {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+
+  startPolling();
+}, { allowUnverified: true });
+
+function startPolling() {
+  pollTimer = setInterval(async () => {
+    if (!currentUser) return;
+    try {
+      await currentUser.reload();
+      if (currentUser.emailVerified) {
+        clearInterval(pollTimer);
+        showVerifiedAndRedirect();
+      }
+    } catch (e) { /* transient — try again next tick */ }
+  }, 4000);
+}
+
+function showVerifiedAndRedirect(){
+  const statusEl = document.getElementById('statusMsg');
+  statusEl.textContent = 'Verified! Taking you to your dashboard...';
+  statusEl.style.color = 'var(--green)';
+  setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
+}
+
+document.getElementById('checkBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('checkBtn');
+  const statusEl = document.getElementById('statusMsg');
+  btn.disabled = true;
+  btn.textContent = 'Checking...';
+  try {
+    await currentUser.reload();
+    if (currentUser.emailVerified) {
+      if (pollTimer) clearInterval(pollTimer);
+      showVerifiedAndRedirect();
+      return;
+    }
+    statusEl.textContent = "Still not verified — check your inbox (and spam folder) for the link.";
+    statusEl.style.color = 'var(--red)';
+  } catch (e) {
+    statusEl.textContent = 'Could not check your status — try again in a moment.';
+    statusEl.style.color = 'var(--red)';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "I've verified — continue";
+  }
+});
+
+document.getElementById('resendBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('resendBtn');
+  const statusEl = document.getElementById('statusMsg');
+  const now = Date.now();
+  if (now < resendCooldownUntil) {
+    statusEl.textContent = `Please wait ${Math.ceil((resendCooldownUntil - now) / 1000)}s before requesting another email.`;
+    statusEl.style.color = 'var(--muted)';
+    return;
+  }
+  btn.disabled = true;
+  try {
+    await sendEmailVerification(currentUser, { url: window.location.origin + '/dashboard.html' });
+    resendCooldownUntil = Date.now() + 60000;
+    statusEl.textContent = 'Sent! Check your inbox — and your spam folder.';
+    statusEl.style.color = 'var(--green)';
+  } catch (e) {
+    statusEl.textContent = e.code === 'auth/too-many-requests'
+      ? 'Too many requests — please wait a bit before trying again.'
+      : 'Could not resend — check your connection and try again.';
+    statusEl.style.color = 'var(--red)';
+  } finally {
+    setTimeout(() => { btn.disabled = false; }, 3000);
+  }
+});
+
+document.getElementById('signOutBtn').addEventListener('click', async () => {
+  if (pollTimer) clearInterval(pollTimer);
+  await fbSignOut(auth);
+  window.location.href = 'signup.html';
+});
+</script>
+<script src="js/icons.js"></script>
+</body>
+</html>

@@ -5,7 +5,7 @@
   "start_url": "/splash.html",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#0d1b2a",
   "theme_color": "#3d2599",
   "icons": [

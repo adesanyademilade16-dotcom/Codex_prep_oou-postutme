@@ -54,6 +54,27 @@
     <div style="margin-top:10px"><span class="badge" id="profileTier">Free plan</span></div>
   </div>
 
+  <div class="card referral-card" style="margin:0 0 16px;padding:18px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:.72rem;font-weight:800;color:var(--violet);text-transform:uppercase;letter-spacing:.4px">Refer & Earn</div>
+        <h3 style="font-size:1rem;font-weight:800;margin:4px 0">Invite friends. Unlock premium time.</h3>
+        <p style="font-size:.76rem;color:var(--muted);line-height:1.5">Your reward is reviewed manually so every referral stays fair.</p>
+      </div>
+      <span style="font-size:1.5rem">🎁</span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin:14px 0 10px">
+      <code id="referralCodeDisplay" style="flex:1;background:var(--bg-soft);border:1px dashed var(--border);border-radius:10px;padding:11px 12px;font-size:.86rem;font-weight:800;letter-spacing:.5px">Loading...</code>
+      <button type="button" class="btn btn-ghost" id="copyReferralBtn">Copy</button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
+      <span id="referralCountText" style="font-size:.8rem;font-weight:800">0 successful referrals</span>
+      <button type="button" class="btn btn-primary btn-sm" id="shareReferralBtn">Share code</button>
+    </div>
+    <div style="height:8px;background:var(--bg-soft);border-radius:999px;overflow:hidden"><div id="referralProgress" style="height:100%;width:0%;background:linear-gradient(90deg,var(--violet),var(--violet2));border-radius:999px;transition:width .3s"></div></div>
+    <div id="referralRewardText" style="font-size:.72rem;color:var(--muted);margin-top:9px;line-height:1.5">10 referrals → Regular for 14 days · 25 referrals → VIP for 14 days</div>
+  </div>
+
   <div class="stat-row">
     <div class="card stat-box"><b id="statAttempts">0</b><span>Attempts</span></div>
     <div class="card stat-box"><b id="statAvg">--</b><span>Avg Score</span></div>
@@ -93,6 +114,7 @@
 
 <script type="module">
 import { requireAuth, fbSignOut, auth, doc, getDoc, db, checkIsAdmin, getEffectiveTier, collection, query, where, getCountFromServer } from "./js/auth.js";
+import { ensureReferralCode, getReferralStats, REFERRAL_REWARDS } from "./js/referrals.js";
 
 requireAuth(async (user) => {
   document.getElementById('authGate').style.display = 'none';
@@ -129,6 +151,39 @@ requireAuth(async (user) => {
     badge.textContent = tier === 'free' ? 'Free plan' : tier === 'regular' ? 'Regular plan' : 'VIP plan';
     badge.className = 'badge badge-' + tier;
   } catch (e) { /* stats remain at defaults */ }
+
+
+  try {
+    const code = await ensureReferralCode(user);
+    document.getElementById('referralCodeDisplay').textContent = code || 'Unavailable';
+    const stats = await getReferralStats(user.uid);
+    const count = stats.count || 0;
+    const next = count < REFERRAL_REWARDS.regular.threshold ? REFERRAL_REWARDS.regular.threshold : REFERRAL_REWARDS.vip.threshold;
+    const progress = Math.min(100, Math.round((count / next) * 100));
+    document.getElementById('referralCountText').textContent = `${count} successful referral${count === 1 ? '' : 's'}`;
+    document.getElementById('referralProgress').style.width = progress + '%';
+    document.getElementById('referralRewardText').textContent = stats.vipReady
+      ? '🎉 VIP reward unlocked — contact Codex PREP admin for manual approval. Default reward: 14 days.'
+      : stats.regularReady
+        ? '🎉 Regular reward unlocked — contact Codex PREP admin for manual approval. Default reward: 14 days.'
+        : `${Math.max(0, REFERRAL_REWARDS.regular.threshold - count)} more referral${REFERRAL_REWARDS.regular.threshold - count === 1 ? '' : 's'} to unlock Regular · ${Math.max(0, REFERRAL_REWARDS.vip.threshold - count)} to unlock VIP`;
+
+    const copy = async () => {
+      if (!code) return;
+      try { await navigator.clipboard.writeText(code); }
+      catch { const ta=document.createElement('textarea'); ta.value=code; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+      document.getElementById('copyReferralBtn').textContent = 'Copied';
+      setTimeout(() => document.getElementById('copyReferralBtn').textContent = 'Copy', 1400);
+    };
+    document.getElementById('copyReferralBtn').addEventListener('click', copy);
+    document.getElementById('shareReferralBtn').addEventListener('click', async () => {
+      const text = `Join me on Codex PREP for OOU Post-UTME practice. Use my referral code ${code} when you create your account.`;
+      if (navigator.share) { try { await navigator.share({ title: 'Join Codex PREP', text, url: location.origin + '/signup.html' }); return; } catch {} }
+      await copy();
+    });
+  } catch (e) {
+    document.getElementById('referralCodeDisplay').textContent = 'Unavailable';
+  }
 
   // Attempt stats + rank, pulled from this student's own leaderboard doc
   // (the same aggregate data that powers the Leaderboard page).
