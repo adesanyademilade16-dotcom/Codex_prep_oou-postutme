@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3d2599">
+<title>Referral Rewards — Codex PREP Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/theme.css">
+<style>
+  .reward-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px}
+  .reward-card{padding:16px}.reward-card b{display:block;font-size:1.45rem;color:var(--violet);font-weight:800}.reward-card span{font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase}
+  .reward-list{display:grid;gap:12px}
+  .reward-row{padding:16px}.reward-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.reward-name{font-size:.9rem;font-weight:800}.reward-email{font-size:.72rem;color:var(--muted);margin-top:2px}.reward-count{font-size:.8rem;font-weight:800;color:var(--violet-deep);white-space:nowrap}
+  .progress{height:7px;background:var(--bg-soft);border-radius:999px;overflow:hidden;margin:12px 0}.progress>div{height:100%;background:linear-gradient(90deg,var(--violet),var(--violet2));border-radius:999px}
+  .reward-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.days-input{width:90px;padding:9px 10px;border:1.5px solid var(--border);border-radius:9px;font:700 .8rem var(--font)}
+  .tag{padding:4px 8px;border-radius:999px;background:var(--bg-soft);font-size:.65rem;font-weight:800;color:var(--muted)}.tag.ready{background:var(--green2);color:var(--green)}.tag.done{background:var(--blue-soft);color:var(--violet-deep)}
+  .empty{text-align:center;padding:42px 20px;color:var(--muted);font-size:.84rem}.hint{font-size:.74rem;color:var(--muted);line-height:1.55}
+  @media(max-width:640px){.reward-grid{grid-template-columns:1fr}.reward-top{display:block}.reward-count{display:block;margin-top:7px}.reward-actions{margin-top:12px}}
+</style>
+</head>
+<body>
+<div class="top-bar"><div class="top-bar-logo">Codex <span>PREP</span> <span style="opacity:.6;font-size:.7em">· Admin</span></div><div class="spacer"></div><a class="icon-btn" href="index.html">← Overview</a></div>
+<div class="page-wrap" id="authGate" style="padding-top:60px"><div class="loading-msg">Checking access...</div></div>
+<div class="page-wrap" id="adminContent" style="display:none">
+  <div class="page-header"><div class="eyebrow">Growth</div><h1>Referral Rewards</h1><p>Review students who have reached the referral milestones. Rewards are manual by design.</p></div>
+  <div class="reward-grid">
+    <div class="card reward-card"><b id="readyRegular">0</b><span>Regular rewards ready</span></div>
+    <div class="card reward-card"><b id="readyVip">0</b><span>VIP rewards ready</span></div>
+  </div>
+  <div class="card" style="padding:16px;margin-bottom:18px"><strong style="font-size:.85rem">Reward policy</strong><p class="hint" style="margin-top:6px">10 confirmed referrals unlock Regular. 25 unlock VIP. Default duration is 14 days, but you choose the number of days when granting the reward. The system never grants premium automatically.</p></div>
+  <div id="rewardList" class="reward-list"></div>
+</div>
+<script type="module">
+import { requireAdmin, db, collection, getDocs, getDoc, doc, setDoc, updateDoc, addDoc, serverTimestamp } from "../js/auth.js";
+import { REFERRAL_REWARDS } from "../js/referrals.js";
+let adminEmail='admin'; let users=[]; let referrals=[]; let rewards={};
+const $=id=>document.getElementById(id);
+requireAdmin(async user=>{
+  adminEmail=user.email||'admin'; $('authGate').style.display='none'; $('adminContent').style.display='block';
+  await load();
+});
+async function load(){
+  try{
+    const [usersSnap, refsSnap, rewardsSnap]=await Promise.all([getDocs(collection(db,'users')),getDocs(collection(db,'referrals')),getDocs(collection(db,'referral_rewards'))]);
+    users=usersSnap.docs.map(d=>({id:d.id,...d.data()}));
+    referrals=refsSnap.docs.map(d=>({id:d.id,...d.data()}));
+    rewards={}; rewardsSnap.forEach(d=>rewards[d.id]=d.data());
+    render();
+  }catch(e){$('rewardList').innerHTML='<div class="empty">Could not load referral data — '+(e.code||e.message||'try again')+'</div>';}
+}
+function render(){
+  const counts={};
+  referrals.filter(r=>r.status==='confirmed').forEach(r=>counts[r.referrerUid]=(counts[r.referrerUid]||0)+1);
+  const candidates=[];
+  users.forEach(u=>{
+    const count=counts[u.id]||0;
+    if(count>=REFERRAL_REWARDS.regular.threshold) candidates.push({u,count,plan:count>=REFERRAL_REWARDS.vip.threshold?'vip':'regular'});
+  });
+  const vipReady=candidates.filter(x=>x.plan==='vip' && !rewards[`${x.u.id}_vip`]).length;
+  const regularReady=candidates.filter(x=>x.plan==='regular' && !rewards[`${x.u.id}_regular`]).length;
+  $('readyVip').textContent=vipReady; $('readyRegular').textContent=regularReady;
+  if(!candidates.length){$('rewardList').innerHTML='<div class="empty">No students have reached a referral milestone yet.</div>';return;}
+  $('rewardList').innerHTML='';
+  candidates.sort((a,b)=>b.count-a.count).forEach(x=>{
+    const key=`${x.u.id}_${x.plan}`, done=rewards[key];
+    const threshold=REFERRAL_REWARDS[x.plan].threshold;
+    const row=document.createElement('article'); row.className='card reward-row';
+    row.innerHTML=`<div class="reward-top"><div><div class="reward-name">${esc(x.u.fullName||'Unnamed student')}</div><div class="reward-email">${esc(x.u.email||'')}</div></div><div class="reward-count">${x.count} / ${threshold} referrals</div></div><div class="progress"><div style="width:${Math.min(100,Math.round(x.count/threshold*100))}%"></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"><span class="tag ready">${x.plan.toUpperCase()} eligible</span>${done?`<span class="tag done">Granted ${esc(String(done.days||14))} days</span>`:''}</div><div class="reward-actions">${done?`<span class="hint">Granted by ${esc(done.grantedByAdmin||'admin')}. ${done.expiresAt?`Expires ${new Date(done.expiresAt).toLocaleDateString()}`:''}</span>`:`<input class="days-input" type="number" min="1" max="3650" value="14" aria-label="Reward duration in days"><button class="btn btn-primary btn-sm grant-btn">Grant ${x.plan==='vip'?'VIP':'Regular'}</button><button class="btn btn-ghost btn-sm review-btn">View referrals</button>`}</div>`;
+    row.querySelector('.grant-btn')?.addEventListener('click',()=>grant(x,row));
+    row.querySelector('.review-btn')?.addEventListener('click',()=>showReferrals(x.u.id,x.u.fullName||x.u.email));
+    $('rewardList').appendChild(row);
+  });
+}
+async function grant(x,row){
+  const days=Math.max(1,Math.min(3650,parseInt(row.querySelector('.days-input').value,10)||14));
+  const label=x.plan==='vip'?'VIP':'Regular';
+  if(!confirm(`Grant ${label} to ${x.u.fullName||x.u.email} for ${days} days?`))return;
+  const now=Date.now(), expires=now+days*24*60*60*1000;
+  try{
+    await updateDoc(doc(db,'users',x.u.id),{subscriptionTier:x.plan});
+    await setDoc(doc(db,'putme_subscriptions',x.u.id),{plan:x.plan,status:'active',startedAt:now,expiresAt:expires,lastReference:'referral-manual-grant',grantedByAdmin:adminEmail,referralCount:x.count,referralRewardDays:days},{merge:true});
+    await setDoc(doc(db,'referral_rewards',`${x.u.id}_${x.plan}`),{uid:x.u.id,plan:x.plan,referralCount:x.count,days,grantedByAdmin:adminEmail,grantedAt:serverTimestamp(),expiresAt:expires});
+    try{await addDoc(collection(db,'admin_audit_log'),{action:'referral_reward_grant',adminEmail,targetUid:x.u.id,targetEmail:x.u.email||'',plan:x.plan,days,referralCount:x.count,timestamp:serverTimestamp()});}catch(e){}
+    await load();
+  }catch(e){alert('Could not grant reward — '+(e.code||e.message||'try again'));}
+}
+function showReferrals(uid,name){
+  const mine=referrals.filter(r=>r.referrerUid===uid).sort((a,b)=>millis(b.createdAt)-millis(a.createdAt));
+  const text=mine.map((r,i)=>`${i+1}. ${r.referredName||'Unnamed'} — ${r.referredEmail||'no email'} — ${millis(r.createdAt)?new Date(millis(r.createdAt)).toLocaleDateString():'date pending'}`).join('\n');
+  alert(`${name}\n\nConfirmed referrals (${mine.length}):\n\n${text||'None'}`);
+}
+function millis(v){return v&&typeof v.toMillis==='function'?v.toMillis():typeof v==='number'?v:0}
+function esc(v){const d=document.createElement('div');d.textContent=v==null?'':String(v);return d.innerHTML;}
+</script>
+<script src="../js/icons.js"></script>
+</body>
+</html>

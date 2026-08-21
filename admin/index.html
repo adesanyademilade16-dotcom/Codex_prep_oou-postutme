@@ -55,6 +55,10 @@
       <b id="statRecentSignups">--</b>
       <span>New This Week</span>
     </div>
+    <div class="card stat-card">
+      <b id="statReferralRewards">--</b>
+      <span>Referral Rewards Ready</span>
+    </div>
   </div>
 
   <div class="section-label" style="margin-top:0">Manage</div>
@@ -74,6 +78,14 @@
     <div class="card nav-card" onclick="window.location.href='audit-log.html'">
       <div class="icon" data-icon="lock"></div>
       <h3>Audit Log</h3>
+    </div>
+    <div class="card nav-card" onclick="window.location.href='announcements.html'">
+      <div class="icon" data-icon="bell"></div>
+      <h3>Announcements</h3>
+    </div>
+    <div class="card nav-card" onclick="window.location.href='referrals.html'">
+      <div class="icon" data-icon="trophy"></div>
+      <h3>Referral Rewards</h3>
     </div>
   </div>
 </div>
@@ -100,6 +112,15 @@ requireAdmin(async (user) => {
 
     document.getElementById('statTotalUsers').textContent = usersSnap.size;
     document.getElementById('statRecentSignups').textContent = recentSignups;
+
+    // Referral reward badge: compute from immutable referral records.
+    try {
+      const refsSnap = await getDocs(collection(db, "referrals"));
+      const referralCounts = {};
+      refsSnap.forEach(r => { const d=r.data(); if(d.status === 'confirmed') referralCounts[d.referrerUid]=(referralCounts[d.referrerUid]||0)+1; });
+      const ready = Object.values(referralCounts).filter(n => n >= 10).length;
+      document.getElementById('statReferralRewards').textContent = ready;
+    } catch (e) { document.getElementById('statReferralRewards').textContent = '--'; }
     document.getElementById('tierBreakdown').innerHTML = `
       <span class="tier-pill badge-free">${tierCounts.free} free</span>
       <span class="tier-pill badge-regular">${tierCounts.regular} reg</span>
