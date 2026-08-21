@@ -16,9 +16,25 @@
   .welcome-card .motivation{font-size:.84rem;opacity:.9;line-height:1.5;border-top:1px solid rgba(255,255,255,.2);padding-top:12px;margin-top:4px}
   .tier-row{display:flex;align-items:center;gap:8px;margin-top:10px}
 
-  .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+  /* Responsive dashboard grid: two columns on phones, then progressively
+     more columns as real estate increases. Cards grow to fill the row
+     instead of leaving a narrow centered desktop strip. */
+  .dashboard-wrap{max-width:1280px}
+  .quick-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    margin-bottom:20px;
+  }
   .quick-card{
-    padding:16px 14px;cursor:pointer;transition:.2s;
+    padding:16px 14px;
+    min-width:0;
+    min-height:112px;
+    cursor:pointer;
+    transition:transform .2s,box-shadow .2s;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
   }
   .quick-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
   .quick-card .qi{font-size:1.4rem;margin-bottom:8px}
@@ -32,6 +48,34 @@
     padding:8px 14px;border-radius:999px;font-size:.8rem;font-weight:700;
   }
   .tip-card{padding:16px 18px;font-size:.84rem;color:var(--ink2);line-height:1.5}
+@media(max-width:639px){
+  .dashboard-wrap{padding-left:12px;padding-right:12px}
+  .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .quick-card{padding:13px 12px;min-height:104px}
+  .quick-card .qi{font-size:1.2rem;margin-bottom:6px}
+  .quick-card h3{font-size:.78rem}
+  .quick-card p{font-size:.66rem;line-height:1.35}
+  .welcome-card{padding:19px 16px}
+}
+@media(min-width:600px){
+  .quick-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+}
+@media(min-width:900px){
+  .dashboard-wrap{padding-left:24px;padding-right:24px}
+  .quick-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+  .quick-card{min-height:128px;padding:18px 16px}
+}
+@media(min-width:1200px){
+  .dashboard-wrap{max-width:1500px}
+  .quick-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+}
+@media(min-width:1600px){
+  .dashboard-wrap{max-width:1680px}
+  .quick-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}
+  .quick-card{min-height:138px;padding:20px 18px}
+  .quick-card h3{font-size:.92rem}
+  .quick-card p{font-size:.76rem}
+}
 </style>
 </head>
 <body>
@@ -39,14 +83,19 @@
 <div class="top-bar">
   <div class="top-bar-logo">Codex <span>PREP</span></div>
   <div class="spacer"></div>
+  <button type="button" class="icon-btn" id="notifBtn" aria-label="Notifications" style="position:relative;padding:8px 10px;margin-right:4px">
+    <span data-icon="bell"></span>
+    <span id="notifBadge" style="display:none;position:absolute;top:2px;right:2px;background:var(--red);color:#fff;font-size:.58rem;font-weight:800;border-radius:999px;min-width:15px;height:15px;align-items:center;justify-content:center;padding:0 3px;line-height:1"></span>
+  </button>
   <a class="icon-btn" href="profile.html"><span data-icon="profile" style="margin-right:5px"></span>Profile</a>
 </div>
 
-<div class="page-wrap" id="authGate" style="padding-top:60px">
-  <div class="loading-msg">Loading your dashboard...</div>
+<div class="page-wrap auth-state-shell" id="authGate" style="padding-top:60px">
+  <div class="loading-msg" id="authStateMessage">Checking your session…</div>
+  <button class="btn btn-ghost auth-retry" id="authRetryBtn" type="button" hidden>Retry</button>
 </div>
 
-<div class="page-wrap" id="dashboardContent" style="display:none">
+<div class="page-wrap dashboard-wrap" id="dashboardContent" style="display:none">
 
   <div class="card welcome-card fade-in">
     <div class="hi" id="greeting">Welcome back</div>
@@ -120,17 +169,15 @@
 </div>
 
 <script type="module">
-import { requireAuth, doc, getDoc, db, checkTrialEligibility, getEffectiveTier } from "./js/auth.js";
+import { requireAuth, doc, getDoc, updateDoc, db, checkTrialEligibility, getEffectiveTier } from "./js/auth.js";
+import { showAnnouncementModal, showNotificationCentre, getActiveAnnouncements, getReadMap, setReadStatus, countUnread } from "./js/announcements.js";
+import { registerReferral } from "./js/referrals.js";
 
 const SUBJECT_LABELS = {
-  PUTME_CHEMISTRY: "Chemistry",
-  PUTME_PHYSICS: "Physics",
-  PUTME_BIOLOGY: "Biology",
-  PUTME_ENGLISH: "English",
-  PUTME_GENERAL_KNOWLEDGE: "General Knowledge", PUTME_MATHEMATICS: "Mathematics",
+  PUTME_CHEMISTRY: "Chemistry", PUTME_PHYSICS: "Physics", PUTME_BIOLOGY: "Biology",
+  PUTME_ENGLISH: "English", PUTME_GENERAL_KNOWLEDGE: "General Knowledge", PUTME_MATHEMATICS: "Mathematics",
   PUTME_CRK: "CRK", PUTME_LITERATURE: "Literature in English", PUTME_ECONOMICS: "Economics", PUTME_COMMERCE: "Commerce", PUTME_GOVERNMENT: "Government"
 };
-
 const TIPS = [
   "Review your wrong answers right after every practice session — that's where the real learning happens.",
   "Do a timed subject practice at least 3x a week to build exam-day stamina.",
@@ -138,13 +185,87 @@ const TIPS = [
   "Don't just memorize answers — understand why the correct option is correct."
 ];
 
+const authGate = document.getElementById('authGate');
+const authStateMessage = document.getElementById('authStateMessage');
+const authRetryBtn = document.getElementById('authRetryBtn');
+const notifBtn = document.getElementById('notifBtn');
+const notifBadge = document.getElementById('notifBadge');
+let currentUser = null;
+let currentAnnouncements = [];
+let currentReadMap = {};
+
+authRetryBtn.addEventListener('click', () => window.location.reload());
+
+function showDashboardAuthState(title, message) {
+  authGate.classList.add('auth-state-shell');
+  authStateMessage.textContent = `${title} ${message}`;
+  authRetryBtn.hidden = false;
+  authRetryBtn.textContent = 'Retry';
+}
+
+function updateNotifBadge() {
+  const count = countUnread(currentAnnouncements, currentReadMap);
+  if (count > 0) {
+    notifBadge.textContent = count > 9 ? '9+' : String(count);
+    notifBadge.style.display = 'flex';
+  } else {
+    notifBadge.style.display = 'none';
+  }
+}
+
+function markSeen(id) {
+  if (!currentReadMap[id]) {
+    currentReadMap[id] = 'seen';
+    updateNotifBadge();
+  }
+  setReadStatus(currentUser?.uid, id, 'seen').catch(() => {});
+}
+
+function markInteraction(id, status) {
+  currentReadMap[id] = status;
+  updateNotifBadge();
+  setReadStatus(currentUser?.uid, id, status).catch(() => {});
+}
+
+async function initAnnouncements(uid) {
+  try {
+    const [anns, reads] = await Promise.all([getActiveAnnouncements(), getReadMap(uid)]);
+    currentAnnouncements = anns;
+    currentReadMap = reads;
+    updateNotifBadge();
+
+    // Only the highest-priority unseen item opens automatically. The rest
+    // remain available in Notifications, so students are not bombarded.
+    const unseen = anns.find(a => !reads[a.id]);
+    if (unseen) {
+      showAnnouncementModal(unseen, {
+        onClose: () => markSeen(unseen.id),
+        onCta: () => markInteraction(unseen.id, 'clicked')
+      });
+    }
+  } catch (error) {
+    console.warn('Announcements unavailable:', error);
+    // Optional feature: never block the dashboard.
+  }
+}
+
+notifBtn.addEventListener('click', () => {
+  if (!currentUser) return;
+  showNotificationCentre(currentAnnouncements, currentReadMap, {
+    onOpenItem: item => showAnnouncementModal(item, {
+      onClose: () => markSeen(item.id),
+      onCta: () => markInteraction(item.id, 'clicked')
+    })
+  });
+});
+
 requireAuth(async (user) => {
-  document.getElementById('authGate').style.display = 'none';
+  currentUser = user;
+  authGate.style.display = 'none';
   document.getElementById('dashboardContent').style.display = 'block';
 
   const hour = new Date().getHours();
-  document.getElementById('greeting').textContent =
-    hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('greeting').textContent = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
   document.getElementById('studyTip').textContent = TIPS[new Date().getDate() % TIPS.length];
 
@@ -152,6 +273,25 @@ requireAuth(async (user) => {
     const snap = await getDoc(doc(db, "users", user.uid));
     if (snap.exists()) {
       const data = snap.data();
+      // Email signups only become a successful referral after the account
+      // has verified its email. Google accounts are already verified.
+      // user.emailVerified can be STALE if they clicked the verification
+      // link in a different tab/device — this session's cached auth
+      // state doesn't auto-refresh just because that happened elsewhere.
+      // A cheap reload() here means a pending referral doesn't sit stuck
+      // for up to an hour (until the next natural token refresh) after
+      // the student has actually already verified.
+      if (data.pendingReferralCode && !user.emailVerified) {
+        try { await user.reload(); } catch (e) { /* ignore — fall through with cached state */ }
+      }
+      if (data.pendingReferralCode && user.emailVerified) {
+        try {
+          const result = await registerReferral({ user, code: data.pendingReferralCode });
+          if (result.created || result.reason === 'already-linked' || result.reason === 'invalid') {
+            await updateDoc(doc(db, "users", user.uid), { pendingReferralCode: null });
+          }
+        } catch (refErr) { /* referral layer must never block dashboard */ }
+      }
       const badge = document.getElementById('tierBadge');
       const effective = await getEffectiveTier(user.uid);
       const tier = effective.tier;
@@ -162,24 +302,12 @@ requireAuth(async (user) => {
       if (tier === 'free') {
         try {
           const eligibility = await checkTrialEligibility(user.uid);
-          trialTextEl.textContent = eligibility.canStart
-            ? `· ${eligibility.remaining} free trial${eligibility.remaining === 1 ? '' : 's'} left`
-            : '· 0 trials left — upgrade for unlimited';
-          trialTextEl.style.color = '';
-        } catch (e) {
-          trialTextEl.textContent = '';
-        }
+          trialTextEl.textContent = eligibility.canStart ? `· ${eligibility.remaining} free trial${eligibility.remaining === 1 ? '' : 's'} left` : '· 0 trials left — upgrade for unlimited';
+        } catch { trialTextEl.textContent = ''; }
       } else if (effective.expiresAt) {
-        const daysLeft = Math.ceil((effective.expiresAt - Date.now()) / (24 * 60 * 60 * 1000));
-        if (daysLeft <= 7) {
-          trialTextEl.textContent = daysLeft <= 0
-            ? '· Plan expired'
-            : `· Expires in ${daysLeft} day${daysLeft === 1 ? '' : 's'} — renew soon`;
-          trialTextEl.style.color = '#e0563f';
-        } else {
-          trialTextEl.textContent = `· Renews in ${daysLeft} days`;
-          trialTextEl.style.color = '';
-        }
+        const daysLeft = Math.ceil((effective.expiresAt - Date.now()) / 86400000);
+        trialTextEl.textContent = daysLeft <= 0 ? '· Plan expired' : daysLeft <= 7 ? `· Expires in ${daysLeft} day${daysLeft === 1 ? '' : 's'} — renew soon` : `· Renews in ${daysLeft} days`;
+        trialTextEl.style.color = daysLeft <= 7 ? '#e0563f' : '';
       }
 
       const chipsWrap = document.getElementById('subjectChips');
@@ -188,8 +316,17 @@ requireAuth(async (user) => {
         ? subjects.map(s => `<span class="subject-chip">${SUBJECT_LABELS[s] || s}</span>`).join('')
         : '<span style="color:var(--muted);font-size:.82rem">Complete your profile to see recommendations.</span>';
     }
-  } catch (e) {
-    // Firestore read failed — dashboard still usable with defaults shown above
+  } catch (error) {
+    console.warn('Dashboard data load failed:', error);
+    // Auth is already complete; keep the useful dashboard shell visible.
+  }
+
+  initAnnouncements(user.uid);
+}, {
+  onTimeout: () => showDashboardAuthState('Still connecting…', 'Authentication is taking longer than expected. Your session was not cleared.'),
+  onError: error => {
+    console.error('Dashboard authentication error:', error);
+    showDashboardAuthState('Could not load your session.', 'Check your connection and retry.');
   }
 });
 </script>

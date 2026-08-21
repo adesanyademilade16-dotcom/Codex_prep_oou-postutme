@@ -279,61 +279,28 @@
 <footer>© 2026 Codex PREP · Part of the Codex Study Hub family</footer>
 
 <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
-  });
-}
-
-// ===========================================================
-// Custom install button. The browser's own automatic install
-// banner only shows to "engaged" repeat visitors, so first-time
-// visitors would never see it without this — we capture the
-// install event ourselves and offer it via a normal button
-// instead, which works for anyone as soon as the site meets
-// install criteria (manifest + service worker + icons).
-// ===========================================================
+// Shared PWA install UX lives in js/pwa.js.
 const installBtn = document.getElementById('installBtn');
 const iosHint = document.getElementById('iosInstallHint');
-let deferredPrompt = null;
 
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+installBtn?.addEventListener('click', async () => {
+  const pwa = window.CodexPWA;
+  if (!pwa) return;
+  if (pwa.isStandalone()) { installBtn.style.display = 'none'; return; }
+  const outcome = await pwa.promptInstall();
+  if (outcome === 'manual') {
+    iosHint.innerHTML = pwa.isIOS()
+      ? 'To install: open Safari, tap <strong>Share</strong>, then choose <strong>“Add to Home Screen.”</strong>'
+      : 'To install: open your browser menu (⋮) and choose <strong>“Install app”</strong> or <strong>“Add to Home Screen.”</strong>';
+    iosHint.style.display = 'block';
+  }
+});
 
-if (isStandalone) {
-  installBtn.style.display = 'none';
-} else if (isIOS) {
-  installBtn.addEventListener('click', () => {
-    iosHint.style.display = iosHint.style.display === 'none' ? 'block' : 'none';
-    iosHint.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
-} else {
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-  });
-
-  installBtn.addEventListener('click', async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-    } else {
-      // Browser hasn't handed us the install event yet (can happen on
-      // a first-ever page load before the SW finishes registering, or
-      // on browsers that don't support this API at all) - give a
-      // manual fallback instead of the button doing nothing.
-      iosHint.innerHTML = 'To install: open your browser menu (⋮) and choose <strong>"Add to Home Screen"</strong> or <strong>"Install app."</strong>';
-      iosHint.style.display = 'block';
-      iosHint.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  });
-
-  window.addEventListener('appinstalled', () => {
-    installBtn.style.display = 'none';
-  });
-}
+window.addEventListener('appinstalled', () => {
+  if (installBtn) installBtn.style.display = 'none';
+});
 </script>
+<script type="module" src="js/pwa.js"></script>
 <script src="js/icons.js"></script>
 </body>
 </html>

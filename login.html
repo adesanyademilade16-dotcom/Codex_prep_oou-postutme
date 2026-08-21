@@ -54,7 +54,7 @@
 </div>
 
 <script type="module">
-import { auth, signInWithEmailAndPassword, googleProvider, signInWithPopup, ensureUserDoc } from "./js/auth.js";
+import { auth, signInWithEmailAndPassword, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, ensureUserDoc } from "./js/auth.js";
 
 const googleBtn = document.getElementById('googleBtn');
 const statusEl = document.getElementById('formStatus');
@@ -64,16 +64,53 @@ function showStatus(msg, type){
   statusEl.className = 'form-status show ' + type;
 }
 
+async function finishGoogleLogin(user){
+  const isComplete = await ensureUserDoc(user);
+  window.location.href = isComplete ? 'dashboard.html' : 'complete-profile.html';
+}
+
+// If Google redirect authentication was used as a fallback, Firebase
+// resolves its result when the user returns to this page.
+getRedirectResult(auth).then(async (result) => {
+  if (!result?.user) return;
+  googleBtn.disabled = true;
+  googleBtn.textContent = 'Finishing Google sign-in...';
+  try {
+    await finishGoogleLogin(result.user);
+  } catch (err) {
+    console.error('Google redirect completion error:', err);
+    showStatus('Google sign-in succeeded, but your profile could not be loaded. Please retry.', 'error');
+    googleBtn.disabled = false;
+    googleBtn.textContent = 'Continue with Google';
+  }
+}).catch((err) => {
+  if (err?.code) console.warn('Google redirect result:', err.code, err.message);
+});
+
 googleBtn.addEventListener('click', async () => {
   googleBtn.disabled = true;
   googleBtn.textContent = 'Connecting to Google...';
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    const isComplete = await ensureUserDoc(result.user);
-    window.location.href = isComplete ? 'dashboard.html' : 'complete-profile.html';
+    await finishGoogleLogin(result.user);
   } catch (err) {
     let msg = 'Google sign-in failed — please try again.';
     if (err.code === 'auth/popup-closed-by-user') msg = 'Sign-in was cancelled.';
+    if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
+      msg = 'Google sign-in was blocked by this browser. We can switch to a secure redirect sign-in.';
+      const redirectBtn = document.createElement('button');
+      redirectBtn.type = 'button';
+      redirectBtn.className = 'btn btn-ghost btn-block';
+      redirectBtn.style.marginTop = '10px';
+      redirectBtn.textContent = 'Continue with Google using redirect';
+      redirectBtn.onclick = async () => {
+        redirectBtn.disabled = true;
+        redirectBtn.textContent = 'Opening Google...';
+        try { await signInWithRedirect(auth, googleProvider); }
+        catch (redirectErr) { console.error('Google redirect error:', redirectErr); redirectBtn.disabled = false; redirectBtn.textContent = 'Continue with Google using redirect'; }
+      };
+      statusEl.insertAdjacentElement('afterend', redirectBtn);
+    }
     console.error('Google sign-in error:', err.code, err.message);
     showStatus(msg, 'error');
     googleBtn.disabled = false;

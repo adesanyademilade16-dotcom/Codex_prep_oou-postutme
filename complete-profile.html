@@ -45,6 +45,11 @@
         <label for="course">Course applying to</label>
         <input type="text" id="course" placeholder="e.g. Computer Science" required>
       </div>
+      <div class="field">
+        <label for="referralCode">Referral code <span style="font-weight:500;color:var(--muted)">(optional)</span></label>
+        <input type="text" id="referralCode" maxlength="20" autocomplete="off" placeholder="e.g. CODEX-AB12CD34">
+        <p class="field-hint">If a friend invited you, enter their code. It can only be linked once to this account.</p>
+      </div>
       <div class="field" id="passwordField" style="display:none">
         <label for="password">Set a password (optional)</label>
         <input type="password" id="password" autocomplete="new-password" minlength="6" placeholder="Leave blank to just keep using Google sign-in">
@@ -60,6 +65,7 @@
 <script type="module">
 import { requireAuth, doc, updateDoc, getDoc, db, linkWithCredential, EmailAuthProvider } from "./js/auth.js";
 import { getScreeningCombo } from "./js/subject-combo.js";
+import { ensureReferralCode, registerReferral } from "./js/referrals.js";
 
 function recommendSubjects(faculty, course){
   return getScreeningCombo(faculty, course).subjects;
@@ -77,6 +83,8 @@ requireAuth(async (user) => {
   }
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('formWrap').style.display = 'block';
+  const pendingReferral = localStorage.getItem('codex_pending_referral') || '';
+  if (pendingReferral) document.getElementById('referralCode').value = pendingReferral;
 
   // Only show the "set a password" option if this account has no
   // password provider yet (i.e. they got here via Google sign-in).
@@ -98,6 +106,7 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
   const course = document.getElementById('course').value.trim();
   const passwordEl = document.getElementById('password');
   const password = passwordEl ? passwordEl.value : '';
+  const referralCode = document.getElementById('referralCode').value.trim().toUpperCase();
 
   try {
     if (password) {
@@ -115,6 +124,12 @@ document.getElementById('profileForm').addEventListener('submit', async (e) => {
       recommendedSubjects: recommendSubjects(faculty, course),
       profileComplete: true
     });
+    await ensureReferralCode(currentUser);
+    if (referralCode) {
+      try { await registerReferral({ user: currentUser, code: referralCode }); }
+      catch (refErr) { console.warn('Referral could not be linked:', refErr); }
+    }
+    localStorage.removeItem('codex_pending_referral');
     window.location.href = 'dashboard.html';
   } catch (err) {
     let msg = 'Could not save your profile — please try again.';

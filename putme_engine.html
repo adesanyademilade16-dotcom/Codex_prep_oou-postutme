@@ -88,6 +88,27 @@
   .review-opt.right-answer{border-color:var(--green);background:var(--green2)}
   .review-opt.wrong-selected{border-color:var(--red);background:var(--red2)}
   .explain-box{font-size:.78rem;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);line-height:1.5}
+  @media(max-width:639px){
+    .exam-top{padding:10px 10px;gap:8px}
+    .exam-top .subj-name{font-size:.76rem;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .timer{font-size:.78rem;padding:6px 8px;min-width:68px;text-align:center}
+    .exam-wrap{padding:0 10px calc(112px + env(safe-area-inset-bottom))}
+    .q-card{padding:16px;margin-top:5px}
+    .q-text{font-size:.94rem;line-height:1.55;margin-bottom:15px}
+    .opt{padding:12px 11px;font-size:.86rem;line-height:1.4}
+    .exam-actions{gap:6px}
+    .palette{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+    .pnode{min-height:38px}
+    .bottom-bar{padding-left:10px;padding-right:10px}
+    #calcPanel{width:min(260px,calc(100vw - 24px)) !important;max-height:calc(100dvh - 24px);overflow:auto}
+    #calcDisplay{font-size:1.35rem}
+  }
+  @media(max-width:360px){
+    .palette{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .q-text{font-size:.9rem}
+    .opt{font-size:.82rem}
+  }
+  @media(min-width:900px){.exam-wrap{max-width:800px}}
 </style>
 </head>
 <body>
