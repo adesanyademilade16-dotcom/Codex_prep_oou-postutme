@@ -42,6 +42,13 @@ let currentUser = null;
 let resendCooldownUntil = 0;
 let pollTimer = null;
 
+// Same reasoning as signup.html: never bake window.location.origin into
+// the verification link. If this page were ever loaded from a preview
+// URL, a resend would email a link that verifies fine on Firebase's
+// side but then fails to redirect anywhere — indistinguishable from a
+// dead network on the user's end.
+const PRODUCTION_ORIGIN = "https://codex-prep-oou-postutme.vercel.app";
+
 // allowUnverified: true is essential here — this IS the verification
 // page, so it must not redirect to itself.
 requireAuth((user) => {
@@ -112,7 +119,7 @@ document.getElementById('resendBtn').addEventListener('click', async () => {
   }
   btn.disabled = true;
   try {
-    await sendEmailVerification(currentUser, { url: window.location.origin + '/dashboard.html' });
+    await sendEmailVerification(currentUser, { url: PRODUCTION_ORIGIN + '/dashboard.html' });
     resendCooldownUntil = Date.now() + 60000;
     statusEl.textContent = 'Sent! Check your inbox — and your spam folder.';
     statusEl.style.color = 'var(--green)';

@@ -81,12 +81,22 @@
 
 <script type="module">
 import {
-  auth, db, createUserWithEmailAndPassword, sendEmailVerification,
-  updateProfile, doc, setDoc, serverTimestamp,
+  auth, db, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification,
+  updateProfile, doc, setDoc, getDoc, serverTimestamp,
   googleProvider, signInWithPopup, ensureUserDoc
 } from "./js/auth.js";
 import { getScreeningCombo } from "./js/subject-combo.js";
 import { ensureReferralCode, registerReferral } from "./js/referrals.js";
+
+// Always the real production domain — never window.location.origin.
+// That matters because sendEmailVerification bakes this into the
+// verification link's continueUrl. If someone signs up (or hits
+// "resend") from a preview/branch deployment, window.location.origin
+// would have baked THAT unstable URL into the email forever — and
+// tapping the link later would verify fine on Firebase's side, then
+// fail to redirect anywhere, which looks exactly like "Error
+// encountered — network error" even though verification succeeded.
+const PRODUCTION_ORIGIN = "https://codex-prep-oou-postutme.vercel.app";
 
 const googleBtn = document.getElementById('googleBtn');
 const statusEl = document.getElementById('formStatus');
@@ -122,13 +132,45 @@ googleBtn.addEventListener('click', async () => {
 const form = document.getElementById('signupForm');
 const submitBtn = document.getElementById('submitBtn');
 
-
-
 // Basic recommended-subjects mapping — delegates to the shared
 // screening-combo module so this can't drift out of sync with
 // the Full Mock Exam logic.
 function recommendSubjects(faculty, course){
   return getScreeningCombo(faculty, course).subjects;
+}
+
+// Finishes setting up a signed-in user: profile name, Firestore doc
+// (only if missing — never overwrites one that already exists),
+// referral code, and a verification email (only if not already
+// verified). Shared by the normal path and the network-hiccup
+// recovery path below, so both leave the account in the same
+// complete state instead of a half-created one.
+async function completeSignupSetup(user, { fullName, email, phone, faculty, course, referralCode }) {
+  if (fullName && user.displayName !== fullName) {
+    await updateProfile(user, { displayName: fullName });
+  }
+
+  const userDocRef = doc(db, "users", user.uid);
+  const existingDoc = await getDoc(userDocRef);
+  if (!existingDoc.exists()) {
+    const referralCodeForUser = await ensureReferralCode(user);
+    await setDoc(userDocRef, {
+      fullName, email, phone,
+      facultyApplyingTo: faculty,
+      courseApplyingTo: course,
+      recommendedSubjects: recommendSubjects(faculty, course),
+      subscriptionTier: "free",
+      trialsUsed: {},
+      referralCode: referralCodeForUser,
+      pendingReferralCode: referralCode || null,
+      profileComplete: true,
+      createdAt: serverTimestamp()
+    });
+  }
+
+  if (!user.emailVerified) {
+    await sendEmailVerification(user, { url: PRODUCTION_ORIGIN + '/dashboard.html' });
+  }
 }
 
 form.addEventListener('submit', async (e) => {
@@ -143,31 +185,43 @@ form.addEventListener('submit', async (e) => {
   const course = document.getElementById('course').value.trim();
   const password = document.getElementById('password').value;
   const referralCode = document.getElementById('referralCode').value.trim().toUpperCase();
+  const details = { fullName, email, phone, faculty, course, referralCode };
 
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(cred.user, { displayName: fullName });
-    const referralCodeForUser = await ensureReferralCode(cred.user);
-    await setDoc(doc(db, "users", cred.user.uid), {
-      fullName, email, phone,
-      facultyApplyingTo: faculty,
-      courseApplyingTo: course,
-      recommendedSubjects: recommendSubjects(faculty, course),
-      subscriptionTier: "free",
-      trialsUsed: {},
-      referralCode: referralCodeForUser,
-      pendingReferralCode: referralCode || null,
-      profileComplete: true,
-      createdAt: serverTimestamp()
-    });
-    await sendEmailVerification(cred.user, { url: window.location.origin + '/dashboard.html' });
+    await completeSignupSetup(cred.user, details);
     showStatus('Account created! Check your email (and your spam folder) to verify before continuing.', 'success');
     setTimeout(()=> window.location.href = 'verify-email.html', 1400);
   } catch (err) {
+    // Two specific Firebase errors can mean "this account was actually
+    // created a moment ago" rather than a genuine failure:
+    //  - network-request-failed: the create request likely reached
+    //    Firebase and succeeded, but the response back to this device
+    //    was lost on a flaky connection, so the client thinks it failed.
+    //  - email-already-in-use: the same person retrying right after
+    //    exactly that scenario — the account now exists from attempt #1.
+    // In both cases, try signing in with what they just typed. If it
+    // works, this is the same person's account — finish setting it up
+    // instead of leaving it half-created and showing a scary error.
+    if (err.code === 'auth/network-request-failed' || err.code === 'auth/email-already-in-use') {
+      try {
+        const signInResult = await signInWithEmailAndPassword(auth, email, password);
+        await completeSignupSetup(signInResult.user, details);
+        showStatus('Account created! Check your email (and your spam folder) to verify before continuing.', 'success');
+        setTimeout(()=> window.location.href = 'verify-email.html', 1400);
+        return;
+      } catch (recoveryErr) {
+        // Not a recovery scenario — either wrong password on a real
+        // existing account, or the original request truly never went
+        // through. Fall through to the normal error message below.
+      }
+    }
+
     let msg = 'Something went wrong. Please try again.';
     if (err.code === 'auth/email-already-in-use') msg = 'That email is already registered — try logging in instead.';
     else if (err.code === 'auth/weak-password') msg = 'Password is too weak — use at least 6 characters.';
     else if (err.code === 'auth/invalid-email') msg = 'That email address looks invalid.';
+    else if (err.code === 'auth/network-request-failed') msg = 'Network hiccup reaching our servers. Check your connection and try again — if it still says "already registered" next time, use Log In instead.';
     // Debug line — shows the real Firebase error code since DevTools
     // isn't available on this workflow. Remove once things are stable.
     msg += ' [debug: ' + (err.code || err.message || 'unknown error') + ']';
