@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify your email — Codex PREP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span></div>
+</div>
+
+<div class="page-wrap-narrow" style="padding-top:56px;text-align:center">
+  <div style="font-size:2.6rem;margin-bottom:14px" id="icon">📩</div>
+  <h1 style="font-size:1.28rem;font-weight:800;margin-bottom:10px" id="title">Confirm your email</h1>
+  <p style="color:var(--muted);font-size:.88rem;line-height:1.6;margin-bottom:22px" id="subtitle">
+    Tap below to finish verifying your email address.
+  </p>
+
+  <div class="card" style="text-align:left;margin-bottom:16px">
+    <div id="statusMsg" style="font-size:.83rem;color:var(--muted);text-align:center;margin-bottom:14px"></div>
+    <button class="btn btn-primary btn-block" id="confirmBtn" type="button">Confirm my email</button>
+    <a class="btn btn-ghost btn-block hidden" id="continueBtn" style="margin-top:10px" href="dashboard.html">Continue to dashboard</a>
+    <a class="btn btn-ghost btn-block hidden" id="resendLinkBtn" style="margin-top:10px" href="verify-email.html">Get a new verification link</a>
+  </div>
+</div>
+
+<script type="module">
+import { auth, applyActionCode, checkActionCode } from "./js/auth.js";
+
+const iconEl = document.getElementById('icon');
+const titleEl = document.getElementById('title');
+const subtitleEl = document.getElementById('subtitle');
+const statusEl = document.getElementById('statusMsg');
+const confirmBtn = document.getElementById('confirmBtn');
+const continueBtn = document.getElementById('continueBtn');
+const resendLinkBtn = document.getElementById('resendLinkBtn');
+
+const params = new URLSearchParams(window.location.search);
+const mode = params.get('mode');
+const oobCode = params.get('oobCode');
+const continueUrl = params.get('continueUrl');
+if (continueUrl) continueBtn.href = continueUrl;
+
+function showError(message) {
+  iconEl.textContent = '⚠️';
+  titleEl.textContent = "Couldn't confirm your email";
+  subtitleEl.textContent = message;
+  confirmBtn.classList.add('hidden');
+  resendLinkBtn.classList.remove('hidden');
+}
+
+if (mode !== 'verifyEmail' || !oobCode) {
+  // Someone landed here without a real verification link — send them
+  // somewhere useful instead of showing a broken confirm button.
+  showError("This link doesn't look like a valid verification link. Request a new one below.");
+} else {
+  // checkActionCode only INSPECTS the code — it does not consume it.
+  // This is what lets a mail app's link-scanner load this page safely:
+  // nothing is applied until the human taps the button below.
+  checkActionCode(auth, oobCode).then(() => {
+    statusEl.textContent = 'Ready to confirm.';
+  }).catch((err) => {
+    if (err.code === 'auth/invalid-action-code') {
+      showError('This link has expired or was already used. If your mail app previews links automatically, that can burn a one-time link before you tap it — request a fresh one below and tap it directly from the email.');
+    } else {
+      showError('Something went wrong reading this link. Request a new one below.');
+    }
+  });
+
+  confirmBtn.addEventListener('click', async () => {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Confirming...';
+    try {
+      // applyActionCode is the step that actually consumes the code —
+      // it only runs here, on an explicit tap, never on page load.
+      await applyActionCode(auth, oobCode);
+      iconEl.textContent = '✅';
+      titleEl.textContent = 'Email verified!';
+      subtitleEl.textContent = 'You can now continue to your dashboard.';
+      statusEl.textContent = '';
+      confirmBtn.classList.add('hidden');
+      continueBtn.classList.remove('hidden');
+    } catch (err) {
+      if (err.code === 'auth/invalid-action-code') {
+        showError('This link has expired or was already used. Request a new one below.');
+      } else {
+        showError('Could not confirm your email — check your connection and try again.');
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Confirm my email';
+      }
+    }
+  });
+}
+</script>
+<style>.hidden{display:none !important}</style>
+<script src="js/icons.js"></script>
+</body>
+</html>
