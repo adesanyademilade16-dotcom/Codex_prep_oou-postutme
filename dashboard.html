@@ -171,7 +171,7 @@
 <script type="module">
 import { requireAuth, doc, getDoc, updateDoc, db, checkTrialEligibility, getEffectiveTier } from "./js/auth.js";
 import { showAnnouncementModal, showNotificationCentre, getActiveAnnouncements, getReadMap, setReadStatus, countUnread } from "./js/announcements.js";
-import { registerReferral } from "./js/referrals.js";
+import { autoProcessPendingReferral } from "./js/referrals.js";
 
 const SUBJECT_LABELS = {
   PUTME_CHEMISTRY: "Chemistry", PUTME_PHYSICS: "Physics", PUTME_BIOLOGY: "Biology",
@@ -273,25 +273,12 @@ requireAuth(async (user) => {
     const snap = await getDoc(doc(db, "users", user.uid));
     if (snap.exists()) {
       const data = snap.data();
-      // Email signups only become a successful referral after the account
-      // has verified its email. Google accounts are already verified.
-      // user.emailVerified can be STALE if they clicked the verification
-      // link in a different tab/device — this session's cached auth
-      // state doesn't auto-refresh just because that happened elsewhere.
-      // A cheap reload() here means a pending referral doesn't sit stuck
-      // for up to an hour (until the next natural token refresh) after
-      // the student has actually already verified.
-      if (data.pendingReferralCode && !user.emailVerified) {
-        try { await user.reload(); } catch (e) { /* ignore — fall through with cached state */ }
-      }
-      if (data.pendingReferralCode && user.emailVerified) {
-        try {
-          const result = await registerReferral({ user, code: data.pendingReferralCode });
-          if (result.created || result.reason === 'already-linked' || result.reason === 'invalid') {
-            await updateDoc(doc(db, "users", user.uid), { pendingReferralCode: null });
-          }
-        } catch (refErr) { /* referral layer must never block dashboard */ }
-      }
+      // Referral linking now happens centrally in requireAuth() (see
+      // auth.js) so it fires on whichever protected page a user lands
+      // on first, not just here. This call is just belt-and-suspenders
+      // for this specific page load — autoProcessPendingReferral is a
+      // no-op if there's nothing pending or it's already been linked.
+      autoProcessPendingReferral(user);
       const badge = document.getElementById('tierBadge');
       const effective = await getEffectiveTier(user.uid);
       const tier = effective.tier;

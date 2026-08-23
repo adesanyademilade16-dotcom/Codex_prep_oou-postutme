@@ -36,7 +36,7 @@
 </div>
 
 <script type="module">
-import { auth, requireAuth, fbSignOut, sendEmailVerification } from "./js/auth.js";
+import { auth, requireAuth, fbSignOut, sendEmailVerification, isGoogleAccount } from "./js/auth.js";
 
 let currentUser = null;
 let resendCooldownUntil = 0;
@@ -57,7 +57,9 @@ requireAuth((user) => {
 
   // Already verified (clicked the link in another tab, or landed here
   // by mistake/back-button) — don't make them wait, just move on.
-  if (user.emailVerified) {
+  // Google accounts are checked by provider too, not just the flag —
+  // see isGoogleAccount in auth.js for why.
+  if (user.emailVerified || isGoogleAccount(user)) {
     window.location.href = 'dashboard.html';
     return;
   }
