@@ -243,7 +243,7 @@ requireAuth(async (user) => {
         }
       } catch (e) {
         claimStatus.style.color = 'var(--red)';
-        claimStatus.textContent = 'Could not apply that code — check your connection and try again.';
+        claimStatus.textContent = 'Could not apply that code. [debug: ' + (e.code || e.message || 'unknown error') + ']';
       } finally {
         claimBtn.disabled = false;
         claimBtn.textContent = 'Apply';
