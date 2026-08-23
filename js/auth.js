@@ -8,7 +8,7 @@ import {
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
   sendPasswordResetEmail, sendEmailVerification, updateProfile,
   GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
-  linkWithCredential, EmailAuthProvider
+  linkWithCredential, EmailAuthProvider, applyActionCode, checkActionCode
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, addDoc, serverTimestamp,
@@ -82,7 +82,7 @@ export {
   updateProfile, doc, setDoc, getDoc, updateDoc, deleteDoc, addDoc, serverTimestamp,
   collection, query, where, getDocs, limit, orderBy, getCountFromServer,
   GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
-  linkWithCredential, EmailAuthProvider,
+  linkWithCredential, EmailAuthProvider, applyActionCode, checkActionCode,
 };
 
 // ===========================================================
@@ -226,6 +226,10 @@ function isLegacyAccount(user) {
   return createdAt > 0 && createdAt < EMAIL_VERIFICATION_CUTOFF;
 }
 
+export function isGoogleAccount(user) {
+  return Array.isArray(user?.providerData) && user.providerData.some((p) => p.providerId === "google.com");
+}
+
 // Redirects to login if nobody's signed in. Call at the top of any page
 // that requires auth. Optional state callbacks make Auth initialization
 // observable without changing the behavior of existing callers.
@@ -246,9 +250,13 @@ export function requireAuth(onReady, options = {}) {
       return;
     }
 
-    // Google accounts are already verified by Google, so this never
-    // blocks them — it only gates email/password signups who haven't
-    // clicked their verification link yet. Accounts created before
+    // Google accounts are checked by PROVIDER, not by the emailVerified
+    // flag — Google verifies the address before Firebase ever sees the
+    // account, but checking the flag alone means trusting that it's
+    // already fresh at this exact instant. Checking providerData answers
+    // "did this account sign in through Google" directly, so a Google
+    // sign-in can never hit the verification gate no matter how or when
+    // the emailVerified flag gets set. Accounts created before
     // EMAIL_VERIFICATION_CUTOFF are grandfathered in (see isLegacyAccount)
     // so existing users aren't suddenly locked out by a rule that didn't
     // exist when they signed up. The cached emailVerified flag can be
@@ -257,7 +265,7 @@ export function requireAuth(onReady, options = {}) {
     // currently says "not verified", so the common case (already
     // verified) stays a single cheap check on every page load rather
     // than a network round-trip every time.
-    if (!options.allowUnverified && !isLegacyAccount(user) && !user.emailVerified) {
+    if (!options.allowUnverified && !isGoogleAccount(user) && !isLegacyAccount(user) && !user.emailVerified) {
       try { await user.reload(); } catch (e) { /* fall through with cached state */ }
       if (!user.emailVerified) {
         window.location.href = "verify-email.html";
@@ -266,6 +274,21 @@ export function requireAuth(onReady, options = {}) {
     }
 
     if (typeof options.onState === 'function') options.onState('authenticated', user);
+
+    // Runs once per browser session (not on every page load — a cheap
+    // sessionStorage flag avoids an extra Firestore read on every
+    // navigation once it's already been checked). Dynamic import avoids
+    // a static circular import with referrals.js, which itself imports
+    // from this file. Deliberately not awaited — referral bookkeeping
+    // must never delay a page from rendering for its actual purpose.
+    const sessionKey = `codex_ref_checked_${user.uid}`;
+    if (!sessionStorage.getItem(sessionKey)) {
+      sessionStorage.setItem(sessionKey, "1");
+      import("./referrals.js").then(({ autoProcessPendingReferral }) => {
+        autoProcessPendingReferral(user);
+      }).catch(() => {});
+    }
+
     onReady(user);
   }, (error) => {
     settled = true;

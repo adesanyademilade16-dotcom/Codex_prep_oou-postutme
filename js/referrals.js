@@ -5,7 +5,7 @@
 // never granted automatically; admins verify and approve them.
 // ===========================================================
 import {
-  db, collection, query, where, getDocs, getDoc, setDoc, doc,
+  db, collection, query, where, getDocs, getDoc, setDoc, doc, updateDoc,
   serverTimestamp, getCountFromServer
 } from "./auth.js";
 
@@ -107,4 +107,33 @@ export async function getReferralCount(uid) {
   const q = query(collection(db, 'referrals'), where('referrerUid', '==', uid));
   const snap = await getCountFromServer(q);
   return snap.data().count || 0;
+}
+
+// Finishes linking a pending referral the moment it's actually possible —
+// called from requireAuth() itself (see auth.js), so it runs on the very
+// first protected page a verified user lands on, whichever page that is.
+// Previously this only ran on dashboard.html, which meant a referral could
+// sit unprocessed forever if someone's first stop after verifying wasn't
+// the dashboard. Nothing about referral tracking should depend on a
+// specific page being visited — this makes it genuinely automatic instead
+// of a manual profile-page workaround.
+export async function autoProcessPendingReferral(user) {
+  if (!user?.uid) return;
+  try {
+    const userRef = doc(db, 'users', user.uid);
+    const snap = await getDoc(userRef);
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (!data.pendingReferralCode) return;
+
+    const result = await registerReferral({ user, code: data.pendingReferralCode });
+    if (result.created || result.reason === 'already-linked' || result.reason === 'invalid') {
+      await updateDoc(userRef, { pendingReferralCode: null });
+    }
+    // reason === 'verification-required' is left in place on purpose —
+    // it'll be picked up automatically on a later page load once the
+    // account actually verifies, instead of being wiped prematurely.
+  } catch (e) {
+    // Referral processing must never break navigation for anyone.
+  }
 }
