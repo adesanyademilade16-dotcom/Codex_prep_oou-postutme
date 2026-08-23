@@ -575,7 +575,8 @@ const PUTME_DATA = {
     "options": [
       "Specific heat",
       "Thermal capacity",
-      "Water equivalent"
+      "Water equivalent",
+      "Latent heat"
     ],
     "ans": "Thermal capacity",
     "explanation": "Thermal capacity is heat needed to raise temperature by 1K."
@@ -607,7 +608,8 @@ const PUTME_DATA = {
     "options": [
       "Distillation of ants",
       "Secreted by ants",
-      "Used to eliminate anthills"
+      "Used to eliminate anthills",
+      "The Latin word for vinegar"
     ],
     "ans": "Distillation of ants",
     "explanation": "Formic acid's name derives from its discovery via distillation of ants."
@@ -661,7 +663,8 @@ const PUTME_DATA = {
     "options": [
       "Coloured ions",
       "High conductivity",
-      "Reducing ability"
+      "Reducing ability",
+      "Low melting points"
     ],
     "ans": "Coloured ions",
     "explanation": "Transition metals form coloured ions."
@@ -2590,6 +2593,117 @@ const PUTME_DATA = {
     ],
     "ans": "CH₃COOH",
     "explanation": "Acetic acid's formula is CH3COOH."
+  }
+,
+  {
+    "q": "Calculate the pH of a 0.01 mol/dm³ solution of a strong monobasic acid.",
+    "options": [
+      "1",
+      "2",
+      "12",
+      "0.01"
+    ],
+    "ans": "2",
+    "explanation": "pH = -log[H+] = -log(0.01) = -log(10^-2) = 2."
+  },
+  {
+    "q": "In the reaction 2KMnO4 + 16HCl → 2KCl + 2MnCl2 + 5Cl2 + 8H2O, what is the oxidation state change of manganese?",
+    "options": [
+      "+7 to +2",
+      "+7 to +4",
+      "+2 to +7",
+      "+4 to +2"
+    ],
+    "ans": "+7 to +2",
+    "explanation": "Manganese in KMnO4 is +7 and is reduced to +2 in MnCl2, gaining 5 electrons."
+  },
+  {
+    "q": "A first-order reaction has a half-life of 20 minutes. What fraction of the reactant remains after 60 minutes?",
+    "options": [
+      "1/2",
+      "1/4",
+      "1/8",
+      "1/16"
+    ],
+    "ans": "1/8",
+    "explanation": "60 minutes is 3 half-lives, so the fraction remaining is (1/2)³ = 1/8."
+  },
+  {
+    "q": "Calculate the mass of NaOH (Molar mass = 40 g/mol) required to prepare 500 cm³ of a 0.2 mol/dm³ solution.",
+    "options": [
+      "4 g",
+      "2 g",
+      "8 g",
+      "20 g"
+    ],
+    "ans": "4 g",
+    "explanation": "Moles = 0.2 × 0.5 = 0.1 mol; mass = 0.1 × 40 = 4 g."
+  },
+  {
+    "q": "Which of the following best explains why the boiling point of HF is anomalously high compared to other hydrogen halides?",
+    "options": [
+      "HF has the strongest covalent bond",
+      "HF molecules form hydrogen bonds with each other",
+      "HF has the highest molar mass among hydrogen halides",
+      "HF is ionic in the liquid state"
+    ],
+    "ans": "HF molecules form hydrogen bonds with each other",
+    "explanation": "The high electronegativity of fluorine allows strong hydrogen bonding between HF molecules, raising its boiling point."
+  },
+  {
+    "q": "In an electrolytic cell, 0.5 Faraday of electricity is passed through a solution of CuSO4. Calculate the mass of copper deposited (Cu = 64, 1 F deposits 1 mole of electrons).",
+    "options": [
+      "16 g",
+      "32 g",
+      "8 g",
+      "64 g"
+    ],
+    "ans": "16 g",
+    "explanation": "Cu²⁺ + 2e⁻ → Cu, so 2 F deposits 64 g. 0.5 F deposits (0.5/2) × 64 = 16 g."
+  },
+  {
+    "q": "Which of the following statements about catalysts is INCORRECT?",
+    "options": [
+      "A catalyst lowers the activation energy of a reaction",
+      "A catalyst is chemically unchanged at the end of a reaction",
+      "A catalyst alters the position of equilibrium of a reversible reaction",
+      "A catalyst increases the rate of both forward and reverse reactions equally"
+    ],
+    "ans": "A catalyst alters the position of equilibrium of a reversible reaction",
+    "explanation": "A catalyst speeds up the attainment of equilibrium but does not shift its position, since it affects both forward and reverse rates equally."
+  },
+  {
+    "q": "Determine the empirical formula of a compound containing 40% carbon, 6.7% hydrogen, and 53.3% oxygen by mass (C=12, H=1, O=16).",
+    "options": [
+      "CH2O",
+      "C2H4O2",
+      "C3H6O3",
+      "CHO"
+    ],
+    "ans": "CH2O",
+    "explanation": "Moles: C=40/12=3.33, H=6.7/1=6.7, O=53.3/16=3.33. Dividing by smallest gives C:H:O = 1:2:1, so CH2O."
+  },
+  {
+    "q": "Which of the following correctly describes the effect of increasing pressure on the equilibrium N2(g) + 3H2(g) ⇌ 2NH3(g)?",
+    "options": [
+      "Equilibrium shifts left, decreasing NH3 yield",
+      "Equilibrium shifts right, increasing NH3 yield",
+      "No effect on equilibrium position",
+      "Equilibrium constant increases"
+    ],
+    "ans": "Equilibrium shifts right, increasing NH3 yield",
+    "explanation": "Increasing pressure favours the side with fewer gas moles; the product side has 2 moles versus 4 on the reactant side, so equilibrium shifts right."
+  },
+  {
+    "q": "An organic compound decolourises bromine water and also gives a white precipitate with ammoniacal silver nitrate under certain conditions. It most likely contains:",
+    "options": [
+      "A terminal alkyne (C≡CH) and a carbon-carbon double bond",
+      "An alcohol group only",
+      "A saturated alkane chain",
+      "An aromatic ring only"
+    ],
+    "ans": "A terminal alkyne (C≡CH) and a carbon-carbon double bond",
+    "explanation": "Unsaturation (C=C) decolourises bromine water, while a terminal alkyne's acidic hydrogen reacts with ammoniacal AgNO3 to give a precipitate."
   }
 ],
   "PUTME_PHYSICS": [
@@ -5661,6 +5775,117 @@ const PUTME_DATA = {
     ],
     "ans": "Pascal",
     "explanation": "Stress is measured in pascals."
+  }
+,
+  {
+    "q": "A car accelerates uniformly from rest to 20 m/s in 8 seconds. Calculate the distance covered.",
+    "options": [
+      "80 m",
+      "160 m",
+      "40 m",
+      "20 m"
+    ],
+    "ans": "80 m",
+    "explanation": "s = ½(u+v)t = ½(0+20)(8) = 80 m."
+  },
+  {
+    "q": "Two resistors of 6 Ω and 3 Ω are connected in parallel. Calculate the effective resistance.",
+    "options": [
+      "2 Ω",
+      "9 Ω",
+      "4.5 Ω",
+      "1.5 Ω"
+    ],
+    "ans": "2 Ω",
+    "explanation": "1/R = 1/6 + 1/3 = 1/6 + 2/6 = 3/6, so R = 2 Ω."
+  },
+  {
+    "q": "A ray of light travels from glass (refractive index 1.5) into air. Calculate the critical angle (sin θc = 1/n).",
+    "options": [
+      "41.8°",
+      "48.6°",
+      "33.7°",
+      "60°"
+    ],
+    "ans": "41.8°",
+    "explanation": "sin θc = 1/1.5 = 0.667, so θc = sin⁻¹(0.667) ≈ 41.8°."
+  },
+  {
+    "q": "A body of mass 2 kg moving at 5 m/s collides with a stationary body of mass 3 kg and they move together. Calculate their common velocity after collision.",
+    "options": [
+      "2 m/s",
+      "3 m/s",
+      "1 m/s",
+      "5 m/s"
+    ],
+    "ans": "2 m/s",
+    "explanation": "By conservation of momentum: (2×5) = (2+3)v, so v = 10/5 = 2 m/s."
+  },
+  {
+    "q": "Calculate the work done in raising a 10 kg mass through a height of 5 m (g = 10 m/s²).",
+    "options": [
+      "500 J",
+      "50 J",
+      "5 J",
+      "5000 J"
+    ],
+    "ans": "500 J",
+    "explanation": "Work done = mgh = 10 × 10 × 5 = 500 J."
+  },
+  {
+    "q": "A transformer has 200 turns on the primary and 800 turns on the secondary. If the primary voltage is 240 V, find the secondary voltage.",
+    "options": [
+      "960 V",
+      "60 V",
+      "240 V",
+      "480 V"
+    ],
+    "ans": "960 V",
+    "explanation": "Vs/Vp = Ns/Np, so Vs = 240 × (800/200) = 960 V."
+  },
+  {
+    "q": "A wave has a frequency of 50 Hz and a wavelength of 4 m. Calculate its speed.",
+    "options": [
+      "200 m/s",
+      "12.5 m/s",
+      "54 m/s",
+      "2 m/s"
+    ],
+    "ans": "200 m/s",
+    "explanation": "Speed = frequency × wavelength = 50 × 4 = 200 m/s."
+  },
+  {
+    "q": "A gas at constant temperature has its volume reduced from 6 m³ to 2 m³. If the initial pressure was 100 kPa, find the new pressure using Boyle's law.",
+    "options": [
+      "300 kPa",
+      "33.3 kPa",
+      "200 kPa",
+      "600 kPa"
+    ],
+    "ans": "300 kPa",
+    "explanation": "P1V1 = P2V2 ⟹ 100 × 6 = P2 × 2 ⟹ P2 = 300 kPa."
+  },
+  {
+    "q": "A radioactive isotope has a half-life of 8 days. What fraction of the original sample remains after 24 days?",
+    "options": [
+      "1/8",
+      "1/4",
+      "1/2",
+      "1/16"
+    ],
+    "ans": "1/8",
+    "explanation": "24 days = 3 half-lives, so remaining fraction = (1/2)³ = 1/8."
+  },
+  {
+    "q": "An object is placed 15 cm from a concave mirror of focal length 10 cm. Using 1/f = 1/u + 1/v, calculate the image distance.",
+    "options": [
+      "30 cm",
+      "6 cm",
+      "25 cm",
+      "5 cm"
+    ],
+    "ans": "30 cm",
+    "explanation": "1/v = 1/f - 1/u = 1/10 - 1/15 = (3-2)/30 = 1/30, so v = 30 cm."
   }
 ],
   "PUTME_BIOLOGY": [
@@ -9491,7 +9716,118 @@ const PUTME_DATA = {
     ],
     "ans": "Total lung capacity minus residual volume",
     "explanation": "Vital capacity is the total lung capacity minus the residual volume — the maximum amount of air that can be exhaled after maximal inhalation."
-  },],
+  },,
+  {
+    "q": "In a genetic cross between two heterozygous pea plants (Tt × Tt) for tallness, what is the expected phenotypic ratio of tall to short offspring?",
+    "options": [
+      "3:1",
+      "1:1",
+      "1:2:1",
+      "9:3:3:1"
+    ],
+    "ans": "3:1",
+    "explanation": "Tt × Tt gives genotypes 1TT:2Tt:1tt; since T is dominant, phenotypic ratio of tall to short is 3:1."
+  },
+  {
+    "q": "During which phase of mitosis do sister chromatids separate and move to opposite poles?",
+    "options": [
+      "Prophase",
+      "Metaphase",
+      "Anaphase",
+      "Telophase"
+    ],
+    "ans": "Anaphase",
+    "explanation": "In anaphase, the centromeres split and sister chromatids are pulled to opposite poles by spindle fibres."
+  },
+  {
+    "q": "Which enzyme is responsible for unwinding the DNA double helix during replication?",
+    "options": [
+      "DNA polymerase",
+      "Helicase",
+      "Ligase",
+      "Primase"
+    ],
+    "ans": "Helicase",
+    "explanation": "Helicase unwinds the double helix by breaking hydrogen bonds between complementary base pairs."
+  },
+  {
+    "q": "In the human respiratory system, gaseous exchange occurs primarily by:",
+    "options": [
+      "Active transport",
+      "Diffusion",
+      "Osmosis",
+      "Facilitated transport requiring ATP"
+    ],
+    "ans": "Diffusion",
+    "explanation": "Oxygen and carbon dioxide move across the alveolar membrane by diffusion, down their concentration gradients."
+  },
+  {
+    "q": "A cross between a homozygous dominant (AA) and homozygous recessive (aa) individual produces offspring with genotype:",
+    "options": [
+      "All AA",
+      "All aa",
+      "All Aa",
+      "1AA:2Aa:1aa"
+    ],
+    "ans": "All Aa",
+    "explanation": "Since AA can only donate A and aa can only donate a, all offspring are heterozygous Aa."
+  },
+  {
+    "q": "Which blood component is primarily responsible for clotting?",
+    "options": [
+      "Erythrocytes",
+      "Leukocytes",
+      "Platelets (thrombocytes)",
+      "Plasma proteins alone"
+    ],
+    "ans": "Platelets (thrombocytes)",
+    "explanation": "Platelets aggregate at a wound site and release factors that trigger the clotting cascade."
+  },
+  {
+    "q": "The exchange of segments between non-sister chromatids of homologous chromosomes during meiosis is called:",
+    "options": [
+      "Independent assortment",
+      "Crossing over",
+      "Non-disjunction",
+      "Segregation"
+    ],
+    "ans": "Crossing over",
+    "explanation": "Crossing over occurs during prophase I of meiosis, increasing genetic variation."
+  },
+  {
+    "q": "Which hormone regulates blood glucose by promoting its uptake and storage as glycogen?",
+    "options": [
+      "Glucagon",
+      "Insulin",
+      "Adrenaline",
+      "Thyroxine"
+    ],
+    "ans": "Insulin",
+    "explanation": "Insulin, secreted by the pancreas, lowers blood glucose by promoting cellular uptake and glycogen synthesis."
+  },
+  {
+    "q": "An organism is heterozygous for two genes on different chromosomes (AaBb). According to Mendel's law of independent assortment, how many different types of gametes can it produce?",
+    "options": [
+      "2",
+      "4",
+      "8",
+      "16"
+    ],
+    "ans": "4",
+    "explanation": "With two gene pairs on different chromosomes, independent assortment produces 2² = 4 gamete combinations: AB, Ab, aB, ab."
+  },
+  {
+    "q": "Which of the following best describes the role of the loop of Henle in the kidney nephron?",
+    "options": [
+      "Filtration of blood plasma",
+      "Reabsorption of glucose and amino acids",
+      "Establishing a concentration gradient for water reabsorption",
+      "Secretion of hormones into the blood"
+    ],
+    "ans": "Establishing a concentration gradient for water reabsorption",
+    "explanation": "The loop of Henle creates an osmotic gradient in the medulla that enables water reabsorption in the collecting duct."
+  }
+],
   "PUTME_ENGLISH": [
   {
     "q": "Which of the following is true about butterflies and moths?",
@@ -9862,7 +10198,7 @@ const PUTME_DATA = {
       "Did Cameroon win the African cup football competition?",
       "Did Nigeria win the African cup handball competition?",
       "Did Nigeria win the World cup football competition?",
-      "Did Nigeria lose the African cup football competition?  Phonetics / Oral English"
+      "Did Nigeria lose the African cup football competition?"
     ],
     "ans": "Did Nigeria win the African cup handball competition?",
     "explanation": "Emphasis on FOOTBALL is tested by contrasting it with handball."
@@ -9961,7 +10297,7 @@ const PUTME_DATA = {
       "Whole and decimal",
       "Binary and hexadecimal",
       "Cardinal and ordinal",
-      "Roman and Arabic  Lexis & Structure"
+      "Roman and Arabic"
     ],
     "ans": "Cardinal and ordinal",
     "explanation": "English numbers are cardinal (one, two) and ordinal (first, second)."
@@ -9994,7 +10330,7 @@ const PUTME_DATA = {
       "accomodation",
       "accommodation",
       "acommodation",
-      "accomodation"
+      "acccommodation"
     ],
     "ans": "accommodation",
     "explanation": "'Accommodation' is the correct spelling (double c, double m)."
@@ -10946,7 +11282,7 @@ const PUTME_DATA = {
     "explanation": "'With a pen' shows the instrument used."
   },
   {
-    "q": "She is fond of ________ music. B) listening to (The question appears to have a typo. Grammatically, the correct expression is \"fond of listening to music.\" Among the given options, B) listening is the intended answer.)",
+    "q": "She is fond of ________ music.",
     "options": [
       "listen",
       "listening",
@@ -11188,15 +11524,15 @@ const PUTME_DATA = {
     "explanation": "'Information' is uncountable/singular."
   },
   {
-    "q": "He would prefer to walk ________ take a taxi.",
+    "q": "He would prefer to walk rather ________ take a taxi.",
     "options": [
-      "than (Although idiomatic English is \"would rather walk than take a taxi\" or \"would prefer to walk rather than take a taxi,\" this is the intended answer.)",
-      "rather",
-      "to",
-      "instead"
+      "than",
+      "then",
+      "instead",
+      "but"
     ],
-    "ans": "rather",
-    "explanation": "'Would prefer to walk rather (than) take a taxi' is the intended phrase."
+    "ans": "than",
+    "explanation": "'Would prefer to... rather than...' is the correct idiomatic structure."
   },
   {
     "q": "The plane arrived ________ schedule.",
@@ -11468,7 +11804,7 @@ const PUTME_DATA = {
       "to",
       "in",
       "on",
-      "at  s196. They ________ the championship last season. A) win B) won C) have won D) had won"
+      "at"
     ],
     "ans": "in",
     "explanation": "'Interested in' is the correct preposition."
@@ -11862,7 +12198,7 @@ const PUTME_DATA = {
     "q": "Hardly had we arrived ________ it started raining.",
     "options": [
       "when",
-      "than (Exam setters sometimes use this incorrectly, but the correct English is \"when.\" If following standard English, the correct answer should be A) when.)",
+      "than",
       "before",
       "then"
     ],
@@ -12539,6 +12875,226 @@ const PUTME_DATA = {
     ],
     "ans": "making",
     "explanation": "'Thanked...for making' uses the gerund."
+  },
+  {
+    "q": "They ________ the championship last season.",
+    "options": [
+      "win",
+      "won",
+      "have won",
+      "had won"
+    ],
+    "ans": "won",
+    "explanation": "'Last season' signals a completed past action, so the simple past 'won' is used."
+  },
+  {
+    "q": "A morpheme is best defined as:",
+    "options": [
+      "The smallest unit of sound in a language",
+      "The smallest unit of meaning in a language",
+      "A group of words forming a complete sentence",
+      "The smallest unit of writing in a language"
+    ],
+    "ans": "The smallest unit of meaning in a language",
+    "explanation": "A morpheme is the smallest meaningful unit of grammar or vocabulary in a language."
+  },
+  {
+    "q": "Which of the following is a free morpheme?",
+    "options": [
+      "-ing",
+      "un-",
+      "book",
+      "-ed"
+    ],
+    "ans": "book",
+    "explanation": "A free morpheme can stand alone as a word; 'book' does not need to attach to anything else."
+  },
+  {
+    "q": "Which of the following is a bound morpheme?",
+    "options": [
+      "happy",
+      "-ness",
+      "run",
+      "sun"
+    ],
+    "ans": "-ness",
+    "explanation": "A bound morpheme cannot stand alone and must attach to another morpheme, e.g. happi-ness."
+  },
+  {
+    "q": "How many morphemes are in the word 'unbelievable'?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "ans": "3",
+    "explanation": "'Unbelievable' = un- (prefix) + believe (root) + -able (suffix) = 3 morphemes."
+  },
+  {
+    "q": "How many morphemes are in the word 'disagreement'?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "1"
+    ],
+    "ans": "3",
+    "explanation": "'Disagreement' = dis- + agree + -ment = 3 morphemes."
+  },
+  {
+    "q": "In the word 'cats', the '-s' is an example of:",
+    "options": [
+      "A derivational morpheme",
+      "An inflectional morpheme",
+      "A free morpheme",
+      "A root morpheme"
+    ],
+    "ans": "An inflectional morpheme",
+    "explanation": "Inflectional morphemes like plural '-s' change grammatical form without creating a new word."
+  },
+  {
+    "q": "In the word 'kindness', the suffix '-ness' is an example of:",
+    "options": [
+      "An inflectional morpheme",
+      "A derivational morpheme",
+      "A root morpheme",
+      "A free morpheme"
+    ],
+    "ans": "A derivational morpheme",
+    "explanation": "Derivational morphemes create new words or change word class, e.g. adjective 'kind' to noun 'kindness'."
+  },
+  {
+    "q": "Which prefix means 'against' or 'opposite'?",
+    "options": [
+      "pre-",
+      "anti-",
+      "sub-",
+      "co-"
+    ],
+    "ans": "anti-",
+    "explanation": "The prefix 'anti-' means against or opposed to, as in 'antisocial'."
+  },
+  {
+    "q": "The word 'misinterpret' contains a prefix meaning:",
+    "options": [
+      "Again",
+      "Before",
+      "Wrongly",
+      "Together"
+    ],
+    "ans": "Wrongly",
+    "explanation": "The prefix 'mis-' means wrongly or badly, as in 'misinterpret' (to interpret wrongly)."
+  },
+  {
+    "q": "Which suffix turns a verb into a noun meaning 'a person who does something'?",
+    "options": [
+      "-able",
+      "-er",
+      "-ful",
+      "-ize"
+    ],
+    "ans": "-er",
+    "explanation": "The suffix '-er' forms agent nouns, e.g. 'teach' becomes 'teacher'."
+  },
+  {
+    "q": "Identify the root morpheme in the word 'unhappiness'.",
+    "options": [
+      "un-",
+      "happi",
+      "-ness",
+      "happiness"
+    ],
+    "ans": "happi",
+    "explanation": "The root carries the core meaning; 'happy/happi-' is the root, with 'un-' and '-ness' attached to it."
+  },
+  {
+    "q": "What is the plural morpheme in the word 'children'?",
+    "options": [
+      "-s",
+      "-es",
+      "-ren (irregular)",
+      "There is no plural morpheme"
+    ],
+    "ans": "-ren (irregular)",
+    "explanation": "'Children' is an irregular plural where '-ren' functions as the plural morpheme attached to the root 'child'."
+  },
+  {
+    "q": "Which of these words is formed by compounding?",
+    "options": [
+      "Teacher",
+      "Blackboard",
+      "Happily",
+      "Unkind"
+    ],
+    "ans": "Blackboard",
+    "explanation": "Compounding joins two free morphemes ('black' + 'board') to form a new word."
+  },
+  {
+    "q": "The process of forming a new word by combining two existing words is called:",
+    "options": [
+      "Affixation",
+      "Compounding",
+      "Blending",
+      "Clipping"
+    ],
+    "ans": "Compounding",
+    "explanation": "Compounding combines two independent words into one, e.g. 'sunflower'."
+  },
+  {
+    "q": "The word 'brunch' (breakfast + lunch) is formed by:",
+    "options": [
+      "Compounding",
+      "Blending",
+      "Clipping",
+      "Acronymy"
+    ],
+    "ans": "Blending",
+    "explanation": "Blending merges parts of two words into one, e.g. breakfast + lunch = brunch."
+  },
+  {
+    "q": "The shortening of 'advertisement' to 'ad' is an example of:",
+    "options": [
+      "Clipping",
+      "Blending",
+      "Compounding",
+      "Derivation"
+    ],
+    "ans": "Clipping",
+    "explanation": "Clipping shortens a longer word to a shorter form with the same meaning."
+  },
+  {
+    "q": "'NAFDAC' is an example of a word formed by:",
+    "options": [
+      "Blending",
+      "Acronymy",
+      "Clipping",
+      "Compounding"
+    ],
+    "ans": "Acronymy",
+    "explanation": "Acronyms are formed from the initial letters of a phrase, pronounced as a word."
+  },
+  {
+    "q": "Adding the suffix '-ful' to 'hope' to form 'hopeful' is an example of:",
+    "options": [
+      "Inflection",
+      "Derivation",
+      "Compounding",
+      "Blending"
+    ],
+    "ans": "Derivation",
+    "explanation": "Derivation creates a new word (often a new word class) by adding an affix to a root."
+  },
+  {
+    "q": "Which of the following words contains two bound morphemes and one free morpheme?",
+    "options": [
+      "cats",
+      "unhelpful",
+      "sunlight",
+      "teacher"
+    ],
+    "ans": "unhelpful",
+    "explanation": "'Unhelpful' = un- (bound) + help (free) + -ful (bound), giving two bound morphemes and one free morpheme."
   }
 ],
   "PUTME_GENERAL_KNOWLEDGE": [
@@ -14752,6 +15308,117 @@ const PUTME_DATA = {
     "ans": "Abidjan, Côte d'Ivoire",
     "explanation": "The African Development Bank is headquartered in Abidjan, Côte d'Ivoire."
   }
+,
+  {
+    "q": "Which Nigerian city served as the country's capital before Abuja?",
+    "options": [
+      "Kaduna",
+      "Lagos",
+      "Enugu",
+      "Ibadan"
+    ],
+    "ans": "Lagos",
+    "explanation": "Lagos was Nigeria's capital until it was officially moved to Abuja in December 1991."
+  },
+  {
+    "q": "The Berlin Conference of 1884-1885, which partitioned Africa among European powers, was hosted by which country?",
+    "options": [
+      "France",
+      "Britain",
+      "Germany",
+      "Belgium"
+    ],
+    "ans": "Germany",
+    "explanation": "The Berlin Conference was convened by German Chancellor Otto von Bismarck in Berlin."
+  },
+  {
+    "q": "Which international organization has its headquarters in Addis Ababa, Ethiopia?",
+    "options": [
+      "United Nations",
+      "African Union",
+      "World Trade Organization",
+      "ECOWAS"
+    ],
+    "ans": "African Union",
+    "explanation": "The African Union's headquarters is located in Addis Ababa, Ethiopia."
+  },
+  {
+    "q": "Nigeria's first military coup took place in which year?",
+    "options": [
+      "1960",
+      "1966",
+      "1970",
+      "1975"
+    ],
+    "ans": "1966",
+    "explanation": "The first military coup in Nigeria occurred in January 1966, led by a group of young army officers."
+  },
+  {
+    "q": "Which body of water separates Africa from Europe at its narrowest point?",
+    "options": [
+      "Strait of Gibraltar",
+      "Suez Canal",
+      "Red Sea",
+      "Strait of Hormuz"
+    ],
+    "ans": "Strait of Gibraltar",
+    "explanation": "The Strait of Gibraltar, about 14 km wide at its narrowest, separates Morocco from Spain."
+  },
+  {
+    "q": "Who was the Secretary-General of the United Nations during the 1994 Rwandan genocide?",
+    "options": [
+      "Kofi Annan",
+      "Boutros Boutros-Ghali",
+      "Ban Ki-moon",
+      "U Thant"
+    ],
+    "ans": "Boutros Boutros-Ghali",
+    "explanation": "Boutros Boutros-Ghali served as UN Secretary-General from 1992 to 1996, spanning the Rwandan genocide."
+  },
+  {
+    "q": "The Treaty of Westphalia (1648), often cited as the origin of the modern nation-state system, ended which conflict?",
+    "options": [
+      "The Hundred Years' War",
+      "The Thirty Years' War",
+      "The Napoleonic Wars",
+      "World War I"
+    ],
+    "ans": "The Thirty Years' War",
+    "explanation": "The Peace of Westphalia in 1648 ended the Thirty Years' War in the Holy Roman Empire."
+  },
+  {
+    "q": "Which Nigerian document is regarded as the country's supreme law?",
+    "options": [
+      "The Independence Act",
+      "The Constitution of the Federal Republic of Nigeria",
+      "The Land Use Act",
+      "The Petroleum Act"
+    ],
+    "ans": "The Constitution of the Federal Republic of Nigeria",
+    "explanation": "The 1999 Constitution (as amended) is the supreme law of Nigeria, to which all other laws are subject."
+  },
+  {
+    "q": "The 'Scramble for Africa' primarily took place during which period?",
+    "options": [
+      "1650-1700",
+      "1750-1800",
+      "1880-1914",
+      "1920-1945"
+    ],
+    "ans": "1880-1914",
+    "explanation": "European colonization of Africa intensified between 1880 and the outbreak of World War I in 1914."
+  },
+  {
+    "q": "Which former Nigerian Head of State was known for the 'War Against Indiscipline' (WAI) campaign?",
+    "options": [
+      "Ibrahim Babangida",
+      "Muhammadu Buhari",
+      "Yakubu Gowon",
+      "Sani Abacha"
+    ],
+    "ans": "Muhammadu Buhari",
+    "explanation": "Muhammadu Buhari, as military Head of State (1983-1985), launched the War Against Indiscipline."
+  }
 ],
   "PUTME_MATHEMATICS": [
   {
@@ -14763,7 +15430,7 @@ const PUTME_DATA = {
       "4/3"
     ],
     "ans": "4/3",
-    "explanation": ""
+    "explanation": "Apply the laws of indices (a^m × a^n = a^(m+n), (a^m)^n = a^(mn), a^(-n) = 1/a^n) to simplify each term before combining."
   },
   {
     "q": "Three consecutive positive integers a, b and c are such that b² = 4(a + c). Find the value of c",
@@ -14774,7 +15441,7 @@ const PUTME_DATA = {
       "5"
     ],
     "ans": "9",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the principal which amounts to N4,400 at simple interest in 5 years at 2% per annum.",
@@ -14785,7 +15452,7 @@ const PUTME_DATA = {
       "N4,000"
     ],
     "ans": "N4,000",
-    "explanation": ""
+    "explanation": "Use the simple interest formula I = PRT/100, and relate the amount to the principal and interest as given."
   },
   {
     "q": "The sum of the first 20 terms of the progression 3, 6, 12, … is",
@@ -14796,7 +15463,7 @@ const PUTME_DATA = {
       "3(2^21 + 1)"
     ],
     "ans": "3(2^20 – 1)",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Mr. Robson bought bags of orange for N2,500 each. He sold them for N90,000 at a loss of 20%. How many bags of orange did he buy?",
@@ -14807,7 +15474,7 @@ const PUTME_DATA = {
       "45"
     ],
     "ans": "45",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "The second and fifth terms of a geometric progression are 21 and 567 respectively. Find the first term and the common ratio of the progression.",
@@ -14818,7 +15485,7 @@ const PUTME_DATA = {
       "-3, 7"
     ],
     "ans": "7, 3",
-    "explanation": ""
+    "explanation": "Use the geometric progression formulas Tn = ar^(n-1) and Sn = a(r^n - 1)/(r - 1) with the given terms to find the required value."
   },
   {
     "q": "Tunse bought a house for N1,250,000 and spent N350,000 to renovate it. He then sold the house for N2,000,000. What is the percentage gain?",
@@ -14829,7 +15496,7 @@ const PUTME_DATA = {
       "45%"
     ],
     "ans": "45%",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "List the integral values that satisfy the inequality -2 < 7 – 3x ≤ 10",
@@ -14840,7 +15507,7 @@ const PUTME_DATA = {
       "0, 1, 2"
     ],
     "ans": "-1, 0, 1, 2",
-    "explanation": ""
+    "explanation": "Solve the inequality algebraically, treating it like an equation but reversing the inequality sign when multiplying or dividing by a negative number."
   },
   {
     "q": "In a class, 120 students speak English or French or both. 70 speak English and 55 speak French. How many speak English but not French?",
@@ -14851,7 +15518,7 @@ const PUTME_DATA = {
       "65"
     ],
     "ans": "65",
-    "explanation": ""
+    "explanation": "Use the set relation n(A∪B) = n(A) + n(B) - n(A∩B), or a Venn diagram, to relate the given quantities."
   },
   {
     "q": "The lengths of the sides of a right-angled triangle are ym, (3y – 1)m and (3y + 1)m. Find y.",
@@ -14862,7 +15529,7 @@ const PUTME_DATA = {
       "4"
     ],
     "ans": "12",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Uche, Adamu and Ope share profit on a business deal. Uche received ⅓ of the profit and Adamu received ⅔ of the remainder. If Ope received the remaining N12,000, how much profit did they share?",
@@ -14873,7 +15540,7 @@ const PUTME_DATA = {
       "N42,000"
     ],
     "ans": "N54,000",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "A ladder resting on a vertical wall makes an angle whose tangent is 2.5 with the ground. If the distance between the foot of the ladder and the wall is 60cm, what is the length of the ladder?",
@@ -14884,7 +15551,7 @@ const PUTME_DATA = {
       "1.3m"
     ],
     "ans": "1.3m",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Three students share a bag of garri in such a way that the first student took ¼ of the garri and the second ¾ of the remainder. What fraction of the bag of garri did the third student take?",
@@ -14895,7 +15562,7 @@ const PUTME_DATA = {
       "4/15"
     ],
     "ans": "3/16",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Solve the simultaneous linear equations 2x + 5y = 11, 7x + 4y = 2",
@@ -14906,7 +15573,7 @@ const PUTME_DATA = {
       "⅓, ⅖"
     ],
     "ans": "-34/27, 73/27",
-    "explanation": ""
+    "explanation": "Eliminate one variable by making its coefficients equal in both equations, then solve for the remaining variable and substitute back."
   },
   {
     "q": "If x + 1 is a factor of x³ + 3x² + Kx + 4, find the value of K.",
@@ -14917,7 +15584,7 @@ const PUTME_DATA = {
       "3"
     ],
     "ans": "6",
-    "explanation": ""
+    "explanation": "Apply the factor/remainder theorem: substitute the root that makes the given factor zero into the polynomial and solve for the unknown."
   },
   {
     "q": "Paul and his friend Peter went to buy an article costing N600. Peter had 10% of the cost and Paul 40% of the remainder. How much did they have altogether?",
@@ -14928,7 +15595,7 @@ const PUTME_DATA = {
       "N196"
     ],
     "ans": "N276",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find all values of x satisfying the inequality -14 ≤ 4 – 3x ≤ 31",
@@ -14939,7 +15606,7 @@ const PUTME_DATA = {
       "6 ≤ x ≤ 12"
     ],
     "ans": "-9 ≤ x ≤ 6",
-    "explanation": ""
+    "explanation": "Solve the inequality algebraically, treating it like an equation but reversing the inequality sign when multiplying or dividing by a negative number."
   },
   {
     "q": "What factor is common to all the expressions x² - x, 2x² - x - 1 and x² - 1?",
@@ -14950,7 +15617,7 @@ const PUTME_DATA = {
       "No factor"
     ],
     "ans": "No factor",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the sum to infinity of the series 3 + 2 + 4/3 + 8/9 + 16/27 + …",
@@ -14961,7 +15628,7 @@ const PUTME_DATA = {
       "90"
     ],
     "ans": "9",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the number of sides of a regular polygon whose interior angle is twice the exterior angle.",
@@ -14972,7 +15639,7 @@ const PUTME_DATA = {
       "9"
     ],
     "ans": "6",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the value of p, if the line which passes through (-1, -p) and (-2p, 2) is parallel to the line 2y + 8x – 17 = 0",
@@ -14983,7 +15650,7 @@ const PUTME_DATA = {
       "-6/7"
     ],
     "ans": "6/7",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Obtain a maximum value of the function f(x) = x³ - 12x + 11",
@@ -14994,7 +15661,7 @@ const PUTME_DATA = {
       "27"
     ],
     "ans": "27",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "If y = 5cos(-6x), dy/dx is",
@@ -15005,7 +15672,7 @@ const PUTME_DATA = {
       "-30cos(-6x)"
     ],
     "ans": "30sin(-6x)",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find the variance of the numbers k, k + 1, k + 2",
@@ -15016,7 +15683,7 @@ const PUTME_DATA = {
       "1"
     ],
     "ans": "⅓",
-    "explanation": ""
+    "explanation": "Apply the appropriate statistical formula (for mean, median, mode, or standard deviation) to the given data set."
   },
   {
     "q": "At what value of x is the function y = x² - 6x - 7 minimum?",
@@ -15027,7 +15694,7 @@ const PUTME_DATA = {
       "2"
     ],
     "ans": "3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "The chances of three independent events P, Q, R occurring are ½, ⅔, ¼ respectively. What are the chances of P and Q only occurring?",
@@ -15038,7 +15705,7 @@ const PUTME_DATA = {
       "½"
     ],
     "ans": "1/12",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "If x and y represent the mean and the median respectively of the marks 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, find x/y correct to 1 decimal place.",
@@ -15049,7 +15716,7 @@ const PUTME_DATA = {
       "2"
     ],
     "ans": "1",
-    "explanation": ""
+    "explanation": "Apply the appropriate statistical formula (for mean, median, mode, or standard deviation) to the given data set."
   },
   {
     "q": "Find the point on the plane where the curve y = 2x² - 2x + 9 has 2 as gradient.",
@@ -15060,7 +15727,7 @@ const PUTME_DATA = {
       "(1, 4)"
     ],
     "ans": "(1, 3)",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the equation of the line through (5, 7) parallel to the line 7x + 5y – 5 = 0",
@@ -15071,7 +15738,7 @@ const PUTME_DATA = {
       "y + 5x = 70"
     ],
     "ans": "5y + 7x = 70",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A school's budget allocations: Science N35,000,000; Education N25,000,000; Law N20,000,000; Social/Management N20,000,000. In a pie chart, the angle corresponding to Science is",
@@ -15082,7 +15749,7 @@ const PUTME_DATA = {
       "100°"
     ],
     "ans": "126°",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify 3⅓ - 1¼ × ⅔ + 1⅖",
@@ -15093,7 +15760,7 @@ const PUTME_DATA = {
       "5"
     ],
     "ans": "5",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the distance between points A(-4, 5) and B(-3, 2)",
@@ -15104,7 +15771,7 @@ const PUTME_DATA = {
       "√58"
     ],
     "ans": "√58",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Number of children: 0,1,2,3,4,5,6 with families: 7,11,6,7,7,5,3. Find the mode and median respectively of the distribution.",
@@ -15115,7 +15782,7 @@ const PUTME_DATA = {
       "1, 1"
     ],
     "ans": "1, 2",
-    "explanation": ""
+    "explanation": "Apply the appropriate statistical formula (for mean, median, mode, or standard deviation) to the given data set."
   },
   {
     "q": "Rationalize (4√7 + √2)/(√2 - √7)",
@@ -15126,7 +15793,7 @@ const PUTME_DATA = {
       "√14 - 8"
     ],
     "ans": "-√14 - 6",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A housewife bought five yams at Y34 per yam and three oranges at Y5 each, where Y is a currency in base six. Find the total amount spent.",
@@ -15137,7 +15804,7 @@ const PUTME_DATA = {
       "Y3526"
     ],
     "ans": "Y3256",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Justice starts a 5km walk from P on a bearing 023°. He then walks 4km on a bearing of 113° to Q. What is the bearing of Q from P?",
@@ -15148,7 +15815,7 @@ const PUTME_DATA = {
       "113°"
     ],
     "ans": "67.4°",
-    "explanation": ""
+    "explanation": "Sketch the bearings from North, then apply trigonometry (sine or cosine rule) to find the required distance or angle."
   },
   {
     "q": "Divide the L.C.M. of 36, 54 and 90 by their H.C.F.",
@@ -15159,7 +15826,7 @@ const PUTME_DATA = {
       "45"
     ],
     "ans": "30",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If 125_x = 201_0, find x.",
@@ -15170,7 +15837,7 @@ const PUTME_DATA = {
       "2"
     ],
     "ans": "3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify 4⅓ – (2½ - 1⅗)",
@@ -15181,7 +15848,7 @@ const PUTME_DATA = {
       "3 13/30"
     ],
     "ans": "3 13/30",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If the ratio x:y = 3:5 and y:z = 4:7, find the ratio x:y:z",
@@ -15192,7 +15859,7 @@ const PUTME_DATA = {
       "5 : 4 : 7"
     ],
     "ans": "12 : 20 : 35",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "The number 327,036 was corrected to 327,000. Which of the following can exactly describe the degree of approximation used? I. to 3 significant figures II. to 4 significant figures III. to the nearest hundred IV. to the nearest thousand",
@@ -15203,7 +15870,7 @@ const PUTME_DATA = {
       "I, II, III and IV"
     ],
     "ans": "I, II, III and IV",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If 101010₂ = x₁₀ + 1111₂, the value of x is",
@@ -15214,7 +15881,7 @@ const PUTME_DATA = {
       "13"
     ],
     "ans": "27",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "The population of a school is 1,376. Express this to three significant figures.",
@@ -15225,7 +15892,7 @@ const PUTME_DATA = {
       "138"
     ],
     "ans": "1,380",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A labourer's daily wage is N50 for the first 10 days and N100 for the next 9 days. Find the daily wage for the remaining working day if the average daily wage is N90.80.",
@@ -15236,7 +15903,7 @@ const PUTME_DATA = {
       "N92.50"
     ],
     "ans": "N95",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the value of x if 4logx + 5logx – 7logx = log16",
@@ -15247,7 +15914,7 @@ const PUTME_DATA = {
       "16"
     ],
     "ans": "4",
-    "explanation": ""
+    "explanation": "Apply the laws of logarithms (log(mn) = log m + log n, log(m/n) = log m - log n, log(m^n) = n log m) to simplify the expression."
   },
   {
     "q": "A motorist drives from P to Q at an average speed of 80 km/hr and returns from Q to P at 50 km/hr. Find the average speed for the round trip.",
@@ -15258,7 +15925,7 @@ const PUTME_DATA = {
       "65.0 km/hr"
     ],
     "ans": "53.3 km/hr",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If X = {1,2,3,4,5,6}, Y = {2,4,5,7} and Z = {1,4,5}, which of the following is/are correct? I. n(X∪Y∪Z) = 13 II. (X∩Y)∪Z = X∩(Y∪Z) III. n(X∩Y∩Z) = 2",
@@ -15269,7 +15936,7 @@ const PUTME_DATA = {
       "II and III only"
     ],
     "ans": "I and III only",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "X sold a radio set to Y at a profit of 10% and Y sold it for N2,612.50 at a loss of 5%. What was the cost of the radio to X?",
@@ -15280,7 +15947,7 @@ const PUTME_DATA = {
       "N2,272"
     ],
     "ans": "N2,500",
-    "explanation": ""
+    "explanation": "Use the set relation n(A∪B) = n(A) + n(B) - n(A∩B), or a Venn diagram, to relate the given quantities."
   },
   {
     "q": "Factorize: 6^(2m+1) + 7(6^m) - 5",
@@ -15291,7 +15958,7 @@ const PUTME_DATA = {
       "[2(6^m) + 5][3(6^m) – 1]"
     ],
     "ans": "[3(6^m) + 5][2(6^m) – 1]",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "The minimum point on the curve y = x² – 4x + 3 is",
@@ -15302,7 +15969,7 @@ const PUTME_DATA = {
       "(2, -4)"
     ],
     "ans": "(2, -1)",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "In a class of 120 students, 75 offer Geography and 60 offer Economics; every student offers at least one. How many offer both?",
@@ -15313,7 +15980,7 @@ const PUTME_DATA = {
       "25"
     ],
     "ans": "15",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "How many total outcomes are there when two fair dice are tossed together?",
@@ -15324,7 +15991,7 @@ const PUTME_DATA = {
       "42"
     ],
     "ans": "36",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "When two dice are tossed, what is the probability that the sum is divisible by 3?",
@@ -15335,7 +16002,7 @@ const PUTME_DATA = {
       "1/2"
     ],
     "ans": "1/3",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "Find the area of a sector of a circle with radius 8cm and angle 135°.",
@@ -15346,7 +16013,7 @@ const PUTME_DATA = {
       "94.2 cm²"
     ],
     "ans": "75.4 cm²",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "Simplify: 2^x × 8^(x-1) = 32. Find x.",
@@ -15357,7 +16024,7 @@ const PUTME_DATA = {
       "4"
     ],
     "ans": "2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Solve for x: log₂(x) + log₂(x-2) = 3",
@@ -15368,7 +16035,7 @@ const PUTME_DATA = {
       "8"
     ],
     "ans": "4",
-    "explanation": ""
+    "explanation": "Apply the laws of logarithms (log(mn) = log m + log n, log(m/n) = log m - log n, log(m^n) = n log m) to simplify the expression."
   },
   {
     "q": "The nth term of an AP is given by Tn = 3n + 2. Find the sum of the first 15 terms.",
@@ -15379,7 +16046,7 @@ const PUTME_DATA = {
       "405"
     ],
     "ans": "390",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the 8th term of the GP 2, 6, 18, …",
@@ -15390,7 +16057,7 @@ const PUTME_DATA = {
       "4368"
     ],
     "ans": "4374",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A rectangular field has length 15m and width 8m. Find the length of its diagonal.",
@@ -15401,7 +16068,7 @@ const PUTME_DATA = {
       "23m"
     ],
     "ans": "17m",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Find the area of a triangle with sides 7cm, 8cm and 9cm using Heron's formula.",
@@ -15412,7 +16079,7 @@ const PUTME_DATA = {
       "32 cm²"
     ],
     "ans": "26.8 cm²",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "A cone has base radius 6cm and height 8cm. Find its slant height.",
@@ -15423,7 +16090,7 @@ const PUTME_DATA = {
       "14cm"
     ],
     "ans": "10cm",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "Find the volume of a cylinder with radius 7cm and height 10cm. (Use π = 22/7)",
@@ -15434,7 +16101,7 @@ const PUTME_DATA = {
       "2200 cm³"
     ],
     "ans": "1540 cm³",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "Two events A and B are independent with P(A) = 0.4, P(B) = 0.5. Find P(A∩B).",
@@ -15445,7 +16112,7 @@ const PUTME_DATA = {
       "0.45"
     ],
     "ans": "0.2",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "A bag contains 5 red and 3 blue balls. One ball is drawn at random. Find the probability that it is blue.",
@@ -15456,7 +16123,7 @@ const PUTME_DATA = {
       "3/5"
     ],
     "ans": "3/8",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "The mean of 5 numbers is 12. If one number is removed the mean becomes 11. Find the removed number.",
@@ -15467,7 +16134,7 @@ const PUTME_DATA = {
       "20"
     ],
     "ans": "16",
-    "explanation": ""
+    "explanation": "Apply the appropriate statistical formula (for mean, median, mode, or standard deviation) to the given data set."
   },
   {
     "q": "Find the median of the numbers 12, 9, 15, 7, 20, 18, 10.",
@@ -15478,7 +16145,7 @@ const PUTME_DATA = {
       "14"
     ],
     "ans": "12",
-    "explanation": ""
+    "explanation": "Apply the appropriate statistical formula (for mean, median, mode, or standard deviation) to the given data set."
   },
   {
     "q": "If sin θ = 3/5 and θ is acute, find cos θ.",
@@ -15489,7 +16156,7 @@ const PUTME_DATA = {
       "5/3"
     ],
     "ans": "4/5",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Find the value of θ, 0° ≤ θ ≤ 90°, if tan θ = 1.",
@@ -15500,7 +16167,7 @@ const PUTME_DATA = {
       "90°"
     ],
     "ans": "45°",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "A ship sails 8km due north then 6km due east. Find its distance from the starting point.",
@@ -15511,7 +16178,7 @@ const PUTME_DATA = {
       "14km"
     ],
     "ans": "10km",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Simplify (2x²y³)² ÷ (4xy²)",
@@ -15522,7 +16189,7 @@ const PUTME_DATA = {
       "x⁴y⁶"
     ],
     "ans": "x³y⁴",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Factorize x² - 5x + 6",
@@ -15533,7 +16200,7 @@ const PUTME_DATA = {
       "(x-6)(x+1)"
     ],
     "ans": "(x-2)(x-3)",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Solve the quadratic equation x² - 7x + 12 = 0",
@@ -15544,7 +16211,7 @@ const PUTME_DATA = {
       "x = -3, -4"
     ],
     "ans": "x = 3, 4",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "Find the sum of the roots of 2x² - 5x + 3 = 0.",
@@ -15555,7 +16222,7 @@ const PUTME_DATA = {
       "3"
     ],
     "ans": "5/2",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "Find the product of the roots of 2x² - 5x + 3 = 0.",
@@ -15566,7 +16233,7 @@ const PUTME_DATA = {
       "-3/2"
     ],
     "ans": "3/2",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "Make r the subject of the formula A = πr².",
@@ -15577,7 +16244,7 @@ const PUTME_DATA = {
       "r = πA"
     ],
     "ans": "r = √(A/π)",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If y varies directly as x and y = 20 when x = 4, find y when x = 9.",
@@ -15588,7 +16255,7 @@ const PUTME_DATA = {
       "50"
     ],
     "ans": "45",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If y varies inversely as x and y = 6 when x = 4, find y when x = 8.",
@@ -15599,7 +16266,7 @@ const PUTME_DATA = {
       "12"
     ],
     "ans": "3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Convert 235₈ to base 10.",
@@ -15610,7 +16277,7 @@ const PUTME_DATA = {
       "149"
     ],
     "ans": "157",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Convert 45 (base 10) to binary.",
@@ -15621,7 +16288,7 @@ const PUTME_DATA = {
       "100101"
     ],
     "ans": "101101",
-    "explanation": ""
+    "explanation": "Convert between number bases by expressing the digits as powers of the base, then evaluate or convert as required."
   },
   {
     "q": "Simplify: 3/4 + 2/3 ÷ 1/6",
@@ -15632,7 +16299,7 @@ const PUTME_DATA = {
       "4⅓"
     ],
     "ans": "4¾",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A trader bought an article for N800 and sold it at a profit of 25%. Find the selling price.",
@@ -15643,7 +16310,7 @@ const PUTME_DATA = {
       "N1100"
     ],
     "ans": "N1000",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "An article is sold for N690 at a loss of 8%. Find the cost price.",
@@ -15654,7 +16321,7 @@ const PUTME_DATA = {
       "N750"
     ],
     "ans": "N750",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "Simple interest on a sum of money for 3 years at 5% per annum is N450. Find the principal.",
@@ -15665,7 +16332,7 @@ const PUTME_DATA = {
       "N4,000"
     ],
     "ans": "N3,000",
-    "explanation": ""
+    "explanation": "Use the simple interest formula I = PRT/100, and relate the amount to the principal and interest as given."
   },
   {
     "q": "A sum of N5,000 is invested at 8% per annum simple interest for 4 years. Find the total amount.",
@@ -15676,7 +16343,7 @@ const PUTME_DATA = {
       "N7,000"
     ],
     "ans": "N6,600",
-    "explanation": ""
+    "explanation": "Use the simple interest formula I = PRT/100, and relate the amount to the principal and interest as given."
   },
   {
     "q": "Find the value of x if 3^(2x-1) = 27.",
@@ -15687,7 +16354,7 @@ const PUTME_DATA = {
       "2.5"
     ],
     "ans": "2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify √48 - √27 + √12",
@@ -15698,7 +16365,7 @@ const PUTME_DATA = {
       "4√3"
     ],
     "ans": "3√3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If the interior angle of a regular polygon is 150°, find the number of sides.",
@@ -15709,7 +16376,7 @@ const PUTME_DATA = {
       "15"
     ],
     "ans": "12",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the sum of the interior angles of a regular octagon.",
@@ -15720,7 +16387,7 @@ const PUTME_DATA = {
       "1440°"
     ],
     "ans": "1080°",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A circle has a circumference of 44cm. Find its radius. (π = 22/7)",
@@ -15731,7 +16398,7 @@ const PUTME_DATA = {
       "8cm"
     ],
     "ans": "7cm",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "Find the area of a circle with diameter 14cm. (π = 22/7)",
@@ -15742,7 +16409,7 @@ const PUTME_DATA = {
       "160 cm²"
     ],
     "ans": "154 cm²",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "A right circular cylinder has radius 3cm and height 7cm. Find its curved surface area. (π = 22/7)",
@@ -15753,7 +16420,7 @@ const PUTME_DATA = {
       "150 cm²"
     ],
     "ans": "132 cm²",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "Find the number of ways of arranging the letters of the word \"MATHS\".",
@@ -15764,7 +16431,7 @@ const PUTME_DATA = {
       "720"
     ],
     "ans": "120",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "In how many ways can 3 students be selected from a group of 8 students?",
@@ -15775,7 +16442,7 @@ const PUTME_DATA = {
       "56"
     ],
     "ans": "56",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the probability of getting a head and a tail when two fair coins are tossed.",
@@ -15786,7 +16453,7 @@ const PUTME_DATA = {
       "1"
     ],
     "ans": "1/2",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "The first term of an AP is 4 and the common difference is 3. Find the 12th term.",
@@ -15797,7 +16464,7 @@ const PUTME_DATA = {
       "40"
     ],
     "ans": "37",
-    "explanation": ""
+    "explanation": "Use the arithmetic progression formulas Tn = a + (n-1)d and Sn = n/2[2a + (n-1)d] with the given terms to find the required value."
   },
   {
     "q": "If the sum of the first n terms of an AP is Sn = n² + 2n, find the first term.",
@@ -15808,7 +16475,7 @@ const PUTME_DATA = {
       "4"
     ],
     "ans": "3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the gradient of the line joining points (2,3) and (6,11).",
@@ -15819,7 +16486,7 @@ const PUTME_DATA = {
       "4"
     ],
     "ans": "2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the equation of the line with gradient 3 passing through (1,2).",
@@ -15830,7 +16497,7 @@ const PUTME_DATA = {
       "y = 3x + 2"
     ],
     "ans": "y = 3x - 1",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A committee of 4 is to be chosen from 6 men and 4 women. In how many ways can this be done if the committee must contain exactly 2 men?",
@@ -15841,7 +16508,7 @@ const PUTME_DATA = {
       "100"
     ],
     "ans": "90",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If P(A) = 0.3, P(B) = 0.4 and P(A∪B) = 0.58, find P(A∩B).",
@@ -15852,7 +16519,7 @@ const PUTME_DATA = {
       "0.2"
     ],
     "ans": "0.12",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "Simplify (3⁴ × 3⁻²) ÷ 3⁻³",
@@ -15863,7 +16530,7 @@ const PUTME_DATA = {
       "27"
     ],
     "ans": "243",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Solve: 2(x-3) = 3(x+1) - 5",
@@ -15874,7 +16541,7 @@ const PUTME_DATA = {
       "2"
     ],
     "ans": "-4",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the value of x: 5x - 3 = 3x + 11",
@@ -15885,7 +16552,7 @@ const PUTME_DATA = {
       "8"
     ],
     "ans": "7",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If f(x) = 2x² - 3x + 1, find f(-2).",
@@ -15896,7 +16563,7 @@ const PUTME_DATA = {
       "17"
     ],
     "ans": "15",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the remainder when x³ - 2x² + 3x - 5 is divided by x - 2.",
@@ -15907,7 +16574,7 @@ const PUTME_DATA = {
       "2"
     ],
     "ans": "1",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Solve for x: (x-3)/2 + (x+1)/3 = 4",
@@ -15918,7 +16585,7 @@ const PUTME_DATA = {
       "7"
     ],
     "ans": "6.2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Expand and simplify (x+3)(x-3)",
@@ -15929,7 +16596,7 @@ const PUTME_DATA = {
       "x² + 6x - 9"
     ],
     "ans": "x² - 9",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Factorize completely: 2x² + 5x - 3",
@@ -15940,7 +16607,7 @@ const PUTME_DATA = {
       "(2x-3)(x+1)"
     ],
     "ans": "(2x-1)(x+3)",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If 2x + y = 7 and x - y = 2, find x and y.",
@@ -15951,7 +16618,7 @@ const PUTME_DATA = {
       "x=4, y=-1"
     ],
     "ans": "x=3, y=1",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the value of k for which x = 2 is a root of x² - kx + 6 = 0",
@@ -15962,7 +16629,7 @@ const PUTME_DATA = {
       "6"
     ],
     "ans": "5",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "The sum of two numbers is 15 and their product is 56. Find the numbers.",
@@ -15973,7 +16640,7 @@ const PUTME_DATA = {
       "4 and 11"
     ],
     "ans": "7 and 8",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A man is 4 times as old as his son. In 5 years, he will be 3 times as old. Find the son's present age.",
@@ -15984,7 +16651,7 @@ const PUTME_DATA = {
       "12"
     ],
     "ans": "10",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find three consecutive even numbers whose sum is 72.",
@@ -15995,7 +16662,7 @@ const PUTME_DATA = {
       "18, 20, 22"
     ],
     "ans": "22, 24, 26",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "The angles of a triangle are in the ratio 2:3:4. Find the largest angle.",
@@ -16006,7 +16673,7 @@ const PUTME_DATA = {
       "90°"
     ],
     "ans": "80°",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Two supplementary angles are in ratio 2:7. Find the smaller angle.",
@@ -16017,7 +16684,7 @@ const PUTME_DATA = {
       "140°"
     ],
     "ans": "40°",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find x if the angles (3x+10)° and (2x+20)° are complementary.",
@@ -16028,7 +16695,7 @@ const PUTME_DATA = {
       "16"
     ],
     "ans": "12",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A ladder 13m long leans against a wall with its foot 5m from the wall base. How high up the wall does the ladder reach?",
@@ -16039,7 +16706,7 @@ const PUTME_DATA = {
       "13m"
     ],
     "ans": "12m",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "Find the perimeter of a rectangle whose length is twice its width and area is 200cm².",
@@ -16050,7 +16717,7 @@ const PUTME_DATA = {
       "80cm"
     ],
     "ans": "60cm",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "A cuboid has dimensions 5cm × 4cm × 3cm. Find its total surface area.",
@@ -16061,7 +16728,7 @@ const PUTME_DATA = {
       "60cm²"
     ],
     "ans": "94cm²",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the volume of a cube of side 6cm.",
@@ -16072,7 +16739,7 @@ const PUTME_DATA = {
       "226"
     ],
     "ans": "216",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A sphere has radius 3cm. Find its volume. (π = 22/7)",
@@ -16083,7 +16750,7 @@ const PUTME_DATA = {
       "150.7cm³"
     ],
     "ans": "113.1cm³",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "Find the surface area of a sphere with radius 7cm. (π = 22/7)",
@@ -16094,7 +16761,7 @@ const PUTME_DATA = {
       "630cm²"
     ],
     "ans": "616cm²",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "In a survey of 100 students, 60 like Mathematics, 45 like English, and 25 like both. How many like neither?",
@@ -16105,7 +16772,7 @@ const PUTME_DATA = {
       "25"
     ],
     "ans": "20",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "In a class of 50 students, everyone takes at least one of Physics or Chemistry. 30 take Physics and 25 take Chemistry. How many take both?",
@@ -16116,7 +16783,7 @@ const PUTME_DATA = {
       "20"
     ],
     "ans": "5",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If n(A) = 20, n(B) = 15, n(A∩B) = 8, find n(A∪B).",
@@ -16127,7 +16794,7 @@ const PUTME_DATA = {
       "43"
     ],
     "ans": "27",
-    "explanation": ""
+    "explanation": "Use the set relation n(A∪B) = n(A) + n(B) - n(A∩B), or a Venn diagram, to relate the given quantities."
   },
   {
     "q": "A die is rolled once. Find the probability of getting a number greater than 4.",
@@ -16138,7 +16805,7 @@ const PUTME_DATA = {
       "2/3"
     ],
     "ans": "1/3",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "A card is drawn from a standard deck of 52 cards. Find the probability that it is a king.",
@@ -16149,7 +16816,7 @@ const PUTME_DATA = {
       "4/13"
     ],
     "ans": "1/13",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "Two dice are rolled. Find the probability that the sum is 7.",
@@ -16160,7 +16827,7 @@ const PUTME_DATA = {
       "1/4"
     ],
     "ans": "1/6",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "The mean of 10 numbers is 15. If two numbers, 20 and 25, are added to the set, find the new mean.",
@@ -16171,7 +16838,7 @@ const PUTME_DATA = {
       "17"
     ],
     "ans": "16.25",
-    "explanation": ""
+    "explanation": "Use the set relation n(A∪B) = n(A) + n(B) - n(A∩B), or a Venn diagram, to relate the given quantities."
   },
   {
     "q": "Find the standard deviation of 2, 4, 6, 8, 10.",
@@ -16182,7 +16849,7 @@ const PUTME_DATA = {
       "4"
     ],
     "ans": "2.83",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "The marks of 6 students are 5, 7, 8, 9, 10, 15. Find the range.",
@@ -16193,7 +16860,7 @@ const PUTME_DATA = {
       "11"
     ],
     "ans": "10",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the mode of the data set: 3, 5, 5, 7, 8, 8, 8, 9",
@@ -16204,7 +16871,7 @@ const PUTME_DATA = {
       "9"
     ],
     "ans": "8",
-    "explanation": ""
+    "explanation": "Use the set relation n(A∪B) = n(A) + n(B) - n(A∩B), or a Venn diagram, to relate the given quantities."
   },
   {
     "q": "If sin θ = 0.6, find θ (to the nearest degree), 0° ≤ θ ≤ 90°.",
@@ -16215,7 +16882,7 @@ const PUTME_DATA = {
       "53°"
     ],
     "ans": "37°",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "In a right triangle, one angle is 30° and the hypotenuse is 10cm. Find the length of the side opposite the 30° angle.",
@@ -16226,7 +16893,7 @@ const PUTME_DATA = {
       "10cm"
     ],
     "ans": "5cm",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Find the value of cos 60° + sin 30°.",
@@ -16237,7 +16904,7 @@ const PUTME_DATA = {
       "2"
     ],
     "ans": "1",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "A tower is 50m high. Find the angle of elevation of the top from a point 50m away on level ground.",
@@ -16248,7 +16915,7 @@ const PUTME_DATA = {
       "90°"
     ],
     "ans": "45°",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the equation of a circle with centre (2, -3) and radius 5.",
@@ -16259,7 +16926,7 @@ const PUTME_DATA = {
       "(x+2)² + (y+3)² = 10"
     ],
     "ans": "(x-2)² + (y+3)² = 25",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "Find the midpoint of the line segment joining (-2,5) and (6,-1).",
@@ -16270,7 +16937,7 @@ const PUTME_DATA = {
       "(1, 2)"
     ],
     "ans": "(2, 2)",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the length of the line segment joining (1,2) and (4,6).",
@@ -16281,7 +16948,7 @@ const PUTME_DATA = {
       "7"
     ],
     "ans": "5",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Two lines y = 2x + 3 and y = mx - 1 are perpendicular. Find m.",
@@ -16292,7 +16959,7 @@ const PUTME_DATA = {
       "-1/2"
     ],
     "ans": "-1/2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the value of x in the equation 4^(x+1) = 64",
@@ -16303,7 +16970,7 @@ const PUTME_DATA = {
       "4"
     ],
     "ans": "2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify: (2⁵ × 2⁻³) ÷ 2⁻¹",
@@ -16314,7 +16981,7 @@ const PUTME_DATA = {
       "16"
     ],
     "ans": "8",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If log₁₀2 = 0.301, find log₁₀8.",
@@ -16325,7 +16992,7 @@ const PUTME_DATA = {
       "0.301"
     ],
     "ans": "0.903",
-    "explanation": ""
+    "explanation": "Apply the laws of logarithms (log(mn) = log m + log n, log(m/n) = log m - log n, log(m^n) = n log m) to simplify the expression."
   },
   {
     "q": "Find x if log_x 81 = 4.",
@@ -16336,7 +17003,7 @@ const PUTME_DATA = {
       "9"
     ],
     "ans": "3",
-    "explanation": ""
+    "explanation": "Apply the laws of logarithms (log(mn) = log m + log n, log(m/n) = log m - log n, log(m^n) = n log m) to simplify the expression."
   },
   {
     "q": "Convert 0.75 to a fraction in its lowest terms.",
@@ -16347,7 +17014,7 @@ const PUTME_DATA = {
       "5/8"
     ],
     "ans": "3/4",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Express 2/5 as a percentage.",
@@ -16358,7 +17025,7 @@ const PUTME_DATA = {
       "50%"
     ],
     "ans": "40%",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "A number is increased by 20% to give 96. Find the original number.",
@@ -16369,7 +17036,7 @@ const PUTME_DATA = {
       "84"
     ],
     "ans": "80",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A number decreased by 15% gives 68. Find the original number.",
@@ -16380,7 +17047,7 @@ const PUTME_DATA = {
       "82"
     ],
     "ans": "80",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the LCM of 12, 18 and 24.",
@@ -16391,7 +17058,7 @@ const PUTME_DATA = {
       "96"
     ],
     "ans": "72",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the HCF of 24, 36 and 60.",
@@ -16402,7 +17069,7 @@ const PUTME_DATA = {
       "12"
     ],
     "ans": "12",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify: √50 + √18",
@@ -16413,7 +17080,7 @@ const PUTME_DATA = {
       "9√2"
     ],
     "ans": "8√2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Rationalize 1/(√5 - √3)",
@@ -16424,7 +17091,7 @@ const PUTME_DATA = {
       "(√5+√3)/8"
     ],
     "ans": "(√5+√3)/2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If 3x - 2y = 12 and x + y = 9, find x and y.",
@@ -16435,7 +17102,7 @@ const PUTME_DATA = {
       "x=4, y=5"
     ],
     "ans": "x=6, y=3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the inverse of f(x) = 2x + 5.",
@@ -16446,7 +17113,7 @@ const PUTME_DATA = {
       "f⁻¹(x) = (x-2)/5"
     ],
     "ans": "f⁻¹(x) = (x-5)/2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If f(x) = 3x - 1 and g(x) = x + 2, find (f∘g)(x).",
@@ -16457,7 +17124,7 @@ const PUTME_DATA = {
       "3x+2"
     ],
     "ans": "3x+5",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If f(x) = x² + 1, find f(g(2)) where g(x) = 2x - 3.",
@@ -16468,7 +17135,7 @@ const PUTME_DATA = {
       "5"
     ],
     "ans": "2",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "Find the domain restriction of f(x) = 1/(x-4).",
@@ -16479,7 +17146,7 @@ const PUTME_DATA = {
       "all real x"
     ],
     "ans": "x ≠ 4",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "In the binomial expansion of (1 + x)⁴, find the coefficient of x².",
@@ -16490,7 +17157,7 @@ const PUTME_DATA = {
       "12"
     ],
     "ans": "6",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the middle term of the expansion (x + y)⁶.",
@@ -16501,7 +17168,7 @@ const PUTME_DATA = {
       "15x⁴y²"
     ],
     "ans": "20x³y³",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the sum of the first 10 terms of the AP 5, 8, 11, …",
@@ -16512,7 +17179,7 @@ const PUTME_DATA = {
       "190"
     ],
     "ans": "185",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the number of terms in the AP 4, 7, 10, …, 100.",
@@ -16523,7 +17190,7 @@ const PUTME_DATA = {
       "33"
     ],
     "ans": "33",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "The 3rd term of a GP is 12 and the 6th term is 96. Find the common ratio.",
@@ -16534,7 +17201,7 @@ const PUTME_DATA = {
       "1/2"
     ],
     "ans": "2",
-    "explanation": ""
+    "explanation": "Use the geometric progression formulas Tn = ar^(n-1) and Sn = a(r^n - 1)/(r - 1) with the given terms to find the required value."
   },
   {
     "q": "Find the sum to infinity of the GP 8, 4, 2, 1, …",
@@ -16545,7 +17212,7 @@ const PUTME_DATA = {
       "18"
     ],
     "ans": "16",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A car travels 240km in 3 hours. Find its average speed.",
@@ -16556,7 +17223,7 @@ const PUTME_DATA = {
       "90km/h"
     ],
     "ans": "80km/h",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A train travels at 60km/h for 2 hours then at 90km/h for 1 hour. Find the average speed for the whole journey.",
@@ -16567,7 +17234,7 @@ const PUTME_DATA = {
       "80km/h"
     ],
     "ans": "70km/h",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Two cars start from the same point and travel in opposite directions, one at 50km/h and the other at 70km/h. After how many hours will they be 360km apart?",
@@ -16578,7 +17245,7 @@ const PUTME_DATA = {
       "3.5"
     ],
     "ans": "3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A cyclist covers a distance in 4 hours at 15km/h. How long will it take to cover the same distance at 20km/h?",
@@ -16589,7 +17256,7 @@ const PUTME_DATA = {
       "4.5h"
     ],
     "ans": "3h",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "A sum of money doubles itself in 8 years at simple interest. Find the rate percent per annum.",
@@ -16600,7 +17267,7 @@ const PUTME_DATA = {
       "20%"
     ],
     "ans": "12.5%",
-    "explanation": ""
+    "explanation": "Use the simple interest formula I = PRT/100, and relate the amount to the principal and interest as given."
   },
   {
     "q": "Find the compound interest on N2,000 for 2 years at 10% per annum.",
@@ -16611,7 +17278,7 @@ const PUTME_DATA = {
       "N460"
     ],
     "ans": "N420",
-    "explanation": ""
+    "explanation": "Use the compound interest formula A = P(1 + R/100)^n to relate the amount to the principal, rate, and time."
   },
   {
     "q": "A sum invested at compound interest amounts to N4,840 in 2 years at 10% per annum. Find the principal.",
@@ -16622,7 +17289,7 @@ const PUTME_DATA = {
       "N4,400"
     ],
     "ans": "N4,000",
-    "explanation": ""
+    "explanation": "Use the compound interest formula A = P(1 + R/100)^n to relate the amount to the principal, rate, and time."
   },
   {
     "q": "In what ratio must a trader mix two types of rice costing N200 and N260 per kg to get a mixture costing N230 per kg?",
@@ -16633,7 +17300,7 @@ const PUTME_DATA = {
       "1:2"
     ],
     "ans": "1:1",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Convert 3/8 to a decimal.",
@@ -16644,7 +17311,7 @@ const PUTME_DATA = {
       "0.475"
     ],
     "ans": "0.375",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify 110₂ + 101₂ (in binary)",
@@ -16655,7 +17322,7 @@ const PUTME_DATA = {
       "1101"
     ],
     "ans": "1011",
-    "explanation": ""
+    "explanation": "Convert between number bases by expressing the digits as powers of the base, then evaluate or convert as required."
   },
   {
     "q": "Convert 234₅ (base 5) to base 10.",
@@ -16666,7 +17333,7 @@ const PUTME_DATA = {
       "74"
     ],
     "ans": "69",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A purse contains N1 coins and 50k coins totaling N45. There are 60 coins altogether. How many N1 coins are there?",
@@ -16677,7 +17344,7 @@ const PUTME_DATA = {
       "35"
     ],
     "ans": "30",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A father is 4 times as old as his son. Five years ago, he was 7 times as old. Find the son's present age.",
@@ -16688,7 +17355,7 @@ const PUTME_DATA = {
       "12"
     ],
     "ans": "10",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the value of x if 2^(3x) = 4^(x+2)",
@@ -16699,7 +17366,7 @@ const PUTME_DATA = {
       "5"
     ],
     "ans": "4",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify (a³b²)⁻¹ × a²b⁴",
@@ -16710,7 +17377,7 @@ const PUTME_DATA = {
       "1/(ab²)"
     ],
     "ans": "b²/a",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Solve the inequality 3x - 5 > 2x + 1",
@@ -16721,7 +17388,7 @@ const PUTME_DATA = {
       "x > 7"
     ],
     "ans": "x > 6",
-    "explanation": ""
+    "explanation": "Solve the inequality algebraically, treating it like an equation but reversing the inequality sign when multiplying or dividing by a negative number."
   },
   {
     "q": "Solve the inequality -3x + 6 ≤ 0",
@@ -16732,7 +17399,7 @@ const PUTME_DATA = {
       "x ≥ -2"
     ],
     "ans": "x ≥ 2",
-    "explanation": ""
+    "explanation": "Solve the inequality algebraically, treating it like an equation but reversing the inequality sign when multiplying or dividing by a negative number."
   },
   {
     "q": "A vector has components (3,4). Find its magnitude.",
@@ -16743,7 +17410,7 @@ const PUTME_DATA = {
       "7"
     ],
     "ans": "5",
-    "explanation": ""
+    "explanation": "Apply vector addition, subtraction, or magnitude rules (using components) to the given vectors."
   },
   {
     "q": "Given vectors a = (2,3) and b = (1,-1), find a + b.",
@@ -16754,7 +17421,7 @@ const PUTME_DATA = {
       "(1,2)"
     ],
     "ans": "(3,2)",
-    "explanation": ""
+    "explanation": "Apply vector addition, subtraction, or magnitude rules (using components) to the given vectors."
   },
   {
     "q": "Given vectors a = (4,-2) and b = (-1,3), find 2a - b.",
@@ -16765,7 +17432,7 @@ const PUTME_DATA = {
       "(7,-7)"
     ],
     "ans": "(9,-7)",
-    "explanation": ""
+    "explanation": "Apply vector addition, subtraction, or magnitude rules (using components) to the given vectors."
   },
   {
     "q": "Find the angle between the vectors (1,0) and (0,1).",
@@ -16776,7 +17443,7 @@ const PUTME_DATA = {
       "180°"
     ],
     "ans": "90°",
-    "explanation": ""
+    "explanation": "Apply vector addition, subtraction, or magnitude rules (using components) to the given vectors."
   },
   {
     "q": "A matrix A = [[2,1],[3,4]]. Find its determinant.",
@@ -16787,7 +17454,7 @@ const PUTME_DATA = {
       "11"
     ],
     "ans": "5",
-    "explanation": ""
+    "explanation": "Apply the rules of matrix operations (addition, multiplication, or the determinant formula ad - bc) to the given matrix."
   },
   {
     "q": "Find the determinant of [[1,2],[3,4]].",
@@ -16798,7 +17465,7 @@ const PUTME_DATA = {
       "10"
     ],
     "ans": "-2",
-    "explanation": ""
+    "explanation": "Apply the rules of matrix operations (addition, multiplication, or the determinant formula ad - bc) to the given matrix."
   },
   {
     "q": "A matrix B = [[5,0],[0,5]] is called a",
@@ -16809,7 +17476,7 @@ const PUTME_DATA = {
       "singular matrix"
     ],
     "ans": "scalar matrix",
-    "explanation": ""
+    "explanation": "Apply the rules of matrix operations (addition, multiplication, or the determinant formula ad - bc) to the given matrix."
   },
   {
     "q": "Find the value of x for which the matrix [[x,2],[3,4]] is singular.",
@@ -16820,7 +17487,7 @@ const PUTME_DATA = {
       "2.5"
     ],
     "ans": "1.5",
-    "explanation": ""
+    "explanation": "Apply the rules of matrix operations (addition, multiplication, or the determinant formula ad - bc) to the given matrix."
   },
   {
     "q": "Differentiate y = 3x² - 4x + 7 with respect to x.",
@@ -16831,7 +17498,7 @@ const PUTME_DATA = {
       "3x² - 4"
     ],
     "ans": "6x - 4",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find dy/dx if y = (2x + 1)³",
@@ -16842,7 +17509,7 @@ const PUTME_DATA = {
       "2(2x+1)³"
     ],
     "ans": "6(2x+1)²",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "If y = x³ - 3x, find the values of x where dy/dx = 0.",
@@ -16853,7 +17520,7 @@ const PUTME_DATA = {
       "x = -2, 2"
     ],
     "ans": "x = -1, 1",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Integrate ∫(4x³ - 2x) dx",
@@ -16864,7 +17531,7 @@ const PUTME_DATA = {
       "x⁴ + x² + C"
     ],
     "ans": "x⁴ - x² + C",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Evaluate ∫₀² (2x) dx",
@@ -16875,7 +17542,7 @@ const PUTME_DATA = {
       "8"
     ],
     "ans": "4",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Find the area enclosed between the curve y = x² and the x-axis from x=0 to x=3.",
@@ -16886,7 +17553,7 @@ const PUTME_DATA = {
       "18"
     ],
     "ans": "9",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "A committee of 5 people is to be selected from 7 men and 5 women. In how many ways can this be done if there must be exactly 3 men?",
@@ -16897,7 +17564,7 @@ const PUTME_DATA = {
       "420"
     ],
     "ans": "350",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the number of ways of selecting a chairperson and a secretary from a group of 8 people.",
@@ -16908,7 +17575,7 @@ const PUTME_DATA = {
       "72"
     ],
     "ans": "56",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "In how many ways can the letters of the word \"LEVEL\" be arranged?",
@@ -16919,7 +17586,7 @@ const PUTME_DATA = {
       "60"
     ],
     "ans": "30",
-    "explanation": ""
+    "explanation": "Apply the permutation formula nPr = n!/(n-r)! or combination formula nCr = n!/[r!(n-r)!] depending on whether order matters."
   },
   {
     "q": "A bag contains 4 white and 6 black balls. Two balls are drawn without replacement. Find the probability that both are white.",
@@ -16930,7 +17597,7 @@ const PUTME_DATA = {
       "4/15"
     ],
     "ans": "2/15",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "Find the probability that a leap year selected at random has 53 Sundays.",
@@ -16941,7 +17608,7 @@ const PUTME_DATA = {
       "1/2"
     ],
     "ans": "2/7",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "If P(A) = 1/3 and P(B|A) = 1/2, find P(A∩B).",
@@ -16952,7 +17619,7 @@ const PUTME_DATA = {
       "1/3"
     ],
     "ans": "1/6",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "Simplify (5² × 5³) ÷ 5⁴",
@@ -16963,7 +17630,7 @@ const PUTME_DATA = {
       "125"
     ],
     "ans": "5",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find x: 7^(x-1) = 49",
@@ -16974,7 +17641,7 @@ const PUTME_DATA = {
       "5"
     ],
     "ans": "3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify: (x² - 9)/(x - 3)",
@@ -16985,7 +17652,7 @@ const PUTME_DATA = {
       "x + 9"
     ],
     "ans": "x + 3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify (x² + 5x + 6)/(x + 2)",
@@ -16996,7 +17663,7 @@ const PUTME_DATA = {
       "x + 6"
     ],
     "ans": "x + 3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If x:y = 5:3 and y:z = 9:4, find x:z.",
@@ -17007,7 +17674,7 @@ const PUTME_DATA = {
       "20:12"
     ],
     "ans": "15:4",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Divide N840 among A, B and C in the ratio 3:4:5. Find B's share.",
@@ -17018,7 +17685,7 @@ const PUTME_DATA = {
       "N420"
     ],
     "ans": "N280",
-    "explanation": ""
+    "explanation": "Share the total in the given ratio by expressing each share as a fraction of the whole, using the known share to find the total."
   },
   {
     "q": "A map has a scale of 1:50000. Find the actual distance represented by 4cm on the map, in km.",
@@ -17029,7 +17696,7 @@ const PUTME_DATA = {
       "2.5km"
     ],
     "ans": "2km",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "The exchange rate is $1 = N1500. Find the value in naira of $250.",
@@ -17040,7 +17707,7 @@ const PUTME_DATA = {
       "N400,000"
     ],
     "ans": "N375,000",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A trader marks up goods by 30% then gives a discount of 10% on the marked price. Find the overall percentage profit.",
@@ -17051,7 +17718,7 @@ const PUTME_DATA = {
       "23%"
     ],
     "ans": "17%",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "Find the value of x if the ratio 2x:3 = 8:6",
@@ -17062,7 +17729,7 @@ const PUTME_DATA = {
       "4"
     ],
     "ans": "2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the next term in the sequence 2, 5, 10, 17, 26, …",
@@ -17073,7 +17740,7 @@ const PUTME_DATA = {
       "39"
     ],
     "ans": "37",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the nth term formula for the sequence 3, 7, 11, 15, …",
@@ -17084,7 +17751,7 @@ const PUTME_DATA = {
       "4n - 3"
     ],
     "ans": "4n - 1",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the sum of the first 8 terms of the AP with first term 2 and common difference 5.",
@@ -17095,7 +17762,7 @@ const PUTME_DATA = {
       "164"
     ],
     "ans": "156",
-    "explanation": ""
+    "explanation": "Use the arithmetic progression formulas Tn = a + (n-1)d and Sn = n/2[2a + (n-1)d] with the given terms to find the required value."
   },
   {
     "q": "If the 4th term of an AP is 20 and the 9th term is 40, find the common difference.",
@@ -17106,7 +17773,7 @@ const PUTME_DATA = {
       "5"
     ],
     "ans": "4",
-    "explanation": ""
+    "explanation": "Use the arithmetic progression formulas Tn = a + (n-1)d and Sn = n/2[2a + (n-1)d] with the given terms to find the required value."
   },
   {
     "q": "Find the sum of an infinite GP with first term 12 and common ratio 1/3.",
@@ -17117,7 +17784,7 @@ const PUTME_DATA = {
       "24"
     ],
     "ans": "18",
-    "explanation": ""
+    "explanation": "Use the geometric progression formulas Tn = ar^(n-1) and Sn = a(r^n - 1)/(r - 1) with the given terms to find the required value."
   },
   {
     "q": "Find the 6th term of the GP whose first term is 5 and common ratio is -2.",
@@ -17128,7 +17795,7 @@ const PUTME_DATA = {
       "80"
     ],
     "ans": "-160",
-    "explanation": ""
+    "explanation": "Use the geometric progression formulas Tn = ar^(n-1) and Sn = a(r^n - 1)/(r - 1) with the given terms to find the required value."
   },
   {
     "q": "Find the perimeter of a semicircle with radius 7cm. (π = 22/7)",
@@ -17139,7 +17806,7 @@ const PUTME_DATA = {
       "44cm"
     ],
     "ans": "36cm",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "Find the area of a trapezium with parallel sides 8cm and 12cm and height 5cm.",
@@ -17150,7 +17817,7 @@ const PUTME_DATA = {
       "60cm²"
     ],
     "ans": "50cm²",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the area of a parallelogram with base 10cm and height 6cm.",
@@ -17161,7 +17828,7 @@ const PUTME_DATA = {
       "60cm²"
     ],
     "ans": "60cm²",
-    "explanation": ""
+    "explanation": "Apply the laws of logarithms (log(mn) = log m + log n, log(m/n) = log m - log n, log(m^n) = n log m) to simplify the expression."
   },
   {
     "q": "A rhombus has diagonals 10cm and 24cm. Find its area.",
@@ -17172,7 +17839,7 @@ const PUTME_DATA = {
       "240cm²"
     ],
     "ans": "120cm²",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the circumference of a circle with radius 14cm. (π = 22/7)",
@@ -17183,7 +17850,7 @@ const PUTME_DATA = {
       "99cm"
     ],
     "ans": "88cm",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "A pizza is cut into 8 equal slices. Find the angle at the centre subtended by each slice.",
@@ -17194,7 +17861,7 @@ const PUTME_DATA = {
       "60°"
     ],
     "ans": "45°",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the number of sides of a polygon whose sum of interior angles is 1440°.",
@@ -17205,7 +17872,7 @@ const PUTME_DATA = {
       "11"
     ],
     "ans": "10",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Two similar triangles have corresponding sides in ratio 2:3. Find the ratio of their areas.",
@@ -17216,7 +17883,7 @@ const PUTME_DATA = {
       "8:27"
     ],
     "ans": "4:9",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Two similar cubes have corresponding sides in ratio 2:3. Find the ratio of their volumes.",
@@ -17227,7 +17894,7 @@ const PUTME_DATA = {
       "8:27"
     ],
     "ans": "8:27",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A solid cone is melted and recast into a solid sphere of the same volume, with the sphere having radius 6cm. Find the volume of the cone. (π = 22/7)",
@@ -17238,7 +17905,7 @@ const PUTME_DATA = {
       "950cm³"
     ],
     "ans": "905.1cm³",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "A cylindrical tank has radius 3.5m and height 4m. Find its volume. (π = 22/7)",
@@ -17249,7 +17916,7 @@ const PUTME_DATA = {
       "160m³"
     ],
     "ans": "154m³",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Find x if sin(2x) = cos(30°), 0° ≤ x ≤ 90°.",
@@ -17260,7 +17927,7 @@ const PUTME_DATA = {
       "45°"
     ],
     "ans": "30°",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify sin²θ + cos²θ",
@@ -17271,7 +17938,7 @@ const PUTME_DATA = {
       "sin2θ"
     ],
     "ans": "1",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If tanθ = 4/3, find sinθ (θ acute).",
@@ -17282,7 +17949,7 @@ const PUTME_DATA = {
       "5/3"
     ],
     "ans": "4/5",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Find the value of sin 90° - cos 0°.",
@@ -17293,7 +17960,7 @@ const PUTME_DATA = {
       "2"
     ],
     "ans": "0",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "A ladder leans against a wall making an angle of 60° with the ground. If the foot of the ladder is 4m from the wall, find the length of the ladder.",
@@ -17304,7 +17971,7 @@ const PUTME_DATA = {
       "9m"
     ],
     "ans": "8m",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "Two points A(1,1) and B(4,5). Find the gradient of AB.",
@@ -17315,7 +17982,7 @@ const PUTME_DATA = {
       "1"
     ],
     "ans": "4/3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the equation of a line parallel to y = 4x - 2 passing through (2,3).",
@@ -17326,7 +17993,7 @@ const PUTME_DATA = {
       "y = 4x + 2"
     ],
     "ans": "y = 4x - 5",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the x-intercept of the line 2x + 3y = 12.",
@@ -17337,7 +18004,7 @@ const PUTME_DATA = {
       "8"
     ],
     "ans": "6",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the y-intercept of the line 3x - 4y = 8.",
@@ -17348,7 +18015,7 @@ const PUTME_DATA = {
       "8"
     ],
     "ans": "-2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A committee of 3 is chosen from 5 men and 3 women. Find the number of ways the committee can have at least 1 woman.",
@@ -17359,7 +18026,7 @@ const PUTME_DATA = {
       "50"
     ],
     "ans": "46",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the number of ways to arrange 5 different books on a shelf.",
@@ -17370,7 +18037,7 @@ const PUTME_DATA = {
       "720"
     ],
     "ans": "120",
-    "explanation": ""
+    "explanation": "Apply the permutation formula nPr = n!/(n-r)! or combination formula nCr = n!/[r!(n-r)!] depending on whether order matters."
   },
   {
     "q": "Find the number of 3-digit numbers that can be formed from digits 1,2,3,4,5 without repetition.",
@@ -17381,7 +18048,7 @@ const PUTME_DATA = {
       "125"
     ],
     "ans": "60",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A box contains 3 red, 4 blue and 5 green balls. Find the probability of drawing a red ball.",
@@ -17392,7 +18059,7 @@ const PUTME_DATA = {
       "3/4"
     ],
     "ans": "1/4",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "Two unbiased coins are tossed. Find the probability of getting at least one head.",
@@ -17403,7 +18070,7 @@ const PUTME_DATA = {
       "1"
     ],
     "ans": "3/4",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "Find the mean of the numbers 4, 8, 12, 16, 20.",
@@ -17414,7 +18081,7 @@ const PUTME_DATA = {
       "14"
     ],
     "ans": "12",
-    "explanation": ""
+    "explanation": "Apply the appropriate statistical formula (for mean, median, mode, or standard deviation) to the given data set."
   },
   {
     "q": "Find the median of 3, 7, 9, 12, 15, 20.",
@@ -17425,7 +18092,7 @@ const PUTME_DATA = {
       "12"
     ],
     "ans": "10.5",
-    "explanation": ""
+    "explanation": "Apply the appropriate statistical formula (for mean, median, mode, or standard deviation) to the given data set."
   },
   {
     "q": "The variance of a data set is 16. Find its standard deviation.",
@@ -17436,7 +18103,7 @@ const PUTME_DATA = {
       "16"
     ],
     "ans": "4",
-    "explanation": ""
+    "explanation": "Use the set relation n(A∪B) = n(A) + n(B) - n(A∩B), or a Venn diagram, to relate the given quantities."
   },
   {
     "q": "A frequency table shows scores 2 (freq 3), 4 (freq 5), 6 (freq 2). Find the mean score.",
@@ -17447,7 +18114,7 @@ const PUTME_DATA = {
       "4.2"
     ],
     "ans": "3.8",
-    "explanation": ""
+    "explanation": "Apply the appropriate statistical formula (for mean, median, mode, or standard deviation) to the given data set."
   },
   {
     "q": "If the mean of 5 numbers is 20, find the sum of the numbers.",
@@ -17458,7 +18125,7 @@ const PUTME_DATA = {
       "110"
     ],
     "ans": "100",
-    "explanation": ""
+    "explanation": "Apply the appropriate statistical formula (for mean, median, mode, or standard deviation) to the given data set."
   },
   {
     "q": "Find the probability of not getting a 6 when a die is thrown once.",
@@ -17469,7 +18136,7 @@ const PUTME_DATA = {
       "5/6"
     ],
     "ans": "5/6",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "A number when divided by 15 leaves remainder 7. Find the remainder when the same number is divided by 5.",
@@ -17480,7 +18147,7 @@ const PUTME_DATA = {
       "3"
     ],
     "ans": "2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the smallest number which when divided by 4, 5 and 6 leaves remainder 3 in each case.",
@@ -17491,7 +18158,7 @@ const PUTME_DATA = {
       "69"
     ],
     "ans": "63",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the sum of the first 20 positive integers.",
@@ -17502,7 +18169,7 @@ const PUTME_DATA = {
       "220"
     ],
     "ans": "210",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify 2√3 × 3√12",
@@ -17513,7 +18180,7 @@ const PUTME_DATA = {
       "42"
     ],
     "ans": "36",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify (√2 + √3)²",
@@ -17524,7 +18191,7 @@ const PUTME_DATA = {
       "6 + 2√6"
     ],
     "ans": "5 + 2√6",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find x: √(x+5) = 4",
@@ -17535,7 +18202,7 @@ const PUTME_DATA = {
       "16"
     ],
     "ans": "11",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Solve for x: 2^x = 1/8",
@@ -17546,7 +18213,7 @@ const PUTME_DATA = {
       "3"
     ],
     "ans": "-3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If log₂8 = 3, find log₂32.",
@@ -17557,7 +18224,7 @@ const PUTME_DATA = {
       "8"
     ],
     "ans": "5",
-    "explanation": ""
+    "explanation": "Apply the laws of logarithms (log(mn) = log m + log n, log(m/n) = log m - log n, log(m^n) = n log m) to simplify the expression."
   },
   {
     "q": "Simplify log₁₀100 + log₁₀10",
@@ -17568,7 +18235,7 @@ const PUTME_DATA = {
       "1000"
     ],
     "ans": "3",
-    "explanation": ""
+    "explanation": "Apply the laws of logarithms (log(mn) = log m + log n, log(m/n) = log m - log n, log(m^n) = n log m) to simplify the expression."
   },
   {
     "q": "If log x = 2 (base 10), find x.",
@@ -17579,7 +18246,7 @@ const PUTME_DATA = {
       "1000"
     ],
     "ans": "100",
-    "explanation": ""
+    "explanation": "Apply the laws of logarithms (log(mn) = log m + log n, log(m/n) = log m - log n, log(m^n) = n log m) to simplify the expression."
   },
   {
     "q": "Express log(8) in terms of log 2.",
@@ -17590,7 +18257,7 @@ const PUTME_DATA = {
       "log2"
     ],
     "ans": "3log2",
-    "explanation": ""
+    "explanation": "Apply the laws of logarithms (log(mn) = log m + log n, log(m/n) = log m - log n, log(m^n) = n log m) to simplify the expression."
   },
   {
     "q": "Solve: 3(x-2) - 2(x+1) = 5",
@@ -17601,7 +18268,7 @@ const PUTME_DATA = {
       "13"
     ],
     "ans": "13",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Solve: x/3 + x/4 = 7",
@@ -17612,7 +18279,7 @@ const PUTME_DATA = {
       "14"
     ],
     "ans": "12",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If 3 men can build a wall in 8 days, how many days will 4 men take (same rate)?",
@@ -17623,7 +18290,7 @@ const PUTME_DATA = {
       "8"
     ],
     "ans": "6",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "6 workers can complete a task in 10 days. How many workers are needed to complete it in 4 days?",
@@ -17634,7 +18301,7 @@ const PUTME_DATA = {
       "20"
     ],
     "ans": "15",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A tap fills a tank in 6 hours, another fills it in 3 hours. Working together, how long to fill the tank?",
@@ -17645,7 +18312,7 @@ const PUTME_DATA = {
       "3h"
     ],
     "ans": "2h",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Pipe A can fill a tank in 4 hours and pipe B can empty it in 6 hours. If both are opened together, how long to fill the tank?",
@@ -17656,7 +18323,7 @@ const PUTME_DATA = {
       "16h"
     ],
     "ans": "12h",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Find the area of a square whose perimeter is 48cm.",
@@ -17667,7 +18334,7 @@ const PUTME_DATA = {
       "156cm²"
     ],
     "ans": "144cm²",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the length of the diagonal of a square with side 10cm.",
@@ -17678,7 +18345,7 @@ const PUTME_DATA = {
       "20cm"
     ],
     "ans": "14.1cm",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "The angle of elevation of the top of a tower from a point 30m away is 30°. Find the height of the tower.",
@@ -17689,7 +18356,7 @@ const PUTME_DATA = {
       "25.9m"
     ],
     "ans": "17.3m",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "From the top of a cliff 60m high, the angle of depression of a boat is 30°. Find the distance of the boat from the base of the cliff.",
@@ -17700,7 +18367,7 @@ const PUTME_DATA = {
       "120m"
     ],
     "ans": "103.9m",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Find the bearing of a point Q from P if Q is due east of P.",
@@ -17711,7 +18378,7 @@ const PUTME_DATA = {
       "270°"
     ],
     "ans": "090°",
-    "explanation": ""
+    "explanation": "Sketch the bearings from North, then apply trigonometry (sine or cosine rule) to find the required distance or angle."
   },
   {
     "q": "A point Q is on a bearing of 135° from P. Find the bearing of P from Q.",
@@ -17722,7 +18389,7 @@ const PUTME_DATA = {
       "135°"
     ],
     "ans": "315°",
-    "explanation": ""
+    "explanation": "Sketch the bearings from North, then apply trigonometry (sine or cosine rule) to find the required distance or angle."
   },
   {
     "q": "Find the value of x in the equation cos x = sin 40°, 0° ≤ x ≤ 90°.",
@@ -17733,7 +18400,7 @@ const PUTME_DATA = {
       "60°"
     ],
     "ans": "50°",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Simplify 2 sin30° cos30°",
@@ -17744,7 +18411,7 @@ const PUTME_DATA = {
       "√3"
     ],
     "ans": "√3/2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the number of subsets of a set with 5 elements.",
@@ -17755,7 +18422,7 @@ const PUTME_DATA = {
       "32"
     ],
     "ans": "32",
-    "explanation": ""
+    "explanation": "Use the set relation n(A∪B) = n(A) + n(B) - n(A∩B), or a Venn diagram, to relate the given quantities."
   },
   {
     "q": "If A = {1,2,3,4} and B = {3,4,5,6}, find A∩B.",
@@ -17766,7 +18433,7 @@ const PUTME_DATA = {
       "{1,2,3,4,5,6}"
     ],
     "ans": "{3,4}",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If A = {1,2,3,4} and B = {3,4,5,6}, find A∪B.",
@@ -17777,7 +18444,7 @@ const PUTME_DATA = {
       "{1,2,3,4}"
     ],
     "ans": "{1,2,3,4,5,6}",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If U = {1,2,…,10} and A = {2,4,6,8,10}, find A' (complement of A).",
@@ -17788,7 +18455,7 @@ const PUTME_DATA = {
       "{ }"
     ],
     "ans": "{1,3,5,7,9}",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "In a survey, 40 people like tea, 35 like coffee, 15 like both, and 10 like neither. Find the total number of people surveyed.",
@@ -17799,7 +18466,7 @@ const PUTME_DATA = {
       "75"
     ],
     "ans": "70",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the number of elements in the power set of a set with 4 elements.",
@@ -17810,7 +18477,7 @@ const PUTME_DATA = {
       "32"
     ],
     "ans": "16",
-    "explanation": ""
+    "explanation": "Use the set relation n(A∪B) = n(A) + n(B) - n(A∩B), or a Venn diagram, to relate the given quantities."
   },
   {
     "q": "A number x is such that 40% of x is 60. Find x.",
@@ -17821,7 +18488,7 @@ const PUTME_DATA = {
       "150"
     ],
     "ans": "150",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If ⅗ of a number is 45, find the number.",
@@ -17832,7 +18499,7 @@ const PUTME_DATA = {
       "75"
     ],
     "ans": "75",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "A shop reduces the price of an item from N500 to N400. Find the percentage reduction.",
@@ -17843,7 +18510,7 @@ const PUTME_DATA = {
       "30%"
     ],
     "ans": "20%",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "An item's price increased from N250 to N300. Find the percentage increase.",
@@ -17854,7 +18521,7 @@ const PUTME_DATA = {
       "25%"
     ],
     "ans": "20%",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "Find 15% of 240.",
@@ -17865,7 +18532,7 @@ const PUTME_DATA = {
       "38"
     ],
     "ans": "36",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If 25% of a number is 20, find 75% of the same number.",
@@ -17876,7 +18543,7 @@ const PUTME_DATA = {
       "70"
     ],
     "ans": "60",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the value of (2x - 1)(x + 4) when x = 3.",
@@ -17887,7 +18554,7 @@ const PUTME_DATA = {
       "40"
     ],
     "ans": "35",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If a = 2, b = -3, evaluate a² - b²",
@@ -17898,7 +18565,7 @@ const PUTME_DATA = {
       "1"
     ],
     "ans": "-5",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Simplify (a+b)² - (a-b)²",
@@ -17909,7 +18576,7 @@ const PUTME_DATA = {
       "2a² + 2b²"
     ],
     "ans": "4ab",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Factorize a² - b²",
@@ -17920,7 +18587,7 @@ const PUTME_DATA = {
       "a² - 2ab + b²"
     ],
     "ans": "(a-b)(a+b)",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Solve x² - 4 = 0",
@@ -17931,7 +18598,7 @@ const PUTME_DATA = {
       "x = 4"
     ],
     "ans": "x = ±2",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "Solve x² + 6x + 9 = 0",
@@ -17942,7 +18609,7 @@ const PUTME_DATA = {
       "no real solution"
     ],
     "ans": "x = -3 (repeated)",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "Find the discriminant of 2x² - 4x + 1 = 0.",
@@ -17953,7 +18620,7 @@ const PUTME_DATA = {
       "10"
     ],
     "ans": "8",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "Find the nature of roots of x² + 2x + 5 = 0.",
@@ -17964,7 +18631,7 @@ const PUTME_DATA = {
       "rational roots"
     ],
     "ans": "no real roots",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "Find the coordinates of the point where the line y = 2x - 4 crosses the x-axis.",
@@ -17975,7 +18642,7 @@ const PUTME_DATA = {
       "(-4,0)"
     ],
     "ans": "(2,0)",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the coordinates of the point where the line y = 2x - 4 crosses the y-axis.",
@@ -17986,7 +18653,7 @@ const PUTME_DATA = {
       "(-4,0)"
     ],
     "ans": "(0,-4)",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Two dice are thrown. Find the probability that both show the same number.",
@@ -17997,7 +18664,7 @@ const PUTME_DATA = {
       "1/4"
     ],
     "ans": "1/6",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "A bag has 6 balls numbered 1 to 6. Two balls are drawn without replacement. Find the probability that both numbers are even.",
@@ -18008,7 +18675,7 @@ const PUTME_DATA = {
       "2/5"
     ],
     "ans": "1/5",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "Find the probability that a number selected from 1 to 20 is a multiple of 4.",
@@ -18019,7 +18686,7 @@ const PUTME_DATA = {
       "2/5"
     ],
     "ans": "1/4",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "Find the probability that a number selected from 1 to 30 is a prime number.",
@@ -18030,7 +18697,7 @@ const PUTME_DATA = {
       "3/10"
     ],
     "ans": "1/3",
-    "explanation": ""
+    "explanation": "Apply the appropriate probability rule (addition rule for P(A∪B), multiplication rule for independent events, or conditional probability formula) to the given values."
   },
   {
     "q": "Find the sum of the interior angles of a regular decagon (10 sides).",
@@ -18041,7 +18708,7 @@ const PUTME_DATA = {
       "1800°"
     ],
     "ans": "1440°",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the value of x if the exterior angle of a regular polygon with x sides is 24°.",
@@ -18052,7 +18719,7 @@ const PUTME_DATA = {
       "18"
     ],
     "ans": "15",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Differentiate y = (3x² + 1)⁵ with respect to x.",
@@ -18063,7 +18730,7 @@ const PUTME_DATA = {
       "30x²(3x²+1)⁴"
     ],
     "ans": "30x(3x²+1)⁴",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Differentiate y = sin(3x)cos(2x) with respect to x.",
@@ -18074,7 +18741,7 @@ const PUTME_DATA = {
       "3sin3x cos2x - 2cos3x sin2x"
     ],
     "ans": "3cos3x cos2x - 2sin3x sin2x",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Differentiate y = ln(x² + 1).",
@@ -18085,7 +18752,7 @@ const PUTME_DATA = {
       "2/(x²+1)"
     ],
     "ans": "2x/(x²+1)",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Differentiate y = e^(3x²).",
@@ -18096,7 +18763,7 @@ const PUTME_DATA = {
       "6·e^(3x²)"
     ],
     "ans": "6x·e^(3x²)",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find dy/dx if y = xˣ.",
@@ -18107,7 +18774,7 @@ const PUTME_DATA = {
       "xˣ/x"
     ],
     "ans": "xˣ(ln x + 1)",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find d²y/dx² if y = x⁴ - 3x² + 2.",
@@ -18118,7 +18785,7 @@ const PUTME_DATA = {
       "12x - 6"
     ],
     "ans": "12x² - 6",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "If x² + y² = 25, find dy/dx.",
@@ -18129,7 +18796,7 @@ const PUTME_DATA = {
       "y/x"
     ],
     "ans": "-x/y",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find dy/dx if xy + y² = 7.",
@@ -18140,7 +18807,7 @@ const PUTME_DATA = {
       "-y/(2y-x)"
     ],
     "ans": "-y/(x+2y)",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find the derivative of y = tan(2x).",
@@ -18151,7 +18818,7 @@ const PUTME_DATA = {
       "tan²(2x)"
     ],
     "ans": "2sec²(2x)",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Differentiate y = (2x-1)/(x+3) using the quotient rule.",
@@ -18162,7 +18829,7 @@ const PUTME_DATA = {
       "1/(x+3)²"
     ],
     "ans": "7/(x+3)²",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find the stationary points of y = 2x³ - 3x² - 12x + 5.",
@@ -18173,7 +18840,7 @@ const PUTME_DATA = {
       "x = -2, 1"
     ],
     "ans": "x = 2, -1",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "For y = 2x³ - 3x² - 12x + 5, determine the nature of the stationary point at x = 2.",
@@ -18184,7 +18851,7 @@ const PUTME_DATA = {
       "Cannot be determined"
     ],
     "ans": "Minimum",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "For y = 2x³ - 3x² - 12x + 5, determine the nature of the stationary point at x = -1.",
@@ -18195,7 +18862,7 @@ const PUTME_DATA = {
       "Saddle point"
     ],
     "ans": "Maximum",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find the point of inflection of y = x³ - 6x² + 9x + 1.",
@@ -18206,7 +18873,7 @@ const PUTME_DATA = {
       "x = 0"
     ],
     "ans": "x = 2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find the maximum value of y = -x² + 4x + 1.",
@@ -18217,7 +18884,7 @@ const PUTME_DATA = {
       "6"
     ],
     "ans": "5",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "A rectangular box with a square base is to have a volume of 32 cubic units. Find the side of the square base that minimizes the total surface area.",
@@ -18228,7 +18895,7 @@ const PUTME_DATA = {
       "5"
     ],
     "ans": "4",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Find the maximum area of a rectangle inscribed in a semicircle of radius r (with its base on the diameter), expressed in terms of r.",
@@ -18239,7 +18906,7 @@ const PUTME_DATA = {
       "πr²/2"
     ],
     "ans": "r²",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "A ladder 5m long leans against a vertical wall. The bottom slides away from the wall at 2 m/s. Find the rate at which the top slides down when the bottom is 3m from the wall.",
@@ -18250,7 +18917,7 @@ const PUTME_DATA = {
       "2.5 m/s"
     ],
     "ans": "1.5 m/s",
-    "explanation": ""
+    "explanation": "Express the gain or loss as a percentage of the cost price (or relevant base value) using Percentage = (Difference/Base) × 100."
   },
   {
     "q": "The radius of a circle increases at 3 cm/s. Find the rate of increase of its area when the radius is 5cm.",
@@ -18261,7 +18928,7 @@ const PUTME_DATA = {
       "30π cm²/s"
     ],
     "ans": "30π cm²/s",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "The volume of a sphere increases at 8π cm³/s. Find the rate of increase of the radius when r = 2cm.",
@@ -18272,7 +18939,7 @@ const PUTME_DATA = {
       "2 cm/s"
     ],
     "ans": "0.5 cm/s",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
   },
   {
     "q": "Evaluate ∫ x² eˣ dx.",
@@ -18283,7 +18950,7 @@ const PUTME_DATA = {
       "eˣ(x² - 2) + C"
     ],
     "ans": "eˣ(x² - 2x + 2) + C",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Evaluate ∫ x cos x dx.",
@@ -18294,7 +18961,7 @@ const PUTME_DATA = {
       "x cos x - sin x + C"
     ],
     "ans": "x sin x + cos x + C",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Evaluate ∫ ln x dx.",
@@ -18305,7 +18972,7 @@ const PUTME_DATA = {
       "x/ln x + C"
     ],
     "ans": "x ln x - x + C",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Evaluate ∫ (2x)/(x²+1) dx.",
@@ -18316,7 +18983,7 @@ const PUTME_DATA = {
       "(x²+1)² + C"
     ],
     "ans": "ln(x²+1) + C",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Evaluate ∫ sin²x dx.",
@@ -18327,7 +18994,7 @@ const PUTME_DATA = {
       "x - sinx cosx + 2C"
     ],
     "ans": "x/2 - (sin2x)/4 + C",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Evaluate the definite integral ∫₀^(π/2) cos x dx.",
@@ -18338,7 +19005,7 @@ const PUTME_DATA = {
       "-1"
     ],
     "ans": "1",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Evaluate ∫₁³ (2x - 1) dx.",
@@ -18349,7 +19016,7 @@ const PUTME_DATA = {
       "8"
     ],
     "ans": "6",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Find the area enclosed between the curve y = x² and the line y = x.",
@@ -18360,7 +19027,7 @@ const PUTME_DATA = {
       "1"
     ],
     "ans": "1/6",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "Find the volume generated when the region bounded by y = x², the x-axis, x = 0 and x = 2, is rotated about the x-axis.",
@@ -18371,7 +19038,7 @@ const PUTME_DATA = {
       "8π"
     ],
     "ans": "32π/5",
-    "explanation": ""
+    "explanation": "Rearrange into standard quadratic form and solve by factorisation, completing the square, or the quadratic formula."
   },
   {
     "q": "Evaluate ∫ e^(2x) dx.",
@@ -18382,7 +19049,7 @@ const PUTME_DATA = {
       "e^(2x)/x + C"
     ],
     "ans": "½e^(2x) + C",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Evaluate ∫ (3x² - 4x + 5) dx.",
@@ -18393,7 +19060,7 @@ const PUTME_DATA = {
       "x³ + 2x² + 5x + C"
     ],
     "ans": "x³ - 2x² + 5x + C",
-    "explanation": ""
+    "explanation": "Apply the standard rules of integration term by term, then evaluate at the given limits or add the constant of integration as required."
   },
   {
     "q": "Find the general solution of dy/dx = 3x².",
@@ -18404,7 +19071,7 @@ const PUTME_DATA = {
       "y = x³/3 + C"
     ],
     "ans": "y = x³ + C",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Solve the differential equation dy/dx = y/x, expressing the general solution.",
@@ -18415,7 +19082,7 @@ const PUTME_DATA = {
       "y = kx²"
     ],
     "ans": "y = kx",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find the particular solution of dy/dx = 2x given that y = 5 when x = 0.",
@@ -18426,7 +19093,7 @@ const PUTME_DATA = {
       "y = x² - 5"
     ],
     "ans": "y = x² + 5",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find lim(x→2) (x² - 4)/(x - 2).",
@@ -18437,7 +19104,7 @@ const PUTME_DATA = {
       "undefined"
     ],
     "ans": "4",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find lim(x→0) sin(3x)/x.",
@@ -18448,7 +19115,7 @@ const PUTME_DATA = {
       "0"
     ],
     "ans": "3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find lim(x→∞) (3x² + 2x)/(x² - 5).",
@@ -18459,7 +19126,7 @@ const PUTME_DATA = {
       "3"
     ],
     "ans": "3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find lim(x→0) (1 - cos x)/x².",
@@ -18470,7 +19137,7 @@ const PUTME_DATA = {
       "2"
     ],
     "ans": "1/2",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Differentiate y = sec x.",
@@ -18481,7 +19148,7 @@ const PUTME_DATA = {
       "tan x"
     ],
     "ans": "sec x tan x",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Differentiate y = cot x.",
@@ -18492,7 +19159,7 @@ const PUTME_DATA = {
       "cot²x"
     ],
     "ans": "-csc²x",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find d/dx [x² ln x].",
@@ -18503,7 +19170,7 @@ const PUTME_DATA = {
       "2 ln x + x"
     ],
     "ans": "2x ln x + x",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Find d/dx [eˣ sin x].",
@@ -18514,7 +19181,7 @@ const PUTME_DATA = {
       "eˣ cosx"
     ],
     "ans": "eˣ(sinx + cosx)",
-    "explanation": ""
+    "explanation": "Apply the relevant trigonometric ratio or rule (SOHCAHTOA, sine rule, or cosine rule) to the triangle described."
   },
   {
     "q": "Find the second derivative of y = sin x.",
@@ -18525,7 +19192,7 @@ const PUTME_DATA = {
       "cos x"
     ],
     "ans": "-sin x",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find the third derivative of y = x⁵.",
@@ -18536,7 +19203,7 @@ const PUTME_DATA = {
       "60x"
     ],
     "ans": "60x²",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "Evaluate lim(x→0) (eˣ - 1)/x.",
@@ -18547,7 +19214,7 @@ const PUTME_DATA = {
       "∞"
     ],
     "ans": "1",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "The displacement of a particle is s(t) = t³ - 6t² + 9t. Find the time(s) when the particle is momentarily at rest.",
@@ -18558,7 +19225,7 @@ const PUTME_DATA = {
       "t = 2, 3"
     ],
     "ans": "t = 1, 3",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "For s(t) = t³ - 6t² + 9t, find the acceleration at t = 2.",
@@ -18569,7 +19236,7 @@ const PUTME_DATA = {
       "4"
     ],
     "ans": "0",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find the equation of the tangent to the curve y = x² - 3x + 2 at the point where x = 1.",
@@ -18580,7 +19247,7 @@ const PUTME_DATA = {
       "y = x + 1"
     ],
     "ans": "y = -x + 1",
-    "explanation": ""
+    "explanation": "Apply the relevant differentiation rule (power, product, quotient, or chain rule as appropriate) to obtain the derivative, then substitute or solve as required."
   },
   {
     "q": "Find the equation of the normal to the curve y = x² at the point (1,1).",
@@ -18591,7 +19258,7 @@ const PUTME_DATA = {
       "y = 2x - 1"
     ],
     "ans": "y = -½x + 3/2",
-    "explanation": ""
+    "explanation": "Apply the appropriate mathematical rule or formula to the given values to arrive at the result."
   },
   {
     "q": "If y' = 2 and y'' = 4 at a point on a curve, evaluate the radius of curvature (1 + y'²)^(3/2) / y'' at that point.",
@@ -18602,7 +19269,227 @@ const PUTME_DATA = {
       "25/4"
     ],
     "ans": "5√5/4",
-    "explanation": ""
+    "explanation": "Apply the standard circle formulas (circumference = 2πr, area = πr², arc length, or sector area as appropriate) to the given measurements."
+  },
+  {
+    "q": "Differentiate y = 3x⁴ - 5x² + 2x - 7 with respect to x.",
+    "options": [
+      "12x³ - 10x + 2",
+      "12x³ - 5x + 2",
+      "3x³ - 10x + 2",
+      "12x⁴ - 10x + 2"
+    ],
+    "ans": "12x³ - 10x + 2",
+    "explanation": "Differentiate term by term: d/dx(3x⁴)=12x³, d/dx(-5x²)=-10x, d/dx(2x)=2, d/dx(-7)=0."
+  },
+  {
+    "q": "Find dy/dx if y = (2x + 3)⁵.",
+    "options": [
+      "10(2x + 3)⁴",
+      "5(2x + 3)⁴",
+      "10(2x + 3)⁵",
+      "2(2x + 3)⁴"
+    ],
+    "ans": "10(2x + 3)⁴",
+    "explanation": "By the chain rule, dy/dx = 5(2x+3)⁴ × 2 = 10(2x+3)⁴."
+  },
+  {
+    "q": "Differentiate y = x²sin x with respect to x.",
+    "options": [
+      "2x sin x + x² cos x",
+      "2x cos x",
+      "x² cos x",
+      "2x sin x - x² cos x"
+    ],
+    "ans": "2x sin x + x² cos x",
+    "explanation": "Product rule: (x²)'sin x + x²(sin x)' = 2x sin x + x² cos x."
+  },
+  {
+    "q": "Find dy/dx if y = (3x - 1)/(x + 2).",
+    "options": [
+      "7/(x + 2)²",
+      "3/(x + 2)²",
+      "-7/(x + 2)²",
+      "2/(x + 2)²"
+    ],
+    "ans": "7/(x + 2)²",
+    "explanation": "Quotient rule: [(3)(x+2) - (3x-1)(1)]/(x+2)² = (3x+6-3x+1)/(x+2)² = 7/(x+2)²."
+  },
+  {
+    "q": "If y = e^(3x) + ln(2x), find dy/dx.",
+    "options": [
+      "3e^(3x) + 1/x",
+      "e^(3x) + 1/x",
+      "3e^(3x) + 1/(2x)",
+      "3e^(3x) + 2/x"
+    ],
+    "ans": "3e^(3x) + 1/x",
+    "explanation": "d/dx(e^(3x)) = 3e^(3x); d/dx(ln 2x) = 1/x (the constant 2 disappears after differentiation)."
+  },
+  {
+    "q": "Find the gradient of the curve y = x³ - 3x² + 2 at the point x = 2.",
+    "options": [
+      "0",
+      "2",
+      "-2",
+      "4"
+    ],
+    "ans": "0",
+    "explanation": "dy/dx = 3x² - 6x. At x = 2: 3(4) - 6(2) = 12 - 12 = 0."
+  },
+  {
+    "q": "Find the stationary points of y = x³ - 3x + 1.",
+    "options": [
+      "x = 1 and x = -1",
+      "x = 0 and x = 3",
+      "x = 1 only",
+      "x = -1 only"
+    ],
+    "ans": "x = 1 and x = -1",
+    "explanation": "dy/dx = 3x² - 3 = 0 ⟹ x² = 1 ⟹ x = ±1."
+  },
+  {
+    "q": "Determine whether the stationary point of y = x² - 4x + 3 at x = 2 is a maximum or minimum.",
+    "options": [
+      "Minimum",
+      "Maximum",
+      "Point of inflexion",
+      "Cannot be determined"
+    ],
+    "ans": "Minimum",
+    "explanation": "y'' = 2 > 0, so the curve is concave up at x = 2, giving a minimum."
+  },
+  {
+    "q": "Evaluate ∫(4x³ - 2x + 5) dx.",
+    "options": [
+      "x⁴ - x² + 5x + C",
+      "4x⁴ - x² + 5x + C",
+      "x⁴ - 2x² + 5x + C",
+      "12x² - 2 + C"
+    ],
+    "ans": "x⁴ - x² + 5x + C",
+    "explanation": "Integrate term by term: ∫4x³dx = x⁴, ∫-2x dx = -x², ∫5 dx = 5x."
+  },
+  {
+    "q": "Evaluate ∫(3x² + 2x) dx between x = 0 and x = 2.",
+    "options": [
+      "12",
+      "10",
+      "8",
+      "14"
+    ],
+    "ans": "12",
+    "explanation": "∫(3x²+2x)dx = x³ + x². At x=2: 8+4=12; at x=0: 0. Result = 12."
+  },
+  {
+    "q": "Find ∫cos 2x dx.",
+    "options": [
+      "½sin 2x + C",
+      "2 sin 2x + C",
+      "-½sin 2x + C",
+      "sin 2x + C"
+    ],
+    "ans": "½sin 2x + C",
+    "explanation": "∫cos(kx)dx = (1/k)sin(kx) + C, so with k = 2 we get ½sin 2x + C."
+  },
+  {
+    "q": "Find the area under the curve y = x² between x = 1 and x = 3.",
+    "options": [
+      "26/3",
+      "8",
+      "9",
+      "26"
+    ],
+    "ans": "26/3",
+    "explanation": "∫x²dx = x³/3. At x=3: 9; at x=1: 1/3. Area = 9 - 1/3 = 26/3."
+  },
+  {
+    "q": "A particle moves such that its displacement is s = t³ - 6t² + 9t. Find its velocity when t = 2.",
+    "options": [
+      "-3",
+      "3",
+      "0",
+      "-6"
+    ],
+    "ans": "-3",
+    "explanation": "v = ds/dt = 3t² - 12t + 9. At t=2: 12 - 24 + 9 = -3."
+  },
+  {
+    "q": "A particle's velocity is given by v = 6t - 4. Find its acceleration.",
+    "options": [
+      "6",
+      "6t",
+      "-4",
+      "6t - 4"
+    ],
+    "ans": "6",
+    "explanation": "Acceleration a = dv/dt = 6 (the derivative of a linear function is its constant rate of change)."
+  },
+  {
+    "q": "Find the equation of the tangent to the curve y = x² at the point (1, 1).",
+    "options": [
+      "y = 2x - 1",
+      "y = 2x + 1",
+      "y = x + 1",
+      "y = 2x"
+    ],
+    "ans": "y = 2x - 1",
+    "explanation": "dy/dx = 2x; at x=1, gradient = 2. Using y - 1 = 2(x - 1) gives y = 2x - 1."
+  },
+  {
+    "q": "Find lim (x→2) (x² - 4)/(x - 2).",
+    "options": [
+      "4",
+      "0",
+      "2",
+      "undefined"
+    ],
+    "ans": "4",
+    "explanation": "Factorise: (x-2)(x+2)/(x-2) = x+2, which tends to 4 as x→2."
+  },
+  {
+    "q": "If y = (x² + 1)³, find dy/dx.",
+    "options": [
+      "6x(x² + 1)²",
+      "3x(x² + 1)²",
+      "6x(x² + 1)³",
+      "2x(x² + 1)²"
+    ],
+    "ans": "6x(x² + 1)²",
+    "explanation": "Chain rule: 3(x²+1)² × 2x = 6x(x²+1)²."
+  },
+  {
+    "q": "Find d²y/dx² if y = x⁴ - 2x³.",
+    "options": [
+      "12x² - 12x",
+      "4x³ - 6x²",
+      "12x² - 6x",
+      "12x - 6"
+    ],
+    "ans": "12x² - 12x",
+    "explanation": "First derivative: 4x³ - 6x². Second derivative: 12x² - 12x."
+  },
+  {
+    "q": "The rate of change of the volume V of a sphere with respect to its radius r is given by dV/dr. If V = (4/3)πr³, find dV/dr.",
+    "options": [
+      "4πr²",
+      "(4/3)πr²",
+      "4πr³",
+      "8πr"
+    ],
+    "ans": "4πr²",
+    "explanation": "dV/dr = (4/3)π × 3r² = 4πr²."
+  },
+  {
+    "q": "Find the maximum value of y = 9x - x² for x > 0.",
+    "options": [
+      "20.25",
+      "18",
+      "9",
+      "4.5"
+    ],
+    "ans": "20.25",
+    "explanation": "dy/dx = 9 - 2x = 0 ⟹ x = 4.5. y = 9(4.5) - (4.5)² = 40.5 - 20.25 = 20.25."
   }
 ],
   "PUTME_CRK": [
@@ -21906,7 +22793,118 @@ const PUTME_DATA = {
     "ans": "God reveals Himself through Scripture and Jesus Christ, calling humanity to repentance, faith, holy living, love, and eternal fellowship with Him.",
     "explanation": "God reveals Himself through Scripture and Jesus Christ, calling humanity to repentance, faith, holy living, love, and eternal fellowship with Him."
   }
-  ],
+  ,
+  {
+    "q": "In the parable of the sower (Matthew 13), what does the seed that fell among thorns represent?",
+    "options": [
+      "Those who hear the word but worldly cares choke it",
+      "Those who hear and immediately reject it",
+      "Those who hear, understand, and bear fruit",
+      "Those who never hear the word at all"
+    ],
+    "ans": "Those who hear the word but worldly cares choke it",
+    "explanation": "Jesus explained that the thorny ground represents hearers whose faith is choked by worldly cares and the deceitfulness of riches."
+  },
+  {
+    "q": "The doctrine of justification by faith, central to Paul's letter to the Romans, teaches that a person is made right with God through:",
+    "options": [
+      "Strict observance of the Mosaic law",
+      "Good works alone",
+      "Faith in Jesus Christ",
+      "Ritual sacrifices"
+    ],
+    "ans": "Faith in Jesus Christ",
+    "explanation": "Paul argues in Romans that righteousness comes through faith in Christ, not through works of the law."
+  },
+  {
+    "q": "Which Old Testament prophet was called while still a young boy and ministered during the priesthood of Eli?",
+    "options": [
+      "Isaiah",
+      "Jeremiah",
+      "Samuel",
+      "Elijah"
+    ],
+    "ans": "Samuel",
+    "explanation": "Samuel was dedicated to the Lord as a child and grew up serving under the priest Eli at Shiloh."
+  },
+  {
+    "q": "In Paul's letter to the Galatians, what does he identify as the 'fruit of the Spirit' in contrast to the 'works of the flesh'?",
+    "options": [
+      "Wealth, power, and fame",
+      "Love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control",
+      "Wisdom, knowledge, and prophecy",
+      "Miracles, healing, and tongues"
+    ],
+    "ans": "Love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, self-control",
+    "explanation": "Galatians 5:22-23 lists these qualities as the fruit produced by the Holy Spirit in a believer's life."
+  },
+  {
+    "q": "The covenant God made with Abraham in Genesis 15 was confirmed through:",
+    "options": [
+      "A rainbow",
+      "Circumcision alone",
+      "A ceremony involving divided animals",
+      "The giving of the Ten Commandments"
+    ],
+    "ans": "A ceremony involving divided animals",
+    "explanation": "In Genesis 15, God confirmed His covenant with Abraham through a ritual involving divided animal carcasses, symbolising the binding nature of the covenant."
+  },
+  {
+    "q": "What was the significance of the tearing of the temple veil at the moment of Jesus' death (Matthew 27:51)?",
+    "options": [
+      "It signified the end of the Roman occupation",
+      "It symbolised direct access to God made possible through Christ's sacrifice",
+      "It was a sign of God's anger at the Jewish nation",
+      "It marked the beginning of temple reconstruction"
+    ],
+    "ans": "It symbolised direct access to God made possible through Christ's sacrifice",
+    "explanation": "The torn veil represented the removal of the barrier between God and humanity, granting believers direct access to God's presence."
+  },
+  {
+    "q": "In the book of Job, what was the main argument Job's three friends used to explain his suffering?",
+    "options": [
+      "Suffering is always a direct result of personal sin",
+      "Suffering is purely random and meaningless",
+      "Suffering is a test with no explanation needed",
+      "Suffering comes only from Satan and never from God"
+    ],
+    "ans": "Suffering is always a direct result of personal sin",
+    "explanation": "Job's friends insisted his suffering must be punishment for hidden sin, a view the book ultimately challenges."
+  },
+  {
+    "q": "The Beatitudes in Matthew 5 begin with the phrase 'Blessed are the poor in spirit,' meaning:",
+    "options": [
+      "Those who are materially poor",
+      "Those who are humble and recognise their spiritual need for God",
+      "Those who reject wealth entirely",
+      "Those who are physically weak"
+    ],
+    "ans": "Those who are humble and recognise their spiritual need for God",
+    "explanation": "'Poor in spirit' refers to humility and an awareness of one's spiritual dependence on God, not material poverty."
+  },
+  {
+    "q": "Which New Testament book is traditionally understood as addressing Jewish Christians tempted to abandon their faith and return to Judaism, emphasising Christ's superiority over the old covenant?",
+    "options": [
+      "Romans",
+      "Hebrews",
+      "James",
+      "1 Peter"
+    ],
+    "ans": "Hebrews",
+    "explanation": "The book of Hebrews presents Christ as superior to angels, Moses, and the old priesthood, encouraging perseverance in faith."
+  },
+  {
+    "q": "In 1 Corinthians 13, Paul teaches that without love, even the greatest spiritual gifts are:",
+    "options": [
+      "Still valuable if used correctly",
+      "Worthless (like sounding brass or a clanging cymbal)",
+      "Only useful in public worship",
+      "More important than love"
+    ],
+    "ans": "Worthless (like sounding brass or a clanging cymbal)",
+    "explanation": "Paul emphasises that spiritual gifts exercised without love profit nothing, comparing such gifts to noise without substance."
+  }
+],
   "PUTME_LITERATURE": [
   {
     "q": "A major function of literature in society is to",
@@ -25208,7 +26206,118 @@ const PUTME_DATA = {
     "ans": "To develop analytical skills by interpreting prose, poetry, and drama through themes, characterization, plot, style, setting, and literary devices.",
     "explanation": "To develop analytical skills by interpreting prose, poetry, and drama through themes, characterization, plot, style, setting, and literary devices."
   }
-  ],
+  ,
+  {
+    "q": "In tragedy, the term 'hamartia' refers to:",
+    "options": [
+      "The moment of the hero's final triumph",
+      "A fatal flaw or error in judgment that leads to the protagonist's downfall",
+      "The comic relief within a tragic play",
+      "The resolution of all conflicts in the plot"
+    ],
+    "ans": "A fatal flaw or error in judgment that leads to the protagonist's downfall",
+    "explanation": "Hamartia, a concept from Aristotle's Poetics, is the tragic flaw or mistake that precipitates the hero's ruin."
+  },
+  {
+    "q": "A literary work that uses animal characters to satirize human political behaviour, such as George Orwell's 'Animal Farm', is best classified as:",
+    "options": [
+      "An epic",
+      "An allegory",
+      "A sonnet sequence",
+      "A dramatic monologue"
+    ],
+    "ans": "An allegory",
+    "explanation": "An allegory conveys a hidden, usually moral or political, meaning through symbolic characters and events."
+  },
+  {
+    "q": "The literary technique in which an author gives human characteristics to non-human or abstract things is known as:",
+    "options": [
+      "Personification",
+      "Onomatopoeia",
+      "Alliteration",
+      "Hyperbole"
+    ],
+    "ans": "Personification",
+    "explanation": "Personification attributes human qualities, emotions, or actions to inanimate objects, animals, or abstract ideas."
+  },
+  {
+    "q": "In drama, 'in medias res' refers to a narrative technique where the story:",
+    "options": [
+      "Begins at the very beginning of the chronological events",
+      "Begins in the middle of the action",
+      "Ends before the climax",
+      "Is told entirely through flashback"
+    ],
+    "ans": "Begins in the middle of the action",
+    "explanation": "'In medias res' is Latin for 'into the middle of things,' describing a plot that starts partway through the action."
+  },
+  {
+    "q": "Which of the following best distinguishes a 'static character' from a 'dynamic character'?",
+    "options": [
+      "A static character undergoes significant change, while a dynamic character does not",
+      "A static character remains essentially the same throughout the work, while a dynamic character undergoes significant internal change",
+      "A static character only appears in comedies",
+      "A dynamic character is always the protagonist"
+    ],
+    "ans": "A static character remains essentially the same throughout the work, while a dynamic character undergoes significant internal change",
+    "explanation": "Dynamic characters evolve meaningfully over the course of a narrative, unlike static characters who stay fundamentally unchanged."
+  },
+  {
+    "q": "The deliberate use of an understatement for ironic or humorous effect, especially common in British literature, is called:",
+    "options": [
+      "Litotes",
+      "Hyperbole",
+      "Synecdoche",
+      "Metonymy"
+    ],
+    "ans": "Litotes",
+    "explanation": "Litotes is a figure of speech that uses understatement, often through double negatives, to emphasise a point ironically."
+  },
+  {
+    "q": "In poetry, a 'volta' refers to:",
+    "options": [
+      "The rhyme scheme of a sonnet",
+      "A turn or shift in argument or emotion, typically found in sonnets",
+      "The final couplet of a poem",
+      "A type of poetic meter"
+    ],
+    "ans": "A turn or shift in argument or emotion, typically found in sonnets",
+    "explanation": "The volta is the pivotal turn in thought or feeling, commonly occurring between the octave and sestet in a Petrarchan sonnet."
+  },
+  {
+    "q": "Which narrative point of view allows the reader access to the thoughts and feelings of only one character, while other characters are seen only from outside?",
+    "options": [
+      "Omniscient narration",
+      "Limited third-person narration",
+      "First-person plural narration",
+      "Objective (dramatic) narration"
+    ],
+    "ans": "Limited third-person narration",
+    "explanation": "Limited third-person narration restricts the reader's insight to a single character's inner thoughts and perceptions."
+  },
+  {
+    "q": "The term 'bildungsroman' specifically describes a novel that focuses on:",
+    "options": [
+      "A detective solving a crime",
+      "The psychological and moral growth of a protagonist from youth to adulthood",
+      "A historical war narrative",
+      "A satire of political institutions"
+    ],
+    "ans": "The psychological and moral growth of a protagonist from youth to adulthood",
+    "explanation": "A bildungsroman traces the formative years and personal development of its central character."
+  },
+  {
+    "q": "In the context of dramatic structure, 'denouement' refers to:",
+    "options": [
+      "The introduction of characters and setting",
+      "The point of highest tension in the plot",
+      "The final resolution of the plot's complications",
+      "The turning point in the rising action"
+    ],
+    "ans": "The final resolution of the plot's complications",
+    "explanation": "Denouement, from the French for 'untying,' refers to the resolution of the plot's remaining conflicts after the climax."
+  }
+],
   "PUTME_ECONOMICS": [
   {
     "q": "In a free market economy, the \"invisible hand\" as described by Adam Smith primarily ensures:",
@@ -25230,7 +26339,7 @@ const PUTME_DATA = {
       "Profit earned by an entrepreneur due to innovation"
     ],
     "ans": "Payment to a factor above its transfer earnings",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: payment to a factor above its transfer earnings."
   },
   {
     "q": "A normative statement in Economics differs from a positive one because it:",
@@ -25241,7 +26350,7 @@ const PUTME_DATA = {
       "focuses solely on microeconomic behaviour"
     ],
     "ans": "involves value judgments about what ought to be",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: involves value judgments about what ought to be."
   },
   {
     "q": "If the production possibility frontier (PPF) of a country shifts outward due to technological improvement in agriculture but not in manufacturing, this implies:",
@@ -25252,7 +26361,7 @@ const PUTME_DATA = {
       "reduced scarcity in the economy"
     ],
     "ans": "increased opportunity cost of producing manufactured goods",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: increased opportunity cost of producing manufactured goods."
   },
   {
     "q": "In Nigeria's mixed economy, the role of the government in price control during periods of inflation is best described as an attempt to:",
@@ -25263,7 +26372,7 @@ const PUTME_DATA = {
       "maximise private sector profits"
     ],
     "ans": "correct market failure due to externalities",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: correct market failure due to externalities."
   },
   {
     "q": "The law of diminishing marginal utility implies that:",
@@ -25274,7 +26383,7 @@ const PUTME_DATA = {
       "indifference curves are always convex to the origin"
     ],
     "ans": "total utility increases at a decreasing rate",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: total utility increases at a decreasing rate."
   },
   {
     "q": "A consumer's budget line will shift parallel to the right when:",
@@ -25285,7 +26394,7 @@ const PUTME_DATA = {
       "the price of both goods increase proportionally"
     ],
     "ans": "money income increases with constant prices",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: money income increases with constant prices."
   },
   {
     "q": "Which of the following is not a characteristic of perfect competition?",
@@ -25296,7 +26405,7 @@ const PUTME_DATA = {
       "Significant influence of individual firms on market price"
     ],
     "ans": "Significant influence of individual firms on market price",
-    "explanation": ""
+    "explanation": "This follows from the theory of market structures: significant influence of individual firms on market price."
   },
   {
     "q": "The kinked demand curve model is most applicable to:",
@@ -25307,7 +26416,7 @@ const PUTME_DATA = {
       "monopolistic competition"
     ],
     "ans": "oligopoly with interdependent firms",
-    "explanation": ""
+    "explanation": "This follows from the theory of market structures: oligopoly with interdependent firms."
   },
   {
     "q": "If the cross elasticity of demand between two goods is positive and high, they are:",
@@ -25318,7 +26427,7 @@ const PUTME_DATA = {
       "Giffen goods"
     ],
     "ans": "substitutes",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: substitutes."
   },
   {
     "q": "The incidence of a tax on a good with perfectly inelastic supply falls entirely on:",
@@ -25340,7 +26449,7 @@ const PUTME_DATA = {
       "economic rent"
     ],
     "ans": "normal profit only",
-    "explanation": ""
+    "explanation": "This follows from the theory of market structures: normal profit only."
   },
   {
     "q": "Which of the following is a major criticism of the capitalist system in developing economies like Nigeria?",
@@ -25351,7 +26460,7 @@ const PUTME_DATA = {
       "Lack of consumer sovereignty"
     ],
     "ans": "Tendency towards income inequality and exploitation",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": "The multiplier effect in Keynesian economics is weakened by:",
@@ -25362,7 +26471,7 @@ const PUTME_DATA = {
       "increased government spending"
     ],
     "ans": "high marginal propensity to save",
-    "explanation": ""
+    "explanation": "This follows from Keynesian economic theory: high marginal propensity to save."
   },
   {
     "q": "Structural unemployment in Nigeria is primarily caused by:",
@@ -25373,7 +26482,7 @@ const PUTME_DATA = {
       "frictional job searching"
     ],
     "ans": "mismatch between skills and job requirements",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": "The \"tragedy of the commons\" refers to:",
@@ -25384,7 +26493,7 @@ const PUTME_DATA = {
       "monopoly pricing strategies"
     ],
     "ans": "overuse of resources that are rival but non- excludable",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: overuse of resources that are rival but non- excludable."
   },
   {
     "q": "In the circular flow of income, injections include all the following except:",
@@ -25395,7 +26504,7 @@ const PUTME_DATA = {
       "investment"
     ],
     "ans": "imports",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: imports."
   },
   {
     "q": "A rightward shift in the supply curve could result from:",
@@ -25406,7 +26515,7 @@ const PUTME_DATA = {
       "imposition of a tax"
     ],
     "ans": "technological improvement",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: technological improvement."
   },
   {
     "q": "The liquidity preference theory of interest rate is associated with:",
@@ -25417,7 +26526,7 @@ const PUTME_DATA = {
       "Adam Smith"
     ],
     "ans": "Keynes",
-    "explanation": ""
+    "explanation": "This follows from Keynesian economic theory: keynes."
   },
   {
     "q": "Nigeria's membership in OPEC primarily affects its:",
@@ -25428,7 +26537,7 @@ const PUTME_DATA = {
       "manufacturing sector growth"
     ],
     "ans": "oil revenue and production quotas",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: oil revenue and production quotas."
   },
   {
     "q": "An inferior good is one for which demand:",
@@ -25439,7 +26548,7 @@ const PUTME_DATA = {
       "is perfectly elastic"
     ],
     "ans": "decreases as income rises",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: decreases as income rises."
   },
   {
     "q": "The main objective of the Structural Adjustment Programme (SAP) in Nigeria was to:",
@@ -25450,7 +26559,7 @@ const PUTME_DATA = {
       "increase government subsidies"
     ],
     "ans": "diversify the economy and reduce oil dependence",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": "If a country's GDP at current prices is rising but real GDP is falling, this indicates:",
@@ -25461,7 +26570,7 @@ const PUTME_DATA = {
       "recession"
     ],
     "ans": "inflation",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: inflation."
   },
   {
     "q": "The demand for labour is described as:",
@@ -25472,7 +26581,7 @@ const PUTME_DATA = {
       "competitive demand"
     ],
     "ans": "derived demand",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: derived demand."
   },
   {
     "q": "In a centrally planned economy, the \"what to produce\" question is answered by:",
@@ -25483,7 +26592,7 @@ const PUTME_DATA = {
       "market forces"
     ],
     "ans": "government planning authority",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: government planning authority."
   },
   {
     "q": "The balance of payments deficit can be financed by:",
@@ -25494,7 +26603,7 @@ const PUTME_DATA = {
       "imposing price controls"
     ],
     "ans": "drawing down on foreign reserves",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: drawing down on foreign reserves."
   },
   {
     "q": "Which of the following is a direct tax in Nigeria?",
@@ -25505,7 +26614,7 @@ const PUTME_DATA = {
       "Import tariff"
     ],
     "ans": "Company Income Tax",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: company income tax."
   },
   {
     "q": "Economic development differs from economic growth in that it emphasises:",
@@ -25516,7 +26625,7 @@ const PUTME_DATA = {
       "short-term fluctuations"
     ],
     "ans": "improvement in quality of life and structural changes",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: improvement in quality of life and structural changes."
   },
   {
     "q": "The \"terms of trade\" for Nigeria is likely to be unfavourable because of:",
@@ -25527,7 +26636,7 @@ const PUTME_DATA = {
       "high level of industrialisation"
     ],
     "ans": "reliance on primary product exports",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: reliance on primary product exports."
   },
   {
     "q": "A monopolist maximises profit when:",
@@ -25538,7 +26647,7 @@ const PUTME_DATA = {
       "average revenue equals average cost"
     ],
     "ans": "marginal revenue equals marginal cost",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: marginal revenue equals marginal cost."
   },
   {
     "q": "Fiscal policy is most effective in reducing unemployment when the economy is in:",
@@ -25549,7 +26658,7 @@ const PUTME_DATA = {
       "stagflation"
     ],
     "ans": "a recessionary gap",
-    "explanation": ""
+    "explanation": "This describes a standard macroeconomic condition: a recessionary gap."
   },
   {
     "q": "The main cause of rural-urban migration in Nigeria is:",
@@ -25560,7 +26669,7 @@ const PUTME_DATA = {
       "government subsidies on farm inputs"
     ],
     "ans": "better employment opportunities in urban areas",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": "If the price elasticity of supply of a commodity is greater than one, supply is said to be:",
@@ -25571,7 +26680,7 @@ const PUTME_DATA = {
       "perfectly inelastic"
     ],
     "ans": "elastic",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: elastic."
   },
   {
     "q": "The Central Bank of Nigeria uses Open Market Operations primarily to:",
@@ -25582,7 +26691,7 @@ const PUTME_DATA = {
       "regulate commercial bank profits"
     ],
     "ans": "control inflation through money supply",
-    "explanation": ""
+    "explanation": "This describes a standard macroeconomic condition: control inflation through money supply."
   },
   {
     "q": "Which of the following is an example of a merit good?",
@@ -25593,7 +26702,7 @@ const PUTME_DATA = {
       "Gambling services"
     ],
     "ans": "Education",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: education."
   },
   {
     "q": "In the theory of consumer behaviour, the consumer is at equilibrium when:",
@@ -25604,7 +26713,7 @@ const PUTME_DATA = {
       "prices are constant"
     ],
     "ans": "marginal utility per naira is equal for all goods",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: marginal utility per naira is equal for all goods."
   },
   {
     "q": "The National Debt in Nigeria can lead to:",
@@ -25615,7 +26724,7 @@ const PUTME_DATA = {
       "reduced inflation"
     ],
     "ans": "crowding out of private investment",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: crowding out of private investment."
   },
   {
     "q": "A country experiencing persistent balance of trade surplus is likely to have:",
@@ -25626,7 +26735,7 @@ const PUTME_DATA = {
       "deflationary pressure"
     ],
     "ans": "appreciating currency",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: appreciating currency."
   },
   {
     "q": "The law of increasing opportunity cost implies that the PPF is:",
@@ -25637,7 +26746,7 @@ const PUTME_DATA = {
       "horizontal"
     ],
     "ans": "bowed outward",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: bowed outward."
   },
   {
     "q": "Privatisation in Nigeria is most likely to lead to:",
@@ -25648,7 +26757,7 @@ const PUTME_DATA = {
       "reduced foreign investment"
     ],
     "ans": "improved efficiency and innovation",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: improved efficiency and innovation."
   },
   {
     "q": "The Human Development Index (HDI) includes all the following except:",
@@ -25659,7 +26768,7 @@ const PUTME_DATA = {
       "military strength"
     ],
     "ans": "military strength",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: military strength."
   },
   {
     "q": "Stagflation is a situation characterised by:",
@@ -25670,7 +26779,7 @@ const PUTME_DATA = {
       "balanced budget"
     ],
     "ans": "high inflation and high unemployment",
-    "explanation": ""
+    "explanation": "This describes a standard macroeconomic condition: high inflation and high unemployment."
   },
   {
     "q": "The main function of the Stock Exchange is to:",
@@ -25681,7 +26790,7 @@ const PUTME_DATA = {
       "collect taxes"
     ],
     "ans": "provide long-term capital to companies",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: provide long-term capital to companies."
   },
   {
     "q": "An increase in the cash reserve ratio by the CBN will:",
@@ -25692,7 +26801,7 @@ const PUTME_DATA = {
       "encourage borrowing"
     ],
     "ans": "decrease the money supply",
-    "explanation": ""
+    "explanation": "This follows from the role of banking and monetary policy: decrease the money supply."
   },
   {
     "q": "The concept of \"economies of scale\" explains why:",
@@ -25703,7 +26812,7 @@ const PUTME_DATA = {
       "small firms dominate the market"
     ],
     "ans": "average cost falls as output increases in the long run",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: average cost falls as output increases in the long run."
   },
   {
     "q": "Which of the following is a demerit of the socialist economic system?",
@@ -25714,7 +26823,7 @@ const PUTME_DATA = {
       "Efficient resource allocation"
     ],
     "ans": "Lack of incentive for hard work",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: lack of incentive for hard work."
   },
   {
     "q": "The \"infant industry argument\" is used to justify:",
@@ -25725,7 +26834,7 @@ const PUTME_DATA = {
       "export subsidies only"
     ],
     "ans": "protectionism/tariffs",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: protectionism/tariffs."
   },
   {
     "q": "Gross Domestic Product (GDP) differs from Gross National Product (GNP) because GNP includes:",
@@ -25736,7 +26845,7 @@ const PUTME_DATA = {
       "government expenditure"
     ],
     "ans": "net income from abroad",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: net income from abroad."
   },
   {
     "q": "The most common cause of demand-pull inflation is:",
@@ -25747,7 +26856,7 @@ const PUTME_DATA = {
       "fall in money supply"
     ],
     "ans": "excessive aggregate demand",
-    "explanation": ""
+    "explanation": "This describes a standard macroeconomic condition: excessive aggregate demand."
   },
   {
     "q": "In Nigeria, the three tiers of government share revenue mainly through:",
@@ -25758,7 +26867,7 @@ const PUTME_DATA = {
       "customs duties only"
     ],
     "ans": "the Federation Account",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: the federation account."
   },
   {
     "q": "The Phillips Curve illustrates a short-run trade-off between:",
@@ -25769,7 +26878,7 @@ const PUTME_DATA = {
       "money supply and price level"
     ],
     "ans": "inflation and unemployment",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: inflation and unemployment."
   },
   {
     "q": "In Nigeria, the phenomenon where oil revenue leads to neglect of agriculture is known as:",
@@ -25780,7 +26889,7 @@ const PUTME_DATA = {
       "balance of payments surplus trap"
     ],
     "ans": "Dutch disease",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: dutch disease."
   },
   {
     "q": "If the marginal propensity to consume (MPC) is 0.8, the value of the multiplier is:",
@@ -25791,7 +26900,7 @@ const PUTME_DATA = {
       "4"
     ],
     "ans": "5",
-    "explanation": ""
+    "explanation": "This follows from Keynesian economic theory: 5."
   },
   {
     "q": "A regressive tax system burdens:",
@@ -25802,7 +26911,7 @@ const PUTME_DATA = {
       "middle-class consumers exclusively"
     ],
     "ans": "lower income earners proportionately more",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: lower income earners proportionately more."
   },
   {
     "q": "The Lorenz Curve is used to measure:",
@@ -25813,7 +26922,7 @@ const PUTME_DATA = {
       "terms of trade"
     ],
     "ans": "income inequality",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: income inequality."
   },
   {
     "q": "Which of the following is not a function of money?",
@@ -25824,7 +26933,7 @@ const PUTME_DATA = {
       "Tool for central planning"
     ],
     "ans": "Tool for central planning",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: tool for central planning."
   },
   {
     "q": "Cost-push inflation in Nigeria can be triggered by:",
@@ -25835,7 +26944,7 @@ const PUTME_DATA = {
       "technological advancement"
     ],
     "ans": "rise in the cost of imported raw materials",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: rise in the cost of imported raw materials."
   },
   {
     "q": "The term \"human capital\" refers to:",
@@ -25846,7 +26955,7 @@ const PUTME_DATA = {
       "financial assets of individuals"
     ],
     "ans": "skills and knowledge embodied in the workforce",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: skills and knowledge embodied in the workforce."
   },
   {
     "q": "In international trade, the concept of comparative advantage implies that a country should:",
@@ -25857,7 +26966,7 @@ const PUTME_DATA = {
       "avoid trade with developing nations"
     ],
     "ans": "specialize in goods with lower opportunity cost",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: specialize in goods with lower opportunity cost."
   },
   {
     "q": "Devaluation of the Naira is likely to:",
@@ -25868,7 +26977,7 @@ const PUTME_DATA = {
       "increase government revenue from oil"
     ],
     "ans": "make exports cheaper and imports dearer",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: make exports cheaper and imports dearer."
   },
   {
     "q": "The Harrod-Domar model primarily focuses on the relationship between:",
@@ -25879,7 +26988,7 @@ const PUTME_DATA = {
       "fiscal deficit and public debt"
     ],
     "ans": "savings, capital-output ratio, and growth",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: savings, capital-output ratio, and growth."
   },
   {
     "q": "A public good is characterised by:",
@@ -25890,7 +26999,7 @@ const PUTME_DATA = {
       "private sector provision only"
     ],
     "ans": "non-rivalry and non- excludability",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: non-rivalry and non- excludability."
   },
   {
     "q": "The main objective of privatisation in Nigeria was to:",
@@ -25901,7 +27010,7 @@ const PUTME_DATA = {
       "eliminate all foreign investment"
     ],
     "ans": "improve efficiency and reduce fiscal burden",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: improve efficiency and reduce fiscal burden."
   },
   {
     "q": "If demand is unitary elastic, a 10% increase in price will lead to:",
@@ -25912,7 +27021,7 @@ const PUTME_DATA = {
       "more than 10% change in quantity demanded"
     ],
     "ans": "no change in total revenue",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: no change in total revenue."
   },
   {
     "q": "The \"terms of trade\" for a country improves when:",
@@ -25923,7 +27032,7 @@ const PUTME_DATA = {
       "currency appreciates significantly"
     ],
     "ans": "export prices rise relative to import prices",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: export prices rise relative to import prices."
   },
   {
     "q": "The demand curve for a Giffen good is:",
@@ -25934,7 +27043,7 @@ const PUTME_DATA = {
       "perfectly inelastic"
     ],
     "ans": "upward sloping",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: upward sloping."
   },
   {
     "q": "Monetary policy is more effective than fiscal policy when the economy suffers from:",
@@ -25956,7 +27065,7 @@ const PUTME_DATA = {
       "collect taxes from companies"
     ],
     "ans": "mobilise long-term capital for investment",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": "Which of the following is an example of an indirect tax?",
@@ -25967,7 +27076,7 @@ const PUTME_DATA = {
       "Capital gains tax"
     ],
     "ans": "Value Added Tax (VAT)",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: value added tax (vat)."
   },
   {
     "q": "Economic growth can be measured by:",
@@ -25978,7 +27087,7 @@ const PUTME_DATA = {
       "increase in government expenditure"
     ],
     "ans": "increase in real GDP per capita",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: increase in real gdp per capita."
   },
   {
     "q": "The main objective of the African Development Bank is to:",
@@ -25989,7 +27098,7 @@ const PUTME_DATA = {
       "enforce human rights"
     ],
     "ans": "provide financial and technical assistance for development",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: provide financial and technical assistance for development."
   },
   {
     "q": "A budget deficit occurs when:",
@@ -26000,7 +27109,7 @@ const PUTME_DATA = {
       "imports exceed exports"
     ],
     "ans": "government expenditure exceeds revenue",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: government expenditure exceeds revenue."
   },
   {
     "q": "The law of comparative advantage was propounded by:",
@@ -26011,7 +27120,7 @@ const PUTME_DATA = {
       "Karl Marx"
     ],
     "ans": "David Ricardo",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: david ricardo."
   },
   {
     "q": "In Nigeria, the Petroleum Profit Tax is paid by:",
@@ -26022,7 +27131,7 @@ const PUTME_DATA = {
       "agricultural firms"
     ],
     "ans": "oil exploration and production companies",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: oil exploration and production companies."
   },
   {
     "q": "Which of the following is a characteristic of a developing economy?",
@@ -26033,7 +27142,7 @@ const PUTME_DATA = {
       "Advanced technology"
     ],
     "ans": "High rate of population growth and low savings",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: high rate of population growth and low savings."
   },
   {
     "q": "The Bretton Woods institutions include:",
@@ -26044,7 +27153,7 @@ const PUTME_DATA = {
       "WTO and ILO"
     ],
     "ans": "IMF and World Bank",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: imf and world bank."
   },
   {
     "q": "An increase in the bank rate by the Central Bank will lead to:",
@@ -26055,7 +27164,7 @@ const PUTME_DATA = {
       "higher investment"
     ],
     "ans": "decrease in lending by commercial banks",
-    "explanation": ""
+    "explanation": "This follows from the role of banking and monetary policy: decrease in lending by commercial banks."
   },
   {
     "q": "The main cause of unemployment in Nigeria is:",
@@ -26066,7 +27175,7 @@ const PUTME_DATA = {
       "excessive government spending"
     ],
     "ans": "both A and B",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": "The concept of \"consumer surplus\" refers to:",
@@ -26077,7 +27186,7 @@ const PUTME_DATA = {
       "government subsidy on goods"
     ],
     "ans": "the difference between what consumers are willing to pay and what they actually pay",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: the difference between what consumers are willing to pay and what they actually pay."
   },
   {
     "q": "Which of the following is not a function of commercial banks?",
@@ -26088,7 +27197,7 @@ const PUTME_DATA = {
       "Providing safe custody"
     ],
     "ans": "Issuing currency",
-    "explanation": ""
+    "explanation": "This follows from the role of banking and monetary policy: issuing currency."
   },
   {
     "q": "The National Economic Empowerment and Development Strategy (NEEDS) aimed at:",
@@ -26099,7 +27208,7 @@ const PUTME_DATA = {
       "cultural preservation only"
     ],
     "ans": "poverty reduction and wealth creation",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: poverty reduction and wealth creation."
   },
   {
     "q": "A fall in the exchange rate of the Naira will make:",
@@ -26110,7 +27219,7 @@ const PUTME_DATA = {
       "domestic goods less competitive"
     ],
     "ans": "imports more expensive",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: imports more expensive."
   },
   {
     "q": "The production function shows the relationship between:",
@@ -26121,7 +27230,7 @@ const PUTME_DATA = {
       "revenue and expenditure"
     ],
     "ans": "input and output",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: input and output."
   },
   {
     "q": "Which of the following is a capital-intensive industry?",
@@ -26132,7 +27241,7 @@ const PUTME_DATA = {
       "Retail trading"
     ],
     "ans": "Petroleum refining",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: petroleum refining."
   },
   {
     "q": "The main objective of taxation is:",
@@ -26143,7 +27252,7 @@ const PUTME_DATA = {
       "funding political parties"
     ],
     "ans": "redistribution of income and economic stabilisation",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: redistribution of income and economic stabilisation."
   },
   {
     "q": "The International Monetary Fund (IMF) was established to:",
@@ -26154,7 +27263,7 @@ const PUTME_DATA = {
       "enforce human rights"
     ],
     "ans": "promote international monetary cooperation",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: promote international monetary cooperation."
   },
   {
     "q": "A progressive tax system means:",
@@ -26165,7 +27274,7 @@ const PUTME_DATA = {
       "no tax on high income"
     ],
     "ans": "tax rate increases as income increases",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: tax rate increases as income increases."
   },
   {
     "q": "The main problem of agricultural development in Nigeria is:",
@@ -26176,7 +27285,7 @@ const PUTME_DATA = {
       "high mechanisation"
     ],
     "ans": "inadequate credit facilities and poor infrastructure",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: inadequate credit facilities and poor infrastructure."
   },
   {
     "q": "Which of the following is a feature of monopoly?",
@@ -26187,7 +27296,7 @@ const PUTME_DATA = {
       "Perfect knowledge"
     ],
     "ans": "Single seller",
-    "explanation": ""
+    "explanation": "This follows from the theory of market structures: single seller."
   },
   {
     "q": "The marginal propensity to save (MPS) + marginal propensity to consume (MPC) is always equal to:",
@@ -26198,7 +27307,7 @@ const PUTME_DATA = {
       "negative value"
     ],
     "ans": "1",
-    "explanation": ""
+    "explanation": "This follows from Keynesian economic theory: 1."
   },
   {
     "q": "The Economic Community of West African States (ECOWAS) was formed to:",
@@ -26209,7 +27318,7 @@ const PUTME_DATA = {
       "promote military alliance"
     ],
     "ans": "promote regional integration and trade",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: promote regional integration and trade."
   },
   {
     "q": "Inflation can be controlled by:",
@@ -26220,7 +27329,7 @@ const PUTME_DATA = {
       "increasing imports"
     ],
     "ans": "reducing money supply",
-    "explanation": ""
+    "explanation": "This describes a standard macroeconomic condition: reducing money supply."
   },
   {
     "q": "The supply of labour depends on:",
@@ -26231,7 +27340,7 @@ const PUTME_DATA = {
       "weather conditions"
     ],
     "ans": "wage rate and working conditions",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: wage rate and working conditions."
   },
   {
     "q": "Which of the following is not an objective of the Central Bank of Nigeria?",
@@ -26242,7 +27351,7 @@ const PUTME_DATA = {
       "Financial system stability"
     ],
     "ans": "Profit maximisation",
-    "explanation": ""
+    "explanation": "This follows from the role of banking and monetary policy: profit maximisation."
   },
   {
     "q": "The \"invisible trade\" refers to:",
@@ -26253,7 +27362,7 @@ const PUTME_DATA = {
       "illegal trade"
     ],
     "ans": "trade in services",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: trade in services."
   },
   {
     "q": "A country with a high dependency ratio has:",
@@ -26264,7 +27373,7 @@ const PUTME_DATA = {
       "high savings rate"
     ],
     "ans": "high proportion of children and elderly",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: high proportion of children and elderly."
   },
   {
     "q": "The main advantage of a joint-stock company is:",
@@ -26275,7 +27384,7 @@ const PUTME_DATA = {
       "easy dissolution"
     ],
     "ans": "access to large capital",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: access to large capital."
   },
   {
     "q": "Which of the following causes a shift in the demand curve?",
@@ -26286,7 +27395,7 @@ const PUTME_DATA = {
       "Change in technology"
     ],
     "ans": "Change in consumer income",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: change in consumer income."
   },
   {
     "q": "The World Trade Organisation (WTO) aims at:",
@@ -26297,7 +27406,7 @@ const PUTME_DATA = {
       "controlling climate change"
     ],
     "ans": "promoting free and fair trade among nations",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: promoting free and fair trade among nations."
   },
   {
     "q": "Economic recession is characterised by:",
@@ -26308,7 +27417,7 @@ const PUTME_DATA = {
       "high investment"
     ],
     "ans": "falling output and rising unemployment",
-    "explanation": ""
+    "explanation": "This describes a standard macroeconomic condition: falling output and rising unemployment."
   },
   {
     "q": " The main objective of the Nigerian National Petroleum Corporation (NNPC) is to:",
@@ -26319,7 +27428,7 @@ const PUTME_DATA = {
       "issue currency"
     ],
     "ans": "manage oil resources and exploration",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": " A decrease in the supply of a commodity will lead to:",
@@ -26330,7 +27439,7 @@ const PUTME_DATA = {
       "higher quantity demanded"
     ],
     "ans": "higher equilibrium price",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: higher equilibrium price."
   },
   {
     "q": " The break-even point for a firm is where:",
@@ -26341,7 +27450,7 @@ const PUTME_DATA = {
       "profit is maximum"
     ],
     "ans": "total revenue equals total cost",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: total revenue equals total cost."
   },
   {
     "q": " Which of the following is a cause of inflation in Nigeria?",
@@ -26352,7 +27461,7 @@ const PUTME_DATA = {
       "Fall in import prices"
     ],
     "ans": "Persistent budget deficits",
-    "explanation": ""
+    "explanation": "This describes a standard macroeconomic condition: persistent budget deficits."
   },
   {
     "q": " The law of demand states that:",
@@ -26363,7 +27472,7 @@ const PUTME_DATA = {
       "demand is always constant"
     ],
     "ans": "price and quantity demanded are inversely related",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: price and quantity demanded are inversely related."
   },
   {
     "q": " The Federal Inland Revenue Service (FIRS) is responsible for:",
@@ -26374,7 +27483,7 @@ const PUTME_DATA = {
       "issuing licences"
     ],
     "ans": "collecting internal taxes",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: collecting internal taxes."
   },
   {
     "q": " An example of a fixed cost is:",
@@ -26385,7 +27494,7 @@ const PUTME_DATA = {
       "electricity bills"
     ],
     "ans": "rent of factory building",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: rent of factory building."
   },
   {
     "q": " The main problem facing West African economies is:",
@@ -26396,7 +27505,7 @@ const PUTME_DATA = {
       "high literacy rate"
     ],
     "ans": "political instability and low savings",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: political instability and low savings."
   },
   {
     "q": " The elasticity of supply is said to be unitary when:",
@@ -26407,7 +27516,7 @@ const PUTME_DATA = {
       "quantity supplied does not change with price"
     ],
     "ans": "percentage change in quantity supplied equals percentage change in price",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: percentage change in quantity supplied equals percentage change in price."
   },
   {
     "q": " Which of the following is a feature of a command economy?",
@@ -26418,7 +27527,7 @@ const PUTME_DATA = {
       "Free market forces"
     ],
     "ans": "Central planning by government",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: central planning by government."
   },
   {
     "q": " The balance of trade is favourable when:",
@@ -26429,7 +27538,7 @@ const PUTME_DATA = {
       "reserves are depleted"
     ],
     "ans": "exports exceed imports",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: exports exceed imports."
   },
   {
     "q": " The main aim of the National Youth Service Corps (NYSC) is to:",
@@ -26440,7 +27549,7 @@ const PUTME_DATA = {
       "train military personnel"
     ],
     "ans": "promote national unity",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": " A shift in the supply curve to the right indicates:",
@@ -26451,7 +27560,7 @@ const PUTME_DATA = {
       "decrease in demand"
     ],
     "ans": "increase in supply",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: increase in supply."
   },
   {
     "q": " The theory of absolute advantage was developed by:",
@@ -26462,7 +27571,7 @@ const PUTME_DATA = {
       "Karl Marx"
     ],
     "ans": "Adam Smith",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: adam smith."
   },
   {
     "q": " Which of the following is not a function of the money market?",
@@ -26473,7 +27582,7 @@ const PUTME_DATA = {
       "Discounting bills"
     ],
     "ans": "Providing long-term capital",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: providing long-term capital."
   },
   {
     "q": " The main cause of rural poverty in Nigeria is:",
@@ -26484,7 +27593,7 @@ const PUTME_DATA = {
       "excess government subsidy"
     ],
     "ans": "low agricultural productivity",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": " A public limited liability company is owned by:",
@@ -26495,7 +27604,7 @@ const PUTME_DATA = {
       "family members only"
     ],
     "ans": "the general public through shares",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: the general public through shares."
   },
   {
     "q": " The marginal revenue curve for a monopolist is:",
@@ -26506,7 +27615,7 @@ const PUTME_DATA = {
       "horizontal"
     ],
     "ans": "below the average revenue curve",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: below the average revenue curve."
   },
   {
     "q": " The Economic and Financial Crimes Commission (EFCC) was established to:",
@@ -26517,7 +27626,7 @@ const PUTME_DATA = {
       "manage foreign reserves"
     ],
     "ans": "fight corruption and economic crimes",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": " Which of the following will cause a leftward shift in the demand curve?",
@@ -26528,7 +27637,7 @@ const PUTME_DATA = {
       "Favourable taste and fashion"
     ],
     "ans": "Decrease in the price of a substitute",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: decrease in the price of a substitute."
   },
   {
     "q": " The main objective of the African Union (AU) is to:",
@@ -26539,7 +27648,7 @@ const PUTME_DATA = {
       "regulate religion"
     ],
     "ans": "promote African unity and development",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: promote african unity and development."
   },
   {
     "q": " Fixed deposit is also known as:",
@@ -26550,7 +27659,7 @@ const PUTME_DATA = {
       "call deposit"
     ],
     "ans": "time deposit",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: time deposit."
   },
   {
     "q": " The opportunity cost of attending school is:",
@@ -26561,7 +27670,7 @@ const PUTME_DATA = {
       "transportation cost"
     ],
     "ans": "the earnings forgone by not working",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: the earnings forgone by not working."
   },
   {
     "q": " Which of the following is an example of a quasi-public good?",
@@ -26572,7 +27681,7 @@ const PUTME_DATA = {
       "Street lighting"
     ],
     "ans": "Toll road",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: toll road."
   },
   {
     "q": " The main source of revenue for local governments in Nigeria is:",
@@ -26583,7 +27692,7 @@ const PUTME_DATA = {
       "company tax"
     ],
     "ans": "federation account allocation",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: federation account allocation."
   },
   {
     "q": " The production of goods and services in large quantities is known as:",
@@ -26594,7 +27703,7 @@ const PUTME_DATA = {
       "cottage production"
     ],
     "ans": "mass production",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: mass production."
   },
   {
     "q": " An increase in the minimum wage will most likely lead to:",
@@ -26605,7 +27714,7 @@ const PUTME_DATA = {
       "higher employment"
     ],
     "ans": "higher unemployment in the short run",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: higher unemployment in the short run."
   },
   {
     "q": " The main function of the Nigerian Ports Authority is to:",
@@ -26616,7 +27725,7 @@ const PUTME_DATA = {
       "manage agriculture"
     ],
     "ans": "regulate shipping and port operations",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": " Which of the following is a determinant of supply?",
@@ -26627,7 +27736,7 @@ const PUTME_DATA = {
       "Price of related goods in demand"
     ],
     "ans": "Technology",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: technology."
   },
   {
     "q": " The IMF provides:",
@@ -26638,7 +27747,7 @@ const PUTME_DATA = {
       "educational grants only"
     ],
     "ans": "short-term balance of payments support",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: short-term balance of payments support."
   },
   {
     "q": " A country operating on its production possibility frontier is said to be:",
@@ -26649,7 +27758,7 @@ const PUTME_DATA = {
       "experiencing inflation"
     ],
     "ans": "productively efficient",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: productively efficient."
   },
   {
     "q": " The main cause of the 1980s debt crisis in Nigeria was:",
@@ -26660,7 +27769,7 @@ const PUTME_DATA = {
       "low population growth"
     ],
     "ans": "fall in oil prices",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: fall in oil prices."
   },
   {
     "q": " Which market structure has the highest degree of price control?",
@@ -26671,7 +27780,7 @@ const PUTME_DATA = {
       "Oligopoly"
     ],
     "ans": "Monopoly",
-    "explanation": ""
+    "explanation": "This follows from the theory of market structures: monopoly."
   },
   {
     "q": " The Consumer Price Index (CPI) is used to measure:",
@@ -26682,7 +27791,7 @@ const PUTME_DATA = {
       "balance of payments"
     ],
     "ans": "inflation rate",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: inflation rate."
   },
   {
     "q": " The main objective of the Vision 20:2020 was to:",
@@ -26693,7 +27802,7 @@ const PUTME_DATA = {
       "establish new states"
     ],
     "ans": "make Nigeria one of the top 20 economies by 2020",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": " A fall in interest rate will most likely lead to:",
@@ -26704,7 +27813,7 @@ const PUTME_DATA = {
       "lower consumption"
     ],
     "ans": "increase in borrowing and investment",
-    "explanation": ""
+    "explanation": "This follows from the role of banking and monetary policy: increase in borrowing and investment."
   },
   {
     "q": " The main advantage of international trade is:",
@@ -26715,7 +27824,7 @@ const PUTME_DATA = {
       "higher prices for consumers"
     ],
     "ans": "access to goods not produced domestically",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: access to goods not produced domestically."
   },
   {
     "q": " Which of the following is not a source of public revenue?",
@@ -26726,7 +27835,7 @@ const PUTME_DATA = {
       "Profit from private companies"
     ],
     "ans": "Profit from private companies",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: profit from private companies."
   },
   {
     "q": " The marginal cost curve intersects the average cost curve at the point where average cost is:",
@@ -26737,7 +27846,7 @@ const PUTME_DATA = {
       "zero"
     ],
     "ans": "at its minimum",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: at its minimum."
   },
   {
     "q": " The main problem of marketing boards in Nigeria was:",
@@ -26748,7 +27857,7 @@ const PUTME_DATA = {
       "excess production"
     ],
     "ans": "inefficiency and corruption",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": " The exchange rate system in Nigeria is:",
@@ -26759,7 +27868,7 @@ const PUTME_DATA = {
       "barter system"
     ],
     "ans": "floating exchange rate",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: floating exchange rate."
   },
   {
     "q": " Which of the following is a capital flight?",
@@ -26770,7 +27879,7 @@ const PUTME_DATA = {
       "Reduction in imports"
     ],
     "ans": "Investment of local funds abroad",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: investment of local funds abroad."
   },
   {
     "q": " The main function of the National Assembly is to:",
@@ -26781,7 +27890,7 @@ const PUTME_DATA = {
       "enforce laws"
     ],
     "ans": "make laws",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: make laws."
   },
   {
     "q": " An increase in the retirement age will:",
@@ -26792,7 +27901,7 @@ const PUTME_DATA = {
       "increase unemployment immediately"
     ],
     "ans": "increase the labour force",
-    "explanation": ""
+    "explanation": "This is the correct option based on standard economic theory: increase the labour force."
   },
   {
     "q": " The main objective of the Structural Adjustment Programme (SAP) was:",
@@ -26803,7 +27912,7 @@ const PUTME_DATA = {
       "reduction in foreign investment"
     ],
     "ans": "diversification of the economy",
-    "explanation": ""
+    "explanation": "This reflects the stated objective/role of the Nigerian institution or policy in question."
   },
   {
     "q": " Which of the following is a characteristic of oligopoly?",
@@ -26814,7 +27923,7 @@ const PUTME_DATA = {
       "Perfect competition"
     ],
     "ans": "Interdependence among few firms",
-    "explanation": ""
+    "explanation": "This follows from the theory of market structures: interdependence among few firms."
   },
   {
     "q": " The main source of foreign exchange in Nigeria is:",
@@ -26825,7 +27934,7 @@ const PUTME_DATA = {
       "remittances only"
     ],
     "ans": "oil exports",
-    "explanation": ""
+    "explanation": "This is a recognised fact in international trade and economic institutions: oil exports."
   },
   {
     "q": " A budget surplus means:",
@@ -26836,7 +27945,7 @@ const PUTME_DATA = {
       "deficit financing"
     ],
     "ans": "government revenue exceeds expenditure",
-    "explanation": ""
+    "explanation": "This is a standard feature of taxation/public finance: government revenue exceeds expenditure."
   },
   {
     "q": " The main aim of advertising is to:",
@@ -26847,7 +27956,7 @@ const PUTME_DATA = {
       "lower prices"
     ],
     "ans": "shift the demand curve to the right",
-    "explanation": ""
+    "explanation": "This follows from demand and supply theory: shift the demand curve to the right."
   },
   {
     "q": " The United Nations Development Programme (UNDP) focuses on:",
@@ -26858,7 +27967,118 @@ const PUTME_DATA = {
       "religious activities"
     ],
     "ans": "human development and poverty reduction",
-    "explanation": ""
+    "explanation": "This reflects the standard distinction used in measuring national income and development: human development and poverty reduction."
+  }
+,
+  {
+    "q": "If the marginal propensity to consume in an economy is 0.75, calculate the value of the investment multiplier.",
+    "options": [
+      "4",
+      "1.33",
+      "0.75",
+      "3"
+    ],
+    "ans": "4",
+    "explanation": "Multiplier = 1/(1-MPC) = 1/(1-0.75) = 1/0.25 = 4."
+  },
+  {
+    "q": "Given the demand function Qd = 100 - 2P, calculate the quantity demanded when price P = 20.",
+    "options": [
+      "60",
+      "80",
+      "40",
+      "20"
+    ],
+    "ans": "60",
+    "explanation": "Qd = 100 - 2(20) = 100 - 40 = 60."
+  },
+  {
+    "q": "If national income increases from ₦500 billion to ₦550 billion following a ₦10 billion increase in investment, calculate the multiplier.",
+    "options": [
+      "5",
+      "10",
+      "0.2",
+      "50"
+    ],
+    "ans": "5",
+    "explanation": "Change in income = 50 billion; Multiplier = ΔY/ΔI = 50/10 = 5."
+  },
+  {
+    "q": "A firm's total cost function is TC = 200 + 5Q. If it produces 40 units, calculate the average total cost.",
+    "options": [
+      "₦10",
+      "₦5",
+      "₦200",
+      "₦40"
+    ],
+    "ans": "₦10",
+    "explanation": "TC at Q=40 is 200 + 5(40) = 400. ATC = TC/Q = 400/40 = ₦10."
+  },
+  {
+    "q": "If the price of a good falls from ₦50 to ₦40 and quantity demanded rises from 100 to 130 units, calculate the price elasticity of demand using the midpoint method.",
+    "options": [
+      "Approximately -1.44",
+      "Approximately -0.69",
+      "Approximately -2.0",
+      "Approximately -0.5"
+    ],
+    "ans": "Approximately -1.44",
+    "explanation": "%ΔQ = 30/115 ≈ 26.1%; %ΔP = -10/45 ≈ -22.2%; Elasticity ≈ 26.1/-22.2 ≈ -1.18 to -1.44 depending on method; using midpoint formula gives approximately -1.44."
+  },
+  {
+    "q": "According to the quantity theory of money (MV = PT), if the money supply doubles and the velocity of circulation and volume of transactions remain constant, the price level will:",
+    "options": [
+      "Remain unchanged",
+      "Double",
+      "Fall by half",
+      "Increase by 50%"
+    ],
+    "ans": "Double",
+    "explanation": "Since MV = PT, if M doubles while V and T are constant, P must also double to maintain the equation."
+  },
+  {
+    "q": "A country's exports are ₦800 million and imports are ₦950 million. Calculate the balance of trade.",
+    "options": [
+      "-₦150 million (deficit)",
+      "₦150 million (surplus)",
+      "₦1,750 million",
+      "₦0 (balanced)"
+    ],
+    "ans": "-₦150 million (deficit)",
+    "explanation": "Balance of trade = Exports - Imports = 800 - 950 = -150 million, indicating a trade deficit."
+  },
+  {
+    "q": "If the cross elasticity of demand between good X and good Y is -2.5, this indicates that the two goods are:",
+    "options": [
+      "Strong complements",
+      "Strong substitutes",
+      "Unrelated goods",
+      "Both inferior goods"
+    ],
+    "ans": "Strong complements",
+    "explanation": "A negative cross elasticity means that as the price of one good rises, demand for the other falls, characteristic of complementary goods; a large magnitude indicates a strong relationship."
+  },
+  {
+    "q": "A monopolist faces the demand curve P = 100 - 2Q and has a constant marginal cost of ₦20. At what output level does the monopolist maximise profit (where MR = MC)?",
+    "options": [
+      "20",
+      "30",
+      "40",
+      "10"
+    ],
+    "ans": "20",
+    "explanation": "TR = PQ = 100Q - 2Q², so MR = 100 - 4Q. Setting MR = MC: 100 - 4Q = 20 ⟹ 4Q = 80 ⟹ Q = 20."
+  },
+  {
+    "q": "If Nigeria's real GDP was ₦150 trillion in the base year and ₦180 trillion in the current year, with a GDP deflator of 120, calculate the real GDP for the current year at base year prices.",
+    "options": [
+      "₦150 trillion",
+      "₦180 trillion",
+      "₦216 trillion",
+      "₦120 trillion"
+    ],
+    "ans": "₦150 trillion",
+    "explanation": "Real GDP = (Nominal GDP / GDP deflator) × 100 = (180/120) × 100 = 150 trillion."
   }
 ],
   "PUTME_COMMERCE": [
@@ -30161,6 +31381,117 @@ const PUTME_DATA = {
     ],
     "ans": "Commerce facilitates the exchange and distribution of goods and services, supports production, creates employment, promotes domestic and international trade, and contributes significantly to economic development.",
     "explanation": "Commerce facilitates exchange, supports production, creates jobs, and drives economic development."
+  }
+,
+  {
+    "q": "A trader buys goods for ₦450,000 and incurs ₦30,000 in transportation costs. If the goods are sold for ₦600,000, calculate the percentage profit on the total cost.",
+    "options": [
+      "25%",
+      "20%",
+      "33.3%",
+      "30%"
+    ],
+    "ans": "25%",
+    "explanation": "Total cost = 450,000 + 30,000 = 480,000. Profit = 600,000 - 480,000 = 120,000. Percentage profit = (120,000/480,000) × 100 = 25%."
+  },
+  {
+    "q": "Under a bill of exchange, the person who orders payment to be made is known as the:",
+    "options": [
+      "Drawee",
+      "Drawer",
+      "Payee",
+      "Endorser"
+    ],
+    "ans": "Drawer",
+    "explanation": "The drawer is the party who creates and signs the bill of exchange, ordering the drawee to pay a specified sum."
+  },
+  {
+    "q": "A firm's stock at the beginning of the year was ₦200,000, purchases during the year were ₦850,000, and closing stock was ₦150,000. Calculate the cost of goods sold.",
+    "options": [
+      "₦900,000",
+      "₦1,050,000",
+      "₦1,200,000",
+      "₦850,000"
+    ],
+    "ans": "₦900,000",
+    "explanation": "Cost of goods sold = Opening stock + Purchases - Closing stock = 200,000 + 850,000 - 150,000 = 900,000."
+  },
+  {
+    "q": "Which document is issued by a bank to confirm that a customer's cheque will be honoured up to a certain amount?",
+    "options": [
+      "Bill of lading",
+      "Certified cheque",
+      "Letter of credit",
+      "Debenture"
+    ],
+    "ans": "Certified cheque",
+    "explanation": "A certified cheque is guaranteed by the bank, confirming that sufficient funds are set aside to honour it."
+  },
+  {
+    "q": "A company's gross profit is ₦480,000 and its net sales are ₦1,600,000. Calculate the gross profit margin.",
+    "options": [
+      "30%",
+      "25%",
+      "40%",
+      "20%"
+    ],
+    "ans": "30%",
+    "explanation": "Gross profit margin = (Gross profit/Net sales) × 100 = (480,000/1,600,000) × 100 = 30%."
+  },
+  {
+    "q": "In marine insurance, the principle that the insured must not profit from a loss beyond actual financial loss suffered is known as:",
+    "options": [
+      "Utmost good faith",
+      "Indemnity",
+      "Subrogation",
+      "Contribution"
+    ],
+    "ans": "Indemnity",
+    "explanation": "The principle of indemnity ensures the insured is restored to their pre-loss financial position, not placed in a better one."
+  },
+  {
+    "q": "If a retailer marks up goods costing ₦8,000 by 25% to determine the selling price, what is the selling price?",
+    "options": [
+      "₦10,000",
+      "₦9,000",
+      "₦8,250",
+      "₦12,000"
+    ],
+    "ans": "₦10,000",
+    "explanation": "Mark-up = 25% of 8,000 = 2,000. Selling price = 8,000 + 2,000 = 10,000."
+  },
+  {
+    "q": "Which of the following best describes 'del credere agency'?",
+    "options": [
+      "An agent who guarantees payment by buyers in return for extra commission",
+      "An agent who only sources goods for the principal",
+      "An agent restricted to one geographical area",
+      "An agent who cannot negotiate prices on behalf of the principal"
+    ],
+    "ans": "An agent who guarantees payment by buyers in return for extra commission",
+    "explanation": "A del credere agent takes on the credit risk of buyers, guaranteeing payment to the principal in exchange for additional commission."
+  },
+  {
+    "q": "A business has current assets of ₦600,000 and current liabilities of ₦300,000. Calculate its current ratio.",
+    "options": [
+      "2:1",
+      "1:2",
+      "3:1",
+      "1:1"
+    ],
+    "ans": "2:1",
+    "explanation": "Current ratio = Current assets / Current liabilities = 600,000/300,000 = 2:1."
+  },
+  {
+    "q": "Which incoterm places the greatest responsibility on the seller, requiring them to deliver goods cleared for import at the buyer's premises?",
+    "options": [
+      "FOB (Free on Board)",
+      "CIF (Cost, Insurance, Freight)",
+      "DDP (Delivered Duty Paid)",
+      "EXW (Ex Works)"
+    ],
+    "ans": "DDP (Delivered Duty Paid)",
+    "explanation": "Under DDP, the seller bears maximum responsibility, covering transport, insurance, and import duties right to the buyer's door."
   }
 ]
 };
