@@ -74,15 +74,6 @@
     </div>
     <div style="height:8px;background:var(--bg-soft);border-radius:999px;overflow:hidden"><div id="referralProgress" style="height:100%;width:0%;background:linear-gradient(90deg,var(--violet),var(--violet2));border-radius:999px;transition:width .3s"></div></div>
     <div id="referralRewardText" style="font-size:.72rem;color:var(--muted);margin-top:9px;line-height:1.5">10 referrals → Regular for 14 days · 25 referrals → VIP for 14 days</div>
-
-    <div id="claimReferralBlock" class="hidden" style="margin-top:14px;padding-top:14px;border-top:1px dashed var(--border)">
-      <button type="button" id="claimReferralToggle" style="background:none;border:none;padding:0;color:var(--violet);font-size:.78rem;font-weight:700;text-decoration:underline;cursor:pointer">Have a referral code? Enter it here</button>
-      <div id="claimReferralForm" class="hidden" style="display:flex;gap:8px;margin-top:10px">
-        <input type="text" id="claimReferralInput" placeholder="e.g. CODEX-AB12CD34" style="flex:1;background:var(--bg-soft);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:.85rem">
-        <button type="button" class="btn btn-primary btn-sm" id="claimReferralBtn">Apply</button>
-      </div>
-      <div id="claimReferralStatus" style="font-size:.76rem;margin-top:8px"></div>
-    </div>
   </div>
 
   <div class="stat-row">
@@ -124,7 +115,7 @@
 
 <script type="module">
 import { requireAuth, fbSignOut, auth, doc, getDoc, db, checkIsAdmin, getEffectiveTier, collection, query, where, getCountFromServer } from "./js/auth.js";
-import { ensureReferralCode, getReferralStats, registerReferral, REFERRAL_REWARDS } from "./js/referrals.js";
+import { ensureReferralCode, getReferralStats, REFERRAL_REWARDS } from "./js/referrals.js";
 
 requireAuth(async (user) => {
   document.getElementById('authGate').style.display = 'none';
@@ -145,7 +136,6 @@ requireAuth(async (user) => {
     if (window.CodexIcons) window.CodexIcons.render();
   }
 
-  let alreadyReferred = false;
   try {
     const userSnap = await getDoc(doc(db, "users", user.uid));
     if (userSnap.exists()) {
@@ -153,7 +143,6 @@ requireAuth(async (user) => {
       const deptLabel = { science: 'Science', arts: 'Arts', commercial: 'Commercial' }[d.facultyApplyingTo] || d.facultyApplyingTo || '';
       const parts = [deptLabel, d.courseApplyingTo].filter(Boolean);
       document.getElementById('profileDeptCourse').textContent = parts.join(' · ');
-      alreadyReferred = Boolean(d.referredByUid);
     }
   } catch (e) { /* leave blank */ }
 
@@ -195,60 +184,6 @@ requireAuth(async (user) => {
     });
   } catch (e) {
     document.getElementById('referralCodeDisplay').textContent = 'Unavailable';
-  }
-
-  // Covers accounts that never got linked to a referrer automatically —
-  // most commonly someone whose signup hit a network hiccup and who
-  // ended up logging in directly afterward, which never touches a
-  // referral code at all. Lets them (or support, on their behalf)
-  // link the referral after the fact instead of it being permanently lost.
-  if (!alreadyReferred) {
-    const claimBlock = document.getElementById('claimReferralBlock');
-    const claimToggle = document.getElementById('claimReferralToggle');
-    const claimForm = document.getElementById('claimReferralForm');
-    const claimInput = document.getElementById('claimReferralInput');
-    const claimBtn = document.getElementById('claimReferralBtn');
-    const claimStatus = document.getElementById('claimReferralStatus');
-    claimBlock.classList.remove('hidden');
-
-    claimToggle.addEventListener('click', () => {
-      claimForm.classList.remove('hidden');
-      claimToggle.classList.add('hidden');
-      claimInput.focus();
-    });
-
-    claimBtn.addEventListener('click', async () => {
-      const enteredCode = claimInput.value.trim().toUpperCase();
-      if (!enteredCode) return;
-      claimBtn.disabled = true;
-      claimBtn.textContent = 'Applying...';
-      claimStatus.style.color = 'var(--muted)';
-      claimStatus.textContent = '';
-      try {
-        const result = await registerReferral({ user, code: enteredCode });
-        if (result.created) {
-          claimStatus.style.color = 'var(--green)';
-          claimStatus.textContent = 'Referral linked! Thanks for letting us know.';
-          claimForm.classList.add('hidden');
-          claimBlock.querySelector('#claimReferralToggle')?.remove();
-        } else if (result.reason === 'already-linked') {
-          claimStatus.style.color = 'var(--muted)';
-          claimStatus.textContent = 'You already have a referral on file.';
-        } else if (result.reason === 'verification-required') {
-          claimStatus.style.color = 'var(--red)';
-          claimStatus.textContent = 'Verify your email first, then come back and try again.';
-        } else {
-          claimStatus.style.color = 'var(--red)';
-          claimStatus.textContent = "That code doesn't look right — double-check it and try again.";
-        }
-      } catch (e) {
-        claimStatus.style.color = 'var(--red)';
-        claimStatus.textContent = 'Could not apply that code. [debug: ' + (e.code || e.message || 'unknown error') + ']';
-      } finally {
-        claimBtn.disabled = false;
-        claimBtn.textContent = 'Apply';
-      }
-    });
   }
 
   // Attempt stats + rank, pulled from this student's own leaderboard doc

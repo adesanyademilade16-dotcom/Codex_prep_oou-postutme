@@ -31,7 +31,8 @@
     background:#fff;border:1.5px solid var(--border);color:var(--muted);cursor:pointer;white-space:nowrap;
   }
   .subj-tab.active{background:var(--violet);border-color:var(--violet);color:#fff}
-  .exam-wrap{max-width:720px;margin:0 auto;padding:0 16px 100px}
+  .exam-wrap{max-width:720px;margin:0 auto;padding:0 16px 100px;box-sizing:border-box}
+  .exam-wrap,.exam-wrap *{box-sizing:border-box}
 
   .q-card{padding:20px;margin-top:6px}
   .q-num{font-size:.72rem;color:var(--violet);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
@@ -88,6 +89,10 @@
   .review-opt.right-answer{border-color:var(--green);background:var(--green2)}
   .review-opt.wrong-selected{border-color:var(--red);background:var(--red2)}
   .explain-box{font-size:.78rem;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);line-height:1.5}
+  /* Calculator panel never overflows the viewport, on any device. */
+  #calcPanel{width:min(280px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto}
+
+  /* ===================== PHONE (default, up to 639px) ===================== */
   @media(max-width:639px){
     .exam-top{padding:10px 10px;gap:8px}
     .exam-top .subj-name{font-size:.76rem;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -100,15 +105,99 @@
     .palette{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
     .pnode{min-height:38px}
     .bottom-bar{padding-left:10px;padding-right:10px}
-    #calcPanel{width:min(260px,calc(100vw - 24px)) !important;max-height:calc(100dvh - 24px);overflow:auto}
+    #calcPanel{width:min(260px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
     #calcDisplay{font-size:1.35rem}
+    .result-hero{padding:28px 16px}
+    .result-hero .big-score{font-size:2.2rem}
+    .result-stats{gap:16px}
   }
   @media(max-width:360px){
     .palette{grid-template-columns:repeat(4,minmax(0,1fr))}
     .q-text{font-size:.9rem}
     .opt{font-size:.82rem}
   }
-  @media(min-width:900px){.exam-wrap{max-width:800px}}
+  /* Short/landscape phones: the sticky top bar + fixed bottom bar can eat
+     most of the screen, so trim vertical padding to keep the question visible. */
+  @media(max-width:900px) and (max-height:480px) and (orientation:landscape){
+    .exam-top{padding:6px 12px}
+    .q-progress{padding:4px 16px}
+    .exam-wrap{padding-bottom:76px}
+    .q-card{padding:12px;margin-top:4px}
+    .q-text{margin-bottom:10px}
+    .opt{padding:9px 11px;margin-bottom:7px}
+    #paletteCard{display:none} /* full palette is reachable via the subject/question nav; saves space */
+    .bottom-bar{padding-top:6px;padding-bottom:6px}
+  }
+
+  /* ===================== TABLET (640px – 1023px) ===================== */
+  @media(min-width:640px) and (max-width:1023px){
+    .exam-wrap{max-width:660px;padding:0 24px 116px}
+    .exam-top{padding:12px 24px}
+    .exam-top .subj-name{font-size:.88rem}
+    .timer{font-size:1rem;padding:6px 14px}
+    .q-progress{padding:10px 24px;font-size:.8rem}
+    .subject-nav{padding:10px 24px}
+    .q-card{padding:26px}
+    .q-text{font-size:1.08rem;margin-bottom:20px}
+    .opt{padding:15px 16px;font-size:.95rem}
+    .opt .letter{width:24px;height:24px}
+    .palette{grid-template-columns:repeat(7,minmax(0,1fr));gap:9px}
+    .pnode{font-size:.85rem}
+    .bottom-bar{padding:12px 24px calc(12px + env(safe-area-inset-bottom))}
+    .bottom-bar .btn{padding-top:13px;padding-bottom:13px;font-size:.95rem}
+    #calcPanel{width:300px}
+    .result-hero{padding:40px 24px}
+    .result-hero .big-score{font-size:2.9rem}
+  }
+
+  /* ===================== LAPTOP / DESKTOP (1024px and up) ===================== */
+  @media(min-width:1024px){
+    .exam-top{padding:14px 32px}
+    .exam-top .subj-name{font-size:.92rem}
+    .subject-nav{padding:10px 32px;justify-content:center}
+    .q-progress{padding:10px 32px;max-width:1120px;margin:0 auto;box-sizing:border-box}
+
+    /* Two-column layout: question on the left, a sticky question map +
+       prev/next controls on the right — so nothing important sits in a
+       fixed strip fighting for space with the mouse/keyboard workflow. */
+    .exam-wrap{
+      max-width:1120px;padding:24px 32px 48px;
+      display:grid;grid-template-columns:1fr 320px;column-gap:28px;align-items:start;
+    }
+    .exam-wrap > .q-card{grid-column:1;grid-row:1;margin-top:0;padding:32px}
+    .q-text{font-size:1.15rem;margin-bottom:24px}
+    .opt{padding:16px 18px;font-size:1rem}
+    .opt .letter{width:26px;height:26px;font-size:.8rem}
+    .exam-actions{margin-top:20px}
+
+    #paletteCard{
+      grid-column:2;grid-row:1 / span 2;position:sticky;top:96px;margin-top:0;
+      max-height:calc(100vh - 120px);overflow:auto;
+    }
+    .palette{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+    .pnode{font-size:.8rem}
+
+    #bottomBar{
+      grid-column:1;grid-row:2;position:static;background:transparent;border-top:none;
+      box-shadow:none;padding:20px 0 0;justify-content:flex-start;
+    }
+    #bottomBar .nav-btn{flex:0 0 180px}
+
+    /* Results screen gets room to breathe and a two-column review grid. */
+    .result-hero{padding:48px 32px;border-radius:0 0 32px 32px}
+    .result-hero .big-score{font-size:3.2rem}
+    .result-stats{gap:40px}
+    #resultsWrap{max-width:960px;margin:0 auto;padding-top:28px}
+    #reviewList{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .review-item{margin-bottom:0}
+  }
+
+  /* Cap line-length on very large monitors so text doesn't stretch too wide. */
+  @media(min-width:1440px){
+    .exam-wrap{max-width:1240px}
+    .q-progress{max-width:1240px}
+    #resultsWrap{max-width:1040px}
+  }
 </style>
 </head>
 <body>
@@ -179,15 +268,15 @@
       </div>
     </div>
 
-    <div class="card" style="margin-top:14px;padding:8px">
+    <div class="card" id="paletteCard" style="margin-top:14px;padding:8px">
       <div style="font-size:.72rem;color:var(--muted);font-weight:700;padding:8px 8px 0;text-transform:uppercase;letter-spacing:.4px">Question map</div>
       <div class="palette" id="palette"></div>
     </div>
-  </div>
 
-  <div class="bottom-bar">
-    <button class="btn btn-ghost nav-btn" id="prevBtn">← Prev</button>
-    <button class="btn btn-primary nav-btn" id="nextBtn">Next →</button>
+    <div class="bottom-bar" id="bottomBar">
+      <button class="btn btn-ghost nav-btn" id="prevBtn">← Prev</button>
+      <button class="btn btn-primary nav-btn" id="nextBtn">Next →</button>
+    </div>
   </div>
 </div>
 
@@ -203,7 +292,7 @@
     </div>
   </div>
 
-  <div class="page-wrap" style="padding-top:20px">
+  <div class="page-wrap" id="resultsWrap" style="padding-top:20px">
     <div class="action-row" style="display:flex;gap:8px;margin-bottom:18px">
       <a href="mode-select.html" class="btn btn-primary" style="flex:1;text-align:center">Practice again</a>
       <a href="dashboard.html" class="btn btn-ghost" style="flex:1;text-align:center">Dashboard</a>

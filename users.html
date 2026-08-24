@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Users — Codex PREP Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/theme.css">
+<style>
+  .search-box{margin-bottom:16px}
+  .user-row{
+    padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;
+  }
+  .user-avatar{
+    width:38px;height:38px;border-radius:50%;background:var(--blue-soft);color:var(--violet-deep);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex:0 0 auto;
+  }
+  .user-info{flex:1;min-width:0}
+  .user-info h4{font-size:.86rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .user-info p{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .user-actions{display:flex;gap:6px;flex:0 0 auto}
+  .tier-select{
+    padding:6px 8px;border-radius:8px;border:1.5px solid var(--border);font-size:.76rem;
+    font-family:var(--font);font-weight:700;background:#fff;
+  }
+  @media(max-width:480px){
+    .user-row{flex-wrap:wrap;align-items:flex-start}
+    .user-info h4,.user-info p{white-space:normal}
+    .user-info{flex-basis:calc(100% - 50px)}
+    .user-actions{flex-basis:100%;margin-top:10px;margin-left:50px}
+    .tier-select{flex:1}
+  }
+  .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.86rem}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-logo">Codex <span>PREP</span> <span style="opacity:.6;font-size:.7em">· Admin</span></div>
+  <div class="spacer"></div>
+  <a class="icon-btn" href="index.html">← Overview</a>
+</div>
+
+<div class="page-wrap" id="authGate" style="padding-top:60px">
+  <div class="loading-msg">Checking access...</div>
+</div>
+
+<div class="page-wrap" id="adminContent" style="display:none">
+  <div class="page-header">
+    <h1>Manage Users</h1>
+    <p id="countLabel">Loading...</p>
+  </div>
+
+  <div class="field search-box">
+    <input type="text" id="searchInput" placeholder="Search by name or email...">
+  </div>
+  <div class="field search-box">
+    <select id="tierFilter" style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);font-family:var(--font);font-weight:700">
+      <option value="all">All plans</option>
+      <option value="free">Free only</option>
+      <option value="regular">Regular only</option>
+      <option value="vip">VIP only</option>
+      <option value="paid">Regular + VIP (paid users)</option>
+    </select>
+  </div>
+  <div class="field search-box">
+    <select id="trialsFilter" style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);font-family:var(--font);font-weight:700">
+      <option value="all">Any number of CBT attempts</option>
+      <option value="0">0 attempts</option>
+      <option value="1-3">1-3 attempts (normal free-tier range)</option>
+      <option value="flag">⚠ More than 3 CBT attempts</option>
+    </select>
+  </div>
+  <button type="button" id="exportBtn" class="btn btn-ghost btn-block" style="margin-bottom:16px">⬇ Export current list to CSV</button>
+
+  <div id="userList"></div>
+</div>
+
+<script type="module">
+import { requireAdmin, db, collection, getDocs, doc, getDoc, updateDoc, setDoc, addDoc, serverTimestamp } from "../js/auth.js";
+
+let allUsers = [];
+let currentFiltered = [];
+let currentAdminEmail = '';
+
+requireAdmin(async (adminUser) => {
+  currentAdminEmail = adminUser.email || 'unknown-admin';
+  document.getElementById('authGate').style.display = 'none';
+  document.getElementById('adminContent').style.display = 'block';
+
+  try {
+    const snap = await getDocs(collection(db, "users"));
+    allUsers = [];
+    snap.forEach(docSnap => allUsers.push({ id: docSnap.id, ...docSnap.data() }));
+    allUsers.sort((a, b) => (a.fullName || '').localeCompare(b.fullName || ''));
+    document.getElementById('countLabel').textContent = `${allUsers.length} registered users`;
+
+    // Only fetch subscription records for paid users - free accounts
+    // have none, and fetching all of them for everyone would be slow
+    // and unnecessary.
+    const paidUsers = allUsers.filter(u => u.subscriptionTier === 'regular' || u.subscriptionTier === 'vip');
+    await Promise.all(paidUsers.map(async (u) => {
+      try {
+        const subSnap = await getDoc(doc(db, "putme_subscriptions", u.id));
+        u.subInfo = subSnap.exists() ? subSnap.data() : null;
+      } catch (e) { u.subInfo = null; }
+    }));
+
+    // Attempt counts come from the leaderboard collection, which
+    // already tracks totalAttempts per student (updated after every
+    // CBT session) - reusing it here is far cheaper than querying
+    // putme_attempts individually for 200+ users.
+    try {
+      const lbSnap = await getDocs(collection(db, "leaderboard"));
+      const lbMap = {};
+      lbSnap.forEach(d => { lbMap[d.id] = d.data().totalAttempts || 0; });
+      allUsers.forEach(u => { u.attempts = lbMap[u.id] || 0; });
+    } catch (e) {
+      allUsers.forEach(u => { u.attempts = null; });
+    }
+
+    applyFilters();
+  } catch (e) {
+    document.getElementById('userList').innerHTML = '<div class="empty">Could not load users — check your connection and try again.</div>';
+  }
+});
+
+function renderUsers(users){
+  const wrap = document.getElementById('userList');
+  if (users.length === 0) {
+    wrap.innerHTML = '<div class="empty">No users match your search.</div>';
+    return;
+  }
+  wrap.innerHTML = '';
+  users.forEach(u => {
+    const row = document.createElement('div');
+    row.className = 'card user-row';
+    const initial = (u.fullName || u.email || '?').charAt(0).toUpperCase();
+    let originLine = '';
+    if (u.subInfo) {
+      const ref = u.subInfo.lastReference || '';
+      if (ref === 'admin-manual-grant') {
+        const grantedBy = u.subInfo.grantedByAdmin || 'unknown admin (granted before tracking was added)';
+        originLine = `<p style="color:#b8860b;font-weight:700">⚠ Manually granted by ${escapeHtml(grantedBy)}</p>`;
+      } else if (ref) {
+        originLine = `<p style="color:var(--green);font-weight:700">✓ Paid via Paystack (ref: ${escapeHtml(ref)})</p>`;
+      } else {
+        originLine = `<p style="color:var(--red);font-weight:700">⚠ Paid tier set, but no subscription record found</p>`;
+      }
+    }
+    let attemptsLine = '';
+    if (u.attempts !== null && u.attempts !== undefined) {
+      const isSuspicious = u.attempts > 3;
+      attemptsLine = `<p style="${isSuspicious ? 'color:var(--red);font-weight:700' : 'color:var(--muted)'}">${isSuspicious ? '⚠ ' : ''}${u.attempts} CBT attempt${u.attempts === 1 ? '' : 's'}</p>`;
+    }
+    row.innerHTML = `
+      <div class="user-avatar">${initial}</div>
+      <div class="user-info">
+        <h4>${escapeHtml(u.fullName || 'Unnamed')}</h4>
+        <p>${escapeHtml(u.email || '')}</p>
+        <p style="color:var(--violet-deep);font-weight:600">${escapeHtml(deptLabel(u.facultyApplyingTo))}${u.courseApplyingTo ? ' · ' + escapeHtml(u.courseApplyingTo) : ''}</p>
+        ${attemptsLine}
+        ${originLine}
+      </div>
+      <div class="user-actions">
+        <select class="tier-select" data-uid="${u.id}">
+          <option value="free" ${u.subscriptionTier === 'free' ? 'selected' : ''}>Free</option>
+          <option value="regular" ${u.subscriptionTier === 'regular' ? 'selected' : ''}>Regular</option>
+          <option value="vip" ${u.subscriptionTier === 'vip' ? 'selected' : ''}>VIP</option>
+        </select>
+      </div>
+    `;
+    row.querySelector('.tier-select').addEventListener('change', async (e) => {
+      const newTier = e.target.value;
+      const uid = e.target.dataset.uid;
+      const original = e.target.dataset.original || u.subscriptionTier;
+      if (!confirm(`Change ${u.fullName || u.email}'s plan to ${newTier.toUpperCase()}?`)) {
+        e.target.value = u.subscriptionTier;
+        return;
+      }
+      try {
+        await updateDoc(doc(db, "users", uid), { subscriptionTier: newTier });
+
+        // getEffectiveTier() (used everywhere to gate features, incl.
+        // the Mock Exam) checks putme_subscriptions/{uid}, not just
+        // this field — without this, a manually-granted plan looks
+        // "free" everywhere else in the app despite this dropdown
+        // saying otherwise. Keep DURATION_DAYS in sync with whatever
+        // lib/plans.js on the backend currently uses.
+        if (newTier === 'regular' || newTier === 'vip') {
+          const entered = prompt(`How many days should ${newTier.toUpperCase()} last?`, '120');
+          if (entered === null) { e.target.value = u.subscriptionTier; return; }
+          const DURATION_DAYS = Math.max(1, Math.min(3650, parseInt(entered, 10) || 120));
+          const now = Date.now();
+          await setDoc(doc(db, "putme_subscriptions", uid), {
+            plan: newTier,
+            status: 'active',
+            startedAt: now,
+            expiresAt: now + DURATION_DAYS * 24 * 60 * 60 * 1000,
+            lastReference: 'admin-manual-grant',
+            grantedByAdmin: currentAdminEmail,
+            manualDurationDays: DURATION_DAYS
+          }, { merge: true });
+        } else {
+          await setDoc(doc(db, "putme_subscriptions", uid), { status: 'inactive', expiresAt: Date.now(), lastReference: 'admin-downgrade', grantedByAdmin: currentAdminEmail }, { merge: true });
+        }
+
+        u.subscriptionTier = newTier;
+
+        // Permanent audit trail — every tier change, by whom, and
+        // when. Read-only for admins, nobody can edit or delete
+        // entries once written (see firestore.rules).
+        try {
+          await addDoc(collection(db, "admin_audit_log"), {
+            action: 'tier_change',
+            adminEmail: currentAdminEmail,
+            targetUid: uid,
+            targetEmail: u.email || '',
+            oldTier: original,
+            newTier: newTier,
+            timestamp: serverTimestamp()
+          });
+        } catch (logErr) {
+          console.error('Audit log write failed (tier change still succeeded):', logErr);
+        }
+      } catch (err) {
+        alert('Could not update plan — ' + (err.code || err.message));
+        e.target.value = u.subscriptionTier;
+      }
+    });
+    wrap.appendChild(row);
+  });
+}
+
+function deptLabel(faculty){
+  const map = { science: 'Science', arts: 'Arts', commercial: 'Commercial' };
+  return map[faculty] || faculty || 'No department set';
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function applyFilters(){
+  const term = document.getElementById('searchInput').value.toLowerCase().trim();
+  const tier = document.getElementById('tierFilter').value;
+  const trials = document.getElementById('trialsFilter').value;
+
+  let filtered = allUsers;
+  if (term) {
+    filtered = filtered.filter(u =>
+      (u.fullName || '').toLowerCase().includes(term) ||
+      (u.email || '').toLowerCase().includes(term)
+    );
+  }
+  if (tier === 'paid') {
+    filtered = filtered.filter(u => u.subscriptionTier === 'regular' || u.subscriptionTier === 'vip');
+  } else if (tier !== 'all') {
+    filtered = filtered.filter(u => u.subscriptionTier === tier);
+  }
+  if (trials === '0') {
+    filtered = filtered.filter(u => (u.attempts || 0) === 0);
+  } else if (trials === '1-3') {
+    filtered = filtered.filter(u => (u.attempts || 0) >= 1 && (u.attempts || 0) <= 3);
+  } else if (trials === 'flag') {
+    filtered = filtered.filter(u => (u.attempts || 0) > 3);
+  }
+  currentFiltered = filtered;
+  renderUsers(filtered);
+}
+
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+document.getElementById('tierFilter').addEventListener('change', applyFilters);
+document.getElementById('trialsFilter').addEventListener('change', applyFilters);
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const rows = [['Full Name', 'Email', 'Department', 'Course', 'Plan', 'CBT Attempts', 'Payment Origin', 'Reference / Granted By']];
+  currentFiltered.forEach(u => {
+    let origin = '';
+    let refOrGrantor = '';
+    if (u.subscriptionTier === 'free') {
+      origin = 'N/A';
+    } else if (u.subInfo && u.subInfo.lastReference === 'admin-manual-grant') {
+      origin = 'Manually granted';
+      refOrGrantor = u.subInfo.grantedByAdmin || 'unknown (pre-tracking)';
+    } else if (u.subInfo && u.subInfo.lastReference) {
+      origin = 'Paid via Paystack';
+      refOrGrantor = u.subInfo.lastReference;
+    } else {
+      origin = 'NO SUBSCRIPTION RECORD FOUND';
+      refOrGrantor = '';
+    }
+    rows.push([
+      u.fullName || '', u.email || '', deptLabel(u.facultyApplyingTo), u.courseApplyingTo || '',
+      u.subscriptionTier || '', u.attempts != null ? u.attempts : '', origin, refOrGrantor
+    ]);
+  });
+
+  const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `codex-prep-users-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+</script>
+<script src="../js/icons.js"></script>
+</body>
+</html>
