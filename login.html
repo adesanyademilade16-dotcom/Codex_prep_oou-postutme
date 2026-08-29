@@ -94,7 +94,7 @@ googleBtn.addEventListener('click', async () => {
     const result = await signInWithPopup(auth, googleProvider);
     await finishGoogleLogin(result.user);
   } catch (err) {
-    let msg = 'Google sign-in failed — please try again.';
+    let msg = 'Google sign-in failed. [debug: ' + (err.code || err.message || 'unknown') + ']';
     if (err.code === 'auth/popup-closed-by-user') msg = 'Sign-in was cancelled.';
     if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
       msg = 'Google sign-in was blocked by this browser. We can switch to a secure redirect sign-in.';
@@ -133,11 +133,14 @@ form.addEventListener('submit', async (e) => {
     await signInWithEmailAndPassword(auth, email, password);
     window.location.href = 'dashboard.html';
   } catch (err) {
-    let msg = 'Something went wrong. Please try again.';
+    console.error('Email/password sign-in error:', err.code, err.message);
+    let msg = 'Something went wrong. [debug: ' + (err.code || err.message || 'unknown') + ']';
     if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
       msg = 'Incorrect email or password.';
     } else if (err.code === 'auth/too-many-requests') {
       msg = 'Too many attempts — please wait a moment and try again.';
+    } else if (err.code === 'auth/user-disabled') {
+      msg = 'This account has been disabled.';
     }
     showStatus(msg, 'error');
     submitBtn.disabled = false;
