@@ -3,7 +3,7 @@
 // One registration, one beforeinstallprompt listener, one install API.
 // ===========================================================
 
-const PWA_VERSION = 'v4';
+const PWA_VERSION = 'v5';
 const DISMISS_KEY = 'codexPwaInstallDismissedAt';
 const DISMISS_FOR_MS = 7 * 24 * 60 * 60 * 1000;
 
