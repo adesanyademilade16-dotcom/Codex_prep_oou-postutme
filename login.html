@@ -54,7 +54,7 @@
 </div>
 
 <script type="module">
-import { auth, signInWithEmailAndPassword, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, ensureUserDoc } from "./js/auth.js";
+import { auth, signInWithEmailAndPassword, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, ensureUserDoc, withNetworkRetry, friendlyNetworkErrorMessage } from "./js/auth.js";
 
 const googleBtn = document.getElementById('googleBtn');
 const statusEl = document.getElementById('formStatus');
@@ -92,10 +92,11 @@ googleBtn.addEventListener('click', async () => {
   googleBtn.textContent = 'Connecting to Google...';
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    await finishGoogleLogin(result.user);
+    await withNetworkRetry(() => finishGoogleLogin(result.user));
   } catch (err) {
     let msg = 'Google sign-in failed. [debug: ' + (err.code || err.message || 'unknown') + ']';
     if (err.code === 'auth/popup-closed-by-user') msg = 'Sign-in was cancelled.';
+    if (err.code === 'auth/network-request-failed') msg = friendlyNetworkErrorMessage();
     if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
       msg = 'Google sign-in was blocked by this browser. We can switch to a secure redirect sign-in.';
       const redirectBtn = document.createElement('button');
@@ -130,7 +131,7 @@ form.addEventListener('submit', async (e) => {
   const password = document.getElementById('password').value;
 
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    await withNetworkRetry(() => signInWithEmailAndPassword(auth, email, password));
     window.location.href = 'dashboard.html';
   } catch (err) {
     console.error('Email/password sign-in error:', err.code, err.message);
@@ -141,6 +142,8 @@ form.addEventListener('submit', async (e) => {
       msg = 'Too many attempts — please wait a moment and try again.';
     } else if (err.code === 'auth/user-disabled') {
       msg = 'This account has been disabled.';
+    } else if (err.code === 'auth/network-request-failed') {
+      msg = friendlyNetworkErrorMessage();
     }
     showStatus(msg, 'error');
     submitBtn.disabled = false;
