@@ -86,6 +86,44 @@ export {
 };
 
 // ===========================================================
+// NETWORK-RESILIENT AUTH CALLS
+//
+// auth/network-request-failed usually means a DNS lookup or a
+// connection to Google's servers failed at the network layer, before
+// Firebase's own logic ever runs — often a transient ISP/DNS hiccup,
+// not a real problem with the student's account or device. Two things
+// help here, and most students will never see a failure at all once
+// both are in place:
+//
+// 1. Silently retry a couple of times first. A blip that fails once
+//    very often succeeds a second or third time within a couple of
+//    seconds, especially for DNS-related failures.
+// 2. If it still fails after retrying, give a SPECIFIC, actionable
+//    message instead of a dead end — most students hitting this have
+//    no way to know it's a network/DNS issue on their side rather than
+//    something wrong with their account, and no way to know what to
+//    try, and many won't know to ask for help.
+// ===========================================================
+
+export async function withNetworkRetry(fn, { retries = 2, delayMs = 1200 } = {}) {
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastError = err;
+      if (err.code !== 'auth/network-request-failed' || attempt === retries) throw err;
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+  throw lastError;
+}
+
+export function friendlyNetworkErrorMessage() {
+  return "We couldn't reach the sign-in server — this is almost always a network or DNS issue on your phone or Wi-Fi, not a problem with your account. Try: switching from Wi-Fi to mobile data (or the other way around), then try again in a moment.";
+}
+
+// ===========================================================
 // Returns the user's REAL, currently-active tier — checking
 // expiry, not just trusting the (possibly stale) subscriptionTier
 // field on the users doc. Every page that gates a feature by tier
