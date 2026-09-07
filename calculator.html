@@ -56,13 +56,13 @@
     <div style="font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Your estimated aggregate</div>
     <div class="score" id="aggregateScore">--<span>/100</span></div>
     <div class="breakdown">
-      <div><b id="jambPoints">--</b><span>JAMB (50%)</span></div>
-      <div><b id="putmePoints">--</b><span>Post-UTME (50%)</span></div>
+      <div><b id="jambPoints">--</b><span>JAMB (60%)</span></div>
+      <div><b id="putmePoints">--</b><span>Post-UTME (40%)</span></div>
     </div>
   </div>
 
   <div class="note-box">
-    Formula used: (JAMB ÷ 8) + (Post-UTME ÷ 2), the standard OOU method. Departmental cut-off marks vary by course and change each session — this is an estimate, not a guarantee of admission. Always confirm against the official OOU admission portal.
+    Formula used: (JAMB ÷ 400 × 60) + (Post-UTME ÷ 100 × 40), the standard OOU method. Departmental cut-off marks vary by course and change each session — this is an estimate, not a guarantee of admission. Always confirm against the official OOU admission portal.
   </div>
 </div>
 
@@ -82,8 +82,8 @@ document.getElementById('calcBtn').addEventListener('click', () => {
   if (isNaN(jamb) || jamb < 0 || jamb > 400) { alert('Enter a valid JAMB score between 0 and 400.'); return; }
   if (isNaN(putme) || putme < 0 || putme > 100) { alert('Enter a valid Post-UTME score between 0 and 100.'); return; }
 
-  const jambPoints = jamb / 8;
-  const putmePoints = putme / 2;
+  const jambPoints = (jamb / 400) * 60;
+  const putmePoints = (putme / 100) * 40;
   const aggregate = jambPoints + putmePoints;
 
   document.getElementById('jambPoints').textContent = jambPoints.toFixed(1);
