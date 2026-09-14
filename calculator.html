@@ -89,7 +89,8 @@
     <div id="chanceText" style="font-size:.85rem;font-weight:600;margin-bottom:14px"></div>
     <div id="compareBox"></div>
     <p style="font-size:.75rem;color:var(--muted);margin-top:14px;line-height:1.45">
-      These are expected scores from unofficial sources. Actual departmental cut-offs change yearly. Always verify on the official OOU portal.
+      These are expected scores from unofficial sources. Actual departmental cut-offs change yearly. Always verify on the official OOU portal.<br><br>
+      <strong>Note:</strong> Even if you meet or exceed the expected scores, some courses (especially Medicine, Nursing, Law, Pharmacy, Engineering etc.) are highly competitive. Meeting the cut-off does not guarantee admission.
     </p>
   </div>
 
@@ -212,14 +213,14 @@ const courseCutoffs = {
 
 // Populate dropdown
 const select = document.getElementById('courseSelect');
-Object.keys(courseCutoffs).sort().forEach(course => {
+Object.keys(courseCutoffs).sort().forEach(function(course) {
   const opt = document.createElement('option');
   opt.value = course;
   opt.textContent = course;
   select.appendChild(opt);
 });
 
-document.getElementById('calcBtn').addEventListener('click', () => {
+document.getElementById('calcBtn').addEventListener('click', function() {
   const jamb = parseFloat(document.getElementById('jambScore').value);
   const putme = parseFloat(document.getElementById('putmeScore').value);
   const course = document.getElementById('courseSelect').value;
@@ -247,32 +248,29 @@ document.getElementById('calcBtn').addEventListener('click', () => {
     let chance = 0;
     let statusClass = 'low';
     let statusText = '';
-    let chanceLabel = '';
 
     if (jambMet && putmeMet) {
       chance = 85 + Math.min(15, Math.floor((jamb - cut.jamb) / 5) + Math.floor((putme - cut.putme) / 3));
       statusClass = 'good';
       statusText = 'Strong Chance';
-      chanceLabel = `You meet both expected scores for ${course}. Good standing!`;
     } else if (jambMet || putmeMet) {
       chance = 45 + (jambMet ? 20 : 0) + (putmeMet ? 15 : 0);
       if (!jambMet) chance += Math.max(0, 15 - Math.floor((cut.jamb - jamb) / 8));
       if (!putmeMet) chance += Math.max(0, 10 - Math.floor((cut.putme - putme) / 4));
       statusClass = 'average';
       statusText = 'Moderate Chance';
-      chanceLabel = `You meet one expected score. Admission is still possible depending on competition.`;
     } else {
       const jambGap = cut.jamb - jamb;
       const putmeGap = cut.putme - putme;
       chance = Math.max(5, 35 - Math.floor(jambGap / 6) - Math.floor(putmeGap / 3));
       statusClass = 'low';
       statusText = 'Low Chance';
-      chanceLabel = `Both scores are below the expected range for ${course}. Consider other courses or improve next time.`;
     }
 
     chance = Math.min(98, Math.max(5, chance));
 
-    document.getElementById('analysisTitle').textContent = `Analysis for ${course}`;
+    document.getElementById('analysisTitle').textContent = 'Analysis for ' + course;
+    
     const badge = document.getElementById('statusBadge');
     badge.textContent = statusText;
     badge.className = 'status ' + statusClass;
@@ -281,27 +279,31 @@ document.getElementById('calcBtn').addEventListener('click', () => {
     fill.style.width = chance + '%';
     fill.className = 'chance-fill ' + (chance >= 70 ? 'high' : chance >= 40 ? 'mid' : 'low');
 
-    document.getElementById('chanceText').textContent = `Estimated chance: ${chance}%`;
+    document.getElementById('chanceText').textContent = 'Estimated chance: ' + chance + '%';
 
-    document.getElementById('compareBox').innerHTML = `
-      <div class="compare-row">
-        <span>Your JAMB</span>
-        <span class="\( {jambMet ? 'meet' : 'miss'}"> \){jamb} ${jambMet ? '✓ Meets' : '✗ Below'} ${cut.jamb}+</span>
-      </div>
-      <div class="compare-row">
-        <span>Your Post-UTME</span>
-        <span class="\( {putmeMet ? 'meet' : 'miss'}"> \){putme} ${putmeMet ? '✓ Meets' : '✗ Below'} ${cut.putme}+</span>
-      </div>
-      <div class="compare-row">
-        <span>Expected JAMB</span>
-        <span>${cut.jamb}+</span>
-      </div>
-      <div class="compare-row">
-        <span>Expected Post-UTME</span>
-        <span>${cut.putme}+</span>
-      </div>
-    `;
+    // Fixed HTML building (no template literal issues)
+    let compareHTML = '';
+    compareHTML += '<div class="compare-row">';
+    compareHTML += '<span>Your JAMB</span>';
+    compareHTML += '<span class="' + (jambMet ? 'meet' : 'miss') + '">' + jamb + ' ' + (jambMet ? '✓ Meets' : '✗ Below') + ' ' + cut.jamb + '+</span>';
+    compareHTML += '</div>';
 
+    compareHTML += '<div class="compare-row">';
+    compareHTML += '<span>Your Post-UTME</span>';
+    compareHTML += '<span class="' + (putmeMet ? 'meet' : 'miss') + '">' + putme + ' ' + (putmeMet ? '✓ Meets' : '✗ Below') + ' ' + cut.putme + '+</span>';
+    compareHTML += '</div>';
+
+    compareHTML += '<div class="compare-row">';
+    compareHTML += '<span>Expected JAMB</span>';
+    compareHTML += '<span>' + cut.jamb + '+</span>';
+    compareHTML += '</div>';
+
+    compareHTML += '<div class="compare-row">';
+    compareHTML += '<span>Expected Post-UTME</span>';
+    compareHTML += '<span>' + cut.putme + '+</span>';
+    compareHTML += '</div>';
+
+    document.getElementById('compareBox').innerHTML = compareHTML;
     analysisCard.style.display = 'block';
   } else {
     analysisCard.style.display = 'none';
@@ -313,4 +315,4 @@ document.getElementById('calcBtn').addEventListener('click', () => {
 <script type="module" src="js/pwa.js"></script>
 <script src="js/icons.js"></script>
 </body>
-  </html>
+</html>
