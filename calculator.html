@@ -24,6 +24,21 @@
     background:var(--gold3);border:1px solid var(--gold2);border-radius:10px;
     padding:12px 14px;font-size:.78rem;color:#8a5b00;margin-top:16px;line-height:1.5;
   }
+  .analysis-card{display:none;margin-top:16px;padding:20px}
+  .analysis-card h3{margin:0 0 12px;font-size:1rem;color:var(--violet)}
+  .status{display:inline-block;padding:4px 10px;border-radius:20px;font-size:.75rem;font-weight:700;margin-bottom:12px}
+  .status.good{background:#d1fae5;color:#065f46}
+  .status.average{background:#fef3c7;color:#92400e}
+  .status.low{background:#fee2e2;color:#991b1b}
+  .chance-bar{height:10px;background:#e5e7eb;border-radius:6px;overflow:hidden;margin:10px 0}
+  .chance-fill{height:100%;border-radius:6px;transition:width .4s ease}
+  .chance-fill.high{background:#10b981}
+  .chance-fill.mid{background:#f59e0b}
+  .chance-fill.low{background:#ef4444}
+  .compare-row{display:flex;justify-content:space-between;font-size:.85rem;padding:6px 0;border-bottom:1px solid var(--border)}
+  .compare-row:last-child{border-bottom:none}
+  .meet{color:#059669;font-weight:600}
+  .miss{color:#dc2626;font-weight:600}
 </style>
 </head>
 <body>
@@ -49,6 +64,12 @@
       <label for="putmeScore">Post-UTME score (out of 100)</label>
       <input type="number" id="putmeScore" min="0" max="100" placeholder="e.g. 68">
     </div>
+    <div class="field">
+      <label for="courseSelect">Course of study (optional – for deeper analysis)</label>
+      <select id="courseSelect">
+        <option value="">— Select your course (optional) —</option>
+      </select>
+    </div>
     <button class="btn btn-primary btn-block" id="calcBtn">Calculate aggregate</button>
   </div>
 
@@ -59,6 +80,17 @@
       <div><b id="jambPoints">--</b><span>JAMB (60%)</span></div>
       <div><b id="putmePoints">--</b><span>Post-UTME (40%)</span></div>
     </div>
+  </div>
+
+  <div class="card analysis-card" id="analysisCard">
+    <h3 id="analysisTitle">Course Analysis</h3>
+    <div id="statusBadge" class="status"></div>
+    <div class="chance-bar"><div id="chanceFill" class="chance-fill" style="width:0%"></div></div>
+    <div id="chanceText" style="font-size:.85rem;font-weight:600;margin-bottom:14px"></div>
+    <div id="compareBox"></div>
+    <p style="font-size:.75rem;color:var(--muted);margin-top:14px;line-height:1.45">
+      These are expected scores from unofficial sources. Actual departmental cut-offs change yearly. Always verify on the official OOU portal.
+    </p>
   </div>
 
   <div class="note-box">
@@ -75,13 +107,127 @@
 </div>
 
 <script>
+const courseCutoffs = {
+  "Accounting": {jamb: 250, putme: 50},
+  "Agricultural Economics & Farm Management": {jamb: 180, putme: 40},
+  "Agricultural Engineering": {jamb: 200, putme: 50},
+  "Agricultural Extension and Rural Sociology": {jamb: 160, putme: 40},
+  "Anatomy": {jamb: 220, putme: 60},
+  "Animal Production": {jamb: 160, putme: 40},
+  "Applied Geophysics": {jamb: 180, putme: 40},
+  "Applied Zoology": {jamb: 160, putme: 40},
+  "Architecture": {jamb: 200, putme: 50},
+  "Banking & Finance": {jamb: 200, putme: 50},
+  "Biochemistry": {jamb: 200, putme: 50},
+  "Biology Education": {jamb: 160, putme: 40},
+  "Botany": {jamb: 160, putme: 40},
+  "Building Technology": {jamb: 180, putme: 40},
+  "Business Administration": {jamb: 220, putme: 50},
+  "Business Education": {jamb: 160, putme: 40},
+  "Catering Hotel and Tourism Management": {jamb: 180, putme: 40},
+  "Chemical Sciences": {jamb: 180, putme: 40},
+  "Chemistry": {jamb: 180, putme: 50},
+  "Chemistry Education": {jamb: 160, putme: 40},
+  "Child Development and Family Studies": {jamb: 160, putme: 40},
+  "Christian Religious Studies": {jamb: 160, putme: 40},
+  "Christian Religious Studies Education": {jamb: 160, putme: 40},
+  "Civil Engineering": {jamb: 200, putme: 50},
+  "Clothing and Textile": {jamb: 160, putme: 50},
+  "Computer Engineering": {jamb: 200, putme: 50},
+  "Computer Science": {jamb: 200, putme: 50},
+  "Computer Science Education": {jamb: 160, putme: 40},
+  "Cooperative Management and Rural Development": {jamb: 170, putme: 40},
+  "Criminology and Security Studies": {jamb: 160, putme: 50},
+  "Crop Improvement and Genetics": {jamb: 160, putme: 40},
+  "Crop Production": {jamb: 160, putme: 40},
+  "Crop Protection": {jamb: 160, putme: 40},
+  "Cyber Security": {jamb: 180, putme: 50},
+  "Data Science": {jamb: 180, putme: 50},
+  "Economics": {jamb: 200, putme: 50},
+  "Economics Education": {jamb: 170, putme: 40},
+  "Educational Management": {jamb: 170, putme: 40},
+  "Electrical / Electronics Engineering": {jamb: 200, putme: 50},
+  "English": {jamb: 180, putme: 50},
+  "English Education": {jamb: 160, putme: 50},
+  "Estate Management": {jamb: 160, putme: 40},
+  "Fine / Applied Arts": {jamb: 180, putme: 40},
+  "Fisheries Production": {jamb: 160, putme: 40},
+  "Food Nutrition and Dietetics": {jamb: 160, putme: 40},
+  "Forensic Science": {jamb: 220, putme: 50},
+  "Forestry & Wildlife": {jamb: 160, putme: 40},
+  "French": {jamb: 180, putme: 40},
+  "French Education": {jamb: 160, putme: 40},
+  "Geography and Regional Planning Science": {jamb: 180, putme: 50},
+  "Geography Education": {jamb: 160, putme: 40},
+  "Guidance and Counselling Education": {jamb: 160, putme: 40},
+  "Health Education": {jamb: 170, putme: 40},
+  "History and Diplomatic Studies": {jamb: 180, putme: 50},
+  "History Education": {jamb: 160, putme: 40},
+  "Home and Hotel Management": {jamb: 180, putme: 40},
+  "Industrial Chemistry": {jamb: 180, putme: 50},
+  "Industrial Mathematics": {jamb: 180, putme: 50},
+  "Industrial Relations and Personnel Management": {jamb: 190, putme: 50},
+  "Information and Communication Technology": {jamb: 170, putme: 40},
+  "Islamic Religious Studies Education": {jamb: 160, putme: 40},
+  "Law": {jamb: 240, putme: 65},
+  "Library and Information Science": {jamb: 160, putme: 40},
+  "Linguistics": {jamb: 180, putme: 50},
+  "Mass Communication": {jamb: 180, putme: 50},
+  "Mathematics": {jamb: 200, putme: 40},
+  "Mathematics Education": {jamb: 170, putme: 40},
+  "Mechanical Engineering": {jamb: 200, putme: 50},
+  "Medical Laboratory Science": {jamb: 220, putme: 60},
+  "Medicine & Surgery": {jamb: 290, putme: 80},
+  "Microbiology": {jamb: 190, putme: 50},
+  "Music": {jamb: 170, putme: 40},
+  "Nursing": {jamb: 270, putme: 60},
+  "Nursery and Primary Education": {jamb: 160, putme: 40},
+  "Performing Arts": {jamb: 160, putme: 40},
+  "Pharmacology": {jamb: 220, putme: 60},
+  "Pharmacy": {jamb: 250, putme: 60},
+  "Philosophy": {jamb: 200, putme: 50},
+  "Physics": {jamb: 180, putme: 50},
+  "Physics Education": {jamb: 160, putme: 40},
+  "Physics with Electronics": {jamb: 180, putme: 50},
+  "Physiology": {jamb: 200, putme: 60},
+  "Plant Science": {jamb: 180, putme: 40},
+  "Political Science": {jamb: 180, putme: 50},
+  "Political Science Education": {jamb: 160, putme: 40},
+  "Psychology": {jamb: 200, putme: 50},
+  "Public Administration": {jamb: 200, putme: 50},
+  "Quantity Surveying": {jamb: 180, putme: 40},
+  "Science Laboratory Technology": {jamb: 180, putme: 50},
+  "Secretarial Administration Education": {jamb: 170, putme: 40},
+  "Social Studies Education": {jamb: 160, putme: 40},
+  "Sociology": {jamb: 180, putme: 50},
+  "Software Engineering": {jamb: 200, putme: 60},
+  "Soil and Mechanization": {jamb: 170, putme: 40},
+  "Sport Science Education": {jamb: 160, putme: 40},
+  "Statistics": {jamb: 180, putme: 50},
+  "Taxation": {jamb: 180, putme: 50},
+  "Transport Planning and Management": {jamb: 180, putme: 50},
+  "Urban and Regional Planning": {jamb: 180, putme: 40},
+  "Yoruba Education": {jamb: 160, putme: 40}
+};
+
+// Populate dropdown
+const select = document.getElementById('courseSelect');
+Object.keys(courseCutoffs).sort().forEach(course => {
+  const opt = document.createElement('option');
+  opt.value = course;
+  opt.textContent = course;
+  select.appendChild(opt);
+});
+
 document.getElementById('calcBtn').addEventListener('click', () => {
   const jamb = parseFloat(document.getElementById('jambScore').value);
   const putme = parseFloat(document.getElementById('putmeScore').value);
+  const course = document.getElementById('courseSelect').value;
 
   if (isNaN(jamb) || jamb < 0 || jamb > 400) { alert('Enter a valid JAMB score between 0 and 400.'); return; }
   if (isNaN(putme) || putme < 0 || putme > 100) { alert('Enter a valid Post-UTME score between 0 and 100.'); return; }
 
+  // Correct OOU formula: 60% JAMB + 40% Post-UTME
   const jambPoints = (jamb / 400) * 60;
   const putmePoints = (putme / 100) * 40;
   const aggregate = jambPoints + putmePoints;
@@ -90,10 +236,81 @@ document.getElementById('calcBtn').addEventListener('click', () => {
   document.getElementById('putmePoints').textContent = putmePoints.toFixed(1);
   document.getElementById('aggregateScore').innerHTML = aggregate.toFixed(1) + '<span>/100</span>';
   document.getElementById('resultCard').style.display = 'block';
+
+  // Course analysis (optional)
+  const analysisCard = document.getElementById('analysisCard');
+  if (course && courseCutoffs[course]) {
+    const cut = courseCutoffs[course];
+    const jambMet = jamb >= cut.jamb;
+    const putmeMet = putme >= cut.putme;
+
+    let chance = 0;
+    let statusClass = 'low';
+    let statusText = '';
+    let chanceLabel = '';
+
+    if (jambMet && putmeMet) {
+      chance = 85 + Math.min(15, Math.floor((jamb - cut.jamb) / 5) + Math.floor((putme - cut.putme) / 3));
+      statusClass = 'good';
+      statusText = 'Strong Chance';
+      chanceLabel = `You meet both expected scores for ${course}. Good standing!`;
+    } else if (jambMet || putmeMet) {
+      chance = 45 + (jambMet ? 20 : 0) + (putmeMet ? 15 : 0);
+      if (!jambMet) chance += Math.max(0, 15 - Math.floor((cut.jamb - jamb) / 8));
+      if (!putmeMet) chance += Math.max(0, 10 - Math.floor((cut.putme - putme) / 4));
+      statusClass = 'average';
+      statusText = 'Moderate Chance';
+      chanceLabel = `You meet one expected score. Admission is still possible depending on competition.`;
+    } else {
+      const jambGap = cut.jamb - jamb;
+      const putmeGap = cut.putme - putme;
+      chance = Math.max(5, 35 - Math.floor(jambGap / 6) - Math.floor(putmeGap / 3));
+      statusClass = 'low';
+      statusText = 'Low Chance';
+      chanceLabel = `Both scores are below the expected range for ${course}. Consider other courses or improve next time.`;
+    }
+
+    chance = Math.min(98, Math.max(5, chance));
+
+    document.getElementById('analysisTitle').textContent = `Analysis for ${course}`;
+    const badge = document.getElementById('statusBadge');
+    badge.textContent = statusText;
+    badge.className = 'status ' + statusClass;
+
+    const fill = document.getElementById('chanceFill');
+    fill.style.width = chance + '%';
+    fill.className = 'chance-fill ' + (chance >= 70 ? 'high' : chance >= 40 ? 'mid' : 'low');
+
+    document.getElementById('chanceText').textContent = `Estimated chance: ${chance}%`;
+
+    document.getElementById('compareBox').innerHTML = `
+      <div class="compare-row">
+        <span>Your JAMB</span>
+        <span class="\( {jambMet ? 'meet' : 'miss'}"> \){jamb} ${jambMet ? '✓ Meets' : '✗ Below'} ${cut.jamb}+</span>
+      </div>
+      <div class="compare-row">
+        <span>Your Post-UTME</span>
+        <span class="\( {putmeMet ? 'meet' : 'miss'}"> \){putme} ${putmeMet ? '✓ Meets' : '✗ Below'} ${cut.putme}+</span>
+      </div>
+      <div class="compare-row">
+        <span>Expected JAMB</span>
+        <span>${cut.jamb}+</span>
+      </div>
+      <div class="compare-row">
+        <span>Expected Post-UTME</span>
+        <span>${cut.putme}+</span>
+      </div>
+    `;
+
+    analysisCard.style.display = 'block';
+  } else {
+    analysisCard.style.display = 'none';
+  }
+
   document.getElementById('resultCard').scrollIntoView({behavior:'smooth', block:'nearest'});
 });
 </script>
 <script type="module" src="js/pwa.js"></script>
 <script src="js/icons.js"></script>
 </body>
-</html>
+  </html>
