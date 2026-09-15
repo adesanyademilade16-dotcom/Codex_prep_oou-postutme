@@ -245,82 +245,29 @@ document.getElementById('calcBtn').addEventListener('click', function() {
     const jambMet = jamb >= cut.jamb;
     const putmeMet = putme >= cut.putme;
 
-    /*
-     * STRICTER ADMISSION-POSITION MODEL
-     * Meeting an expected cut-off is NOT treated as a strong chance.
-     * The score is based on how far BOTH results are above the
-     * course benchmark, using percentage margin above the benchmark.
-     *
-     * Important: this is a conservative "competitive position" estimate,
-     * not a statistically verified probability of admission.
-     */
-    const jambMargin = ((jamb - cut.jamb) / cut.jamb) * 100;
-    const putmeMargin = ((putme - cut.putme) / cut.putme) * 100;
-
-    const averageMargin = (jambMargin + putmeMargin) / 2;
-    const weakerMargin = Math.min(jambMargin, putmeMargin);
-
     let chance = 0;
     let statusClass = 'low';
     let statusText = '';
 
-    // Missing either benchmark means the applicant is not yet in a
-    // competitive position for this course.
-    if (!jambMet || !putmeMet) {
-      const jambDeficit = Math.max(0, -jambMargin);
-      const putmeDeficit = Math.max(0, -putmeMargin);
-      const totalDeficit = jambDeficit + putmeDeficit;
-
-      chance = Math.max(5, Math.min(24, 24 - Math.round(totalDeficit / 4)));
-      statusClass = 'low';
-      statusText = 'Below Competitive Range';
+    if (jambMet && putmeMet) {
+      chance = 85 + Math.min(15, Math.floor((jamb - cut.jamb) / 5) + Math.floor((putme - cut.putme) / 3));
+      statusClass = 'good';
+      statusText = 'Strong Chance';
+    } else if (jambMet || putmeMet) {
+      chance = 45 + (jambMet ? 20 : 0) + (putmeMet ? 15 : 0);
+      if (!jambMet) chance += Math.max(0, 15 - Math.floor((cut.jamb - jamb) / 8));
+      if (!putmeMet) chance += Math.max(0, 10 - Math.floor((cut.putme - putme) / 4));
+      statusClass = 'average';
+      statusText = 'Moderate Chance';
     } else {
-      /*
-       * Both benchmarks are met, but "just meeting" them remains low.
-       * The bands deliberately become stronger as the margin increases:
-       *
-       *   0–4.9%   -> 25–30%
-       *   5–9.9%   -> 35–44%
-       *   10–19.9% -> 45–59%
-       *   20–29.9% -> 60–74%
-       *   30–39.9% -> 75–84%
-       *   40%+     -> 85–92%
-       */
-      if (weakerMargin < 5) {
-        chance = 25 + Math.round(Math.max(0, weakerMargin) * 1);
-        statusClass = 'low';
-        statusText = 'Minimum Competitive Position';
-      } else if (weakerMargin < 10) {
-        chance = 35 + Math.round((weakerMargin - 5) * 1.8);
-        statusClass = 'average';
-        statusText = 'Developing Position';
-      } else if (weakerMargin < 20) {
-        chance = 45 + Math.round((weakerMargin - 10) * 1.4);
-        statusClass = 'average';
-        statusText = 'Competitive Position';
-      } else if (weakerMargin < 30) {
-        chance = 60 + Math.round((weakerMargin - 20) * 1.4);
-        statusClass = 'good';
-        statusText = 'Strong Position';
-      } else if (weakerMargin < 40) {
-        chance = 75 + Math.round((weakerMargin - 30) * 0.9);
-        statusClass = 'good';
-        statusText = 'Very Strong Position';
-      } else {
-        chance = 85 + Math.min(7, Math.round((weakerMargin - 40) * 0.18));
-        statusClass = 'good';
-        statusText = 'Very Strong Position';
-      }
-
-      // Small bonus when BOTH scores are comfortably above the benchmark.
-      if (jambMargin >= 20 && putmeMargin >= 20) chance += 2;
-      if (jambMargin >= 30 && putmeMargin >= 30) chance += 2;
-
-      // Never let the displayed figure become an implied guarantee.
-      chance = Math.min(92, chance);
+      const jambGap = cut.jamb - jamb;
+      const putmeGap = cut.putme - putme;
+      chance = Math.max(5, 35 - Math.floor(jambGap / 6) - Math.floor(putmeGap / 3));
+      statusClass = 'low';
+      statusText = 'Low Chance';
     }
 
-    chance = Math.min(92, Math.max(5, chance));
+    chance = Math.min(98, Math.max(5, chance));
 
     document.getElementById('analysisTitle').textContent = 'Analysis for ' + course;
     
