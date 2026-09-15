@@ -245,29 +245,98 @@ document.getElementById('calcBtn').addEventListener('click', function() {
     const jambMet = jamb >= cut.jamb;
     const putmeMet = putme >= cut.putme;
 
+    /*
+     * AGGREGATE-FIRST ADMISSION ANALYSIS
+     *
+     * The aggregate is the main indicator because admission assessment
+     * is based on the combined JAMB + Post-UTME score.
+     *
+     * The individual JAMB/Post-UTME benchmarks are still considered,
+     * but they should adjust the result rather than completely override
+     * a strong aggregate.
+     *
+     * This is an analytical estimate, NOT a verified probability of
+     * admission. Actual admission depends on the year's competition,
+     * departmental requirements and available spaces.
+     */
+
+    // Convert the course's expected JAMB/Post-UTME benchmarks into
+    // the same 100-point aggregate scale used above.
+    const expectedJambPoints = (cut.jamb / 400) * 60;
+    const expectedPutmePoints = (cut.putme / 100) * 40;
+    const expectedAggregate = expectedJambPoints + expectedPutmePoints;
+
+    // How far the student's aggregate is above/below the course benchmark.
+    const aggregateMargin = aggregate - expectedAggregate;
+
+    // Individual margins are used as secondary evidence only.
+    const jambMargin = ((jamb - cut.jamb) / cut.jamb) * 100;
+    const putmeMargin = ((putme - cut.putme) / cut.putme) * 100;
+
     let chance = 0;
     let statusClass = 'low';
     let statusText = '';
 
-    if (jambMet && putmeMet) {
-      chance = 85 + Math.min(15, Math.floor((jamb - cut.jamb) / 5) + Math.floor((putme - cut.putme) / 3));
-      statusClass = 'good';
-      statusText = 'Strong Chance';
-    } else if (jambMet || putmeMet) {
-      chance = 45 + (jambMet ? 20 : 0) + (putmeMet ? 15 : 0);
-      if (!jambMet) chance += Math.max(0, 15 - Math.floor((cut.jamb - jamb) / 8));
-      if (!putmeMet) chance += Math.max(0, 10 - Math.floor((cut.putme - putme) / 4));
-      statusClass = 'average';
-      statusText = 'Moderate Chance';
-    } else {
-      const jambGap = cut.jamb - jamb;
-      const putmeGap = cut.putme - putme;
-      chance = Math.max(5, 35 - Math.floor(jambGap / 6) - Math.floor(putmeGap / 3));
+    /*
+     * AGGREGATE IS PRIMARY
+     *
+     * At the expected aggregate benchmark (~40), the student is given
+     * a meaningful chance instead of being labelled very low.
+     * The chance rises gradually as the aggregate moves further above
+     * the course benchmark.
+     */
+    if (aggregate < expectedAggregate) {
+      // Below the expected aggregate: lower, but not artificially harsh.
+      chance = 35 + Math.round(aggregateMargin * 2);
+      chance = Math.max(10, Math.min(59, chance));
       statusClass = 'low';
-      statusText = 'Low Chance';
+      statusText = aggregate >= 35 ? 'Below Expected Aggregate' : 'Low Chance';
+    } else {
+      // At the benchmark = about 60%; stronger aggregates rise from there.
+      chance = 60 + Math.round(Math.min(22, aggregateMargin * 1.5));
+
+      /*
+       * Secondary component adjustment:
+       * - Both benchmarks met: small positive adjustment.
+       * - One benchmark missed: modest reduction.
+       * - A very large miss is penalised a little more.
+       *
+       * The adjustment is deliberately capped so one weak component
+       * cannot erase a strong overall aggregate.
+       */
+      if (jambMet && putmeMet) {
+        chance += 3;
+      } else if (jambMet || putmeMet) {
+        chance -= 6;
+
+        if (!jambMet && jambMargin < -25) chance -= 2;
+        if (!putmeMet && putmeMargin < -25) chance -= 2;
+      } else {
+        chance -= 10;
+
+        if (jambMargin < -25) chance -= 2;
+        if (putmeMargin < -25) chance -= 2;
+      }
+
+      chance = Math.min(92, Math.max(55, chance));
+
+      if (chance >= 85) {
+        statusClass = 'good';
+        statusText = 'Very Strong Chance';
+      } else if (chance >= 72) {
+        statusClass = 'good';
+        statusText = 'Strong Chance';
+      } else if (chance >= 60) {
+        statusClass = 'average';
+        statusText = 'Good Chance';
+      } else {
+        statusClass = 'average';
+        statusText = 'Moderate Chance';
+      }
     }
 
-    chance = Math.min(98, Math.max(5, chance));
+    // Final safety bounds for the displayed estimate.
+    chance = Math.min(92, Math.max(10, Math.round(chance)));
 
     document.getElementById('analysisTitle').textContent = 'Analysis for ' + course;
     
